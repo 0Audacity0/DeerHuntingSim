@@ -628,7 +628,19 @@ $('hback').onclick=()=>{$('scr-help').style.display='none';$('scr-main').style.d
 
 // Title-screen keyboard secrets. Type each word in order while the title screen is open.
 const secretCodes=['makemerich','hellaammo','aura'];
-let secretBuffer='';
+let secretBuffer='',auraEnabled=false,auraStepDistance=0,auraLastX=0,auraLastZ=0,auraCraterCount=0;
+const auraCraters=[];
+function makeAuraCrater(x,z){
+ const y=hgt(x,z)+.025,g=new THREE.Group();
+ const bowl=new THREE.Mesh(new THREE.CircleGeometry(.48,20),new THREE.MeshBasicMaterial({color:0x17130f,transparent:true,opacity:.92,depthWrite:false}));
+ bowl.rotation.x=-Math.PI/2;bowl.position.y=.015;g.add(bowl);
+ const rim=new THREE.Mesh(new THREE.TorusGeometry(.39,.085,6,20),new THREE.MeshBasicMaterial({color:0x393027,transparent:true,opacity:.95}));
+ rim.rotation.x=Math.PI/2;rim.position.y=.045;g.add(rim);
+ g.position.set(x,y,z);scene.add(g);auraCraters.push(g);
+ if(auraCraters.length>36){scene.remove(auraCraters.shift())}
+ noise(.42,.95);snd(82,.48,'sawtooth',.75,.22);snd(43,.55,'triangle',.55,.35);
+}
+
 function activateSecret(code){
  if(code==='makemerich'){
   stats.money+=200;saveStats();$('sv-deer').textContent=stats.deer;
@@ -640,13 +652,10 @@ function activateSecret(code){
   $('t2').textContent='SECRET UNLOCKED: 100 AMMO · NO COOLDOWN · EXTREME RANGE';
   snd(880,.35,'square',.22,1.5);
  }else if(code==='aura'){
+  auraEnabled=!auraEnabled;auraStepDistance=0;auraLastX=P.x;auraLastZ=P.z;
   const song=$('whatSong');song.volume=.55;
-  if(song.paused){
-   song.play().then(()=>{$('t2').textContent='AURA MODE: WHAT.mp3 IS PLAYING ON LOOP';}).catch(()=>{$('t2').textContent='AURA MODE: PRESS AURA AGAIN TO RETRY';});
-  }else{
-   song.pause();song.currentTime=0;
-   $('t2').textContent='AURA MODE OFF';
-  }
+  if(auraEnabled){song.play().catch(()=>{});$('t2').textContent='AURA MODE ON: BOOM STEPS ENABLED';}
+  else{song.pause();song.currentTime=0;$('t2').textContent='AURA MODE OFF';}
   snd(880,.35,'square',.22,1.5);
  }
 }
@@ -735,6 +744,7 @@ function updDeer(d,dt){
 if(!d.active)return;
 const dx=P.x-d.x,dz=P.z-d.z,dist=Math.hypot(dx,dz);
 if(!d.alive){if(!d.carried){d.deadT+=dt;if(d.deadT>150&&dist>25){d.active=false;d.g.visible=false}}return}
+if(auraEnabled&&dist<90){d.g.visible=true;const face=Math.atan2(dx,dz),df=((face-d.yaw+PI*3)%(PI*2))-PI;d.yaw+=Math.max(-8*dt,Math.min(8*dt,df));d.g.position.set(d.x,hgt(d.x,d.z)+(d.perched?d.perchY:0),d.z);d.g.rotation.set(Math.sin(T*27+d.ph)*.045,d.yaw,Math.sin(T*34+d.ph)*.055);d.legs.forEach((l,i)=>{l.rotation.x=Math.sin(T*31+d.ph+i)*.08});return}
 if(gameMode==='defense'){d.g.visible=true;if(!d.perched){d.st='hunt';d.perched=false}}
 else{if(dist>130){d.g.visible=false;return}d.g.visible=dist<88;const sense=P.hid?0:(P.run?46:(P.moving?30:13));if(!d.perched&&dist<sense&&d.st!=='flee'){d.st='flee';d.t=3+Math.random()*3;d.perched=false}}
 if(d.perched){d.g.position.set(d.x,hgt(d.x,d.z)+d.perchY,d.z);d.g.rotation.y=d.yaw;return}
@@ -760,6 +770,7 @@ function freeHeading(d,tx,tz){const a=Math.atan2(tx-d.x,tz-d.z);for(const o of[0
 function gClamp(x,z){const dx=x-GZ.x,dz=z-GZ.z,l=Math.hypot(dx,dz);if(l>GZ.r-5)return{x:GZ.x+dx/l*(GZ.r-5),z:GZ.z+dz/l*(GZ.r-5)};return{x,z}}
 function updGiant(dt){
 const d=giant,dx=P.x-d.x,dz=P.z-d.z,dist=Math.hypot(dx,dz);
+if(auraEnabled&&d.alive&&dist<90){const face=Math.atan2(dx,dz),df=((face-d.yaw+PI*3)%(PI*2))-PI;d.yaw+=Math.max(-8*dt,Math.min(8*dt,df));d.g.position.set(d.x,hgt(d.x,d.z),d.z);d.g.rotation.set(Math.sin(T*25)*.05,d.yaw,Math.sin(T*32)*.06);return dist}
 if(!d.alive){d.dT+=dt;if(d.dT>150){resetGiant();msg('THE GRAY ONE HAS RETURNED...',4)}return 999}
 d.angry-=dt;
 const inZ=Math.hypot(d.x-GZ.x,d.z-GZ.z)<GZ.r;
@@ -804,7 +815,7 @@ P.moving=!P.hid&&!(P.stuck>0)&&!!(kx||kz);P.run=P.moving&&!scoped&&!!(keys.Shift
 if(P.moving){let inBog=false;for(let bi=0;bi<bogs.length;bi++){const b=bogs[bi];if(P.x>=b.minX&&P.x<=b.maxX&&P.z>=b.minZ&&P.z<=b.maxZ&&inMud(P.x,P.z,b)){inBog=true;break}}const bg=inBog?.6:1;if(bg<1&&!P.inBog)msg('STUCK IN THE MUD \u2014 YOU MOVE SLOWLY',2);P.inBog=bg<1;const sp=Math.max(inBog?1.6:0,(scoped?2.2:(P.run?RUN_SP:5))*(carry.length>1?.4:carry.length?.7:1)*bg*am*(stats.boots?1.08:1)),l=Math.hypot(kx,kz),s=Math.sin(P.yaw),c=Math.cos(P.yaw);
 const ux=(-s*kz+c*kx)/l,uz=(-c*kz-s*kx)/l,gr=hgt(P.x+ux,P.z+uz)-hgt(P.x,P.z),sl=Math.max(inBog?.8:.4,Math.min(1.2,1-gr*.5));const dx=ux*sp*sl*dt,dz=uz*sp*sl*dt;
 if(!hit(P.x+dx,P.z,.45))P.x+=dx;if(!hit(P.x,P.z+dz,.45))P.z+=dz;
-P.x=Math.max(-W/2+3,Math.min(W/2-3,P.x));P.z=Math.max(-W/2+3,Math.min(W/2-3,P.z));bob+=dt*(P.run?12:8)}
+P.x=Math.max(-W/2+3,Math.min(W/2-3,P.x));P.z=Math.max(-W/2+3,Math.min(W/2-3,P.z));if(auraEnabled){auraStepDistance+=Math.hypot(P.x-auraLastX,P.z-auraLastZ);auraLastX=P.x;auraLastZ=P.z;if(auraStepDistance>=2.25){auraStepDistance=0;makeAuraCrater(P.x,P.z)}}bob+=dt*(P.run?12:8)}
 camY=hgt(P.x,P.z)+(P.hid?.6:1.7+(P.moving?Math.sin(bob)*.06:0));
 cam.position.set(P.x,camY,P.z);cam.rotation.set(P.pitch,P.yaw,0,'YXZ');
 cd-=dt;if(rel>0){rel-=dt;if(rel<=0)ammo[cur]=WP[cur].mag}
