@@ -653,7 +653,7 @@ function activateSecret(code){
  }else if(code==='aura'){
   auraEnabled=!auraEnabled;auraStepDistance=0;auraLastX=P.x;auraLastZ=P.z;
   const song=$('whatSong');song.volume=.55;
-  if(auraEnabled){song.play().catch(()=>{});$('t2').textContent='AURA MODE ON: BOOM STEPS ENABLED';}
+  if(auraEnabled){song.play().catch(()=>{});$('t2').textContent='Feel the aura';}
   else{song.pause();song.currentTime=0;$('t2').textContent='AURA MODE OFF';}
   snd(880,.35,'square',.22,1.5);
  }
