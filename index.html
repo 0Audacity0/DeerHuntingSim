@@ -603,20 +603,18 @@ $('mpmsg').style.display='none';$('wn').style.display=m==='title'?'flex':'none';
 function updateHearts(){const h=$('hearts');h.style.display=playing&&gameMode==='defense'?'block':'none';h.textContent='♥ '.repeat(Math.max(0,defenseLives)).trim();h.style.color=defenseLives===1?'#ff3939':'#e85b55'}
 function setGameMode(mode){gameMode=mode;$('mode-regular').classList.toggle('selected',mode==='regular');$('mode-defense').classList.toggle('selected',mode==='defense')}
 function launchSelectedMode(mode){
-setGameMode(mode);$('mode-overlay').style.display='none';
-if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();
-if(G==='dead')respawn();else if(G==='menu'&&!qStarted){qStarted=true;msg('FREE ROAM — FIND SOME DEER',4)}
-G='play';playing=true;
-if(gameMode==='defense'){defenseLives=3;defenseHitCooldown=0;for(const d of deers){if(d.active&&d.alive){d.perched=false;d.g.position.y=hgt(d.x,d.z)}}}
-updateHearts();$('ov').style.display='none';if(!isTouch)cv.requestPointerLock();
-}
-function launchSelectedMode(mode){
-setGameMode(mode);$('mode-overlay').style.display='none';
-if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();
-if(G==='dead')respawn();else if(G==='menu'&&!qStarted){qStarted=true;msg('FREE ROAM \\u2014 FIND SOME DEER',4)}
-G='play';playing=true;
-if(gameMode==='defense'){defenseLives=3;defenseHitCooldown=0;for(const d of deers){if(d.active&&d.alive){d.perched=false;d.g.position.y=hgt(d.x,d.z)}}}
-updateHearts();$('ov').style.display='none';if(!isTouch)cv.requestPointerLock();
+ setGameMode(mode);$('mode-overlay').style.display='none';
+ if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();
+ if(G==='dead')respawn();
+ if(gameMode==='defense'){
+  msg('Yo shoot the deer now bru',4);
+  defenseLives=3;defenseHitCooldown=0;
+  for(const d of deers){if(d.active&&d.alive){d.perched=false;d.g.position.y=hgt(d.x,d.z)}}
+ }else if(G==='menu'&&!qStarted){
+  qStarted=true;msg('FREE ROAM — FIND SOME DEER',4);
+ }
+ G='play';playing=true;
+ updateHearts();$('ov').style.display='none';if(!isTouch)cv.requestPointerLock();
 }
 $('mode-regular').onclick=()=>launchSelectedMode('regular');
 $('mode-defense').onclick=()=>launchSelectedMode('defense');
@@ -629,7 +627,7 @@ $('htp').onclick=()=>{$('scr-main').style.display='none';$('scr-help').style.dis
 $('hback').onclick=()=>{$('scr-help').style.display='none';$('scr-main').style.display='flex'};
 
 // Title-screen keyboard secrets. Type each word in order while the title screen is open.
-const secretCodes=['makemerich','hellaammo'];
+const secretCodes=['makemerich','hellaammo','aura'];
 let secretBuffer='';
 function activateSecret(code){
  if(code==='makemerich'){
@@ -640,7 +638,15 @@ function activateSecret(code){
   cheatAmmo=true;WP[0].mag=100;WP[0].rng=1000;WP[0].cd=0;
   ammo[0]=100;rel=0;cd=0;
   $('t2').textContent='SECRET UNLOCKED: 100 AMMO · NO COOLDOWN · EXTREME RANGE';
-  const song=$('whatSong');song.volume=.55;song.play().catch(()=>{});
+  snd(880,.35,'square',.22,1.5);
+ }else if(code==='aura'){
+  const song=$('whatSong');song.volume=.55;
+  if(song.paused){
+   song.play().then(()=>{$('t2').textContent='AURA MODE: WHAT.mp3 IS PLAYING ON LOOP';}).catch(()=>{$('t2').textContent='AURA MODE: PRESS AURA AGAIN TO RETRY';});
+  }else{
+   song.pause();song.currentTime=0;
+   $('t2').textContent='AURA MODE OFF';
+  }
   snd(880,.35,'square',.22,1.5);
  }
 }
