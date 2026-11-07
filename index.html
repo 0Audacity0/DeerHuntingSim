@@ -24,6 +24,9 @@ html,body{margin:0;height:100%;background:var(--bg);overflow:hidden;font-family:
 #pr{position:absolute;left:0;right:0;top:62%;text-align:center;color:#fff}
 #ch{position:absolute;left:50%;top:50%;width:6px;height:6px;margin:-3px;background:var(--fg);box-shadow:0 0 0 1px #000}
 #ar{display:inline-block}
+#shp{position:absolute;left:18px;bottom:56px}
+#sha{display:inline-block}
+body.touch #shp{bottom:182px}
 #ov{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;overflow:auto;background:radial-gradient(ellipse at center,rgba(22,28,18,.8),rgba(0,0,0,.96))}
 #ov.pause{background:rgba(4,6,4,.72);backdrop-filter:blur(3px)}
 #ov.dead{background:radial-gradient(ellipse at center,rgba(70,0,0,.8),rgba(0,0,0,.97))}
@@ -99,6 +102,7 @@ body.touch.tplay #touch{display:block}
 #tcarry{width:74px;height:74px;font-size:13px;right:calc(138px + env(safe-area-inset-right,0px));bottom:calc(24px + env(safe-area-inset-bottom,0px))}
 #tact{width:66px;height:66px;font-size:12px;right:calc(46px + env(safe-area-inset-right,0px));bottom:calc(142px + env(safe-area-inset-bottom,0px));display:none}
 .tb.sm{width:52px;height:52px;font-size:10px;top:calc(60px + env(safe-area-inset-top,0px))}
+#tlight{right:calc(194px + env(safe-area-inset-right,0px));display:none}
 #tswap{right:calc(14px + env(safe-area-inset-right,0px))}
 #tscope{right:calc(74px + env(safe-area-inset-right,0px))}
 #treload{right:calc(134px + env(safe-area-inset-right,0px))}
@@ -106,9 +110,9 @@ body.touch.tplay #touch{display:block}
 </style></head><body>
 <canvas id="c"></canvas>
 <div class="f" id="hd"></div><div class="f" id="dg"></div><div class="f" id="fl"></div><div class="f" id="sc"></div><div class="f" id="bk"></div><div class="f" id="scan"></div>
-<div id="hud"><div id="ch"></div><div id="tl"></div><div id="clk"></div><div id="br"></div><div id="cp"><span id="ar">▲</span> <span id="cd"></span></div><div id="ms"></div><div id="pr"></div></div>
+<div id="hud"><div id="ch"></div><div id="tl"></div><div id="clk"></div><div id="br"></div><div id="cp"><span id="ar">▲</span> <span id="cd"></span></div><div id="ms"></div><div id="pr"></div><div id="shp"><span id="sha">▲</span> <span id="shd"></span></div></div>
 <div id="touch"><div id="tz"></div><div id="jb"><div id="jk"></div></div>
-<div class="tb" id="tpause">PAUSE</div><div class="tb sm" id="treload">RELOAD</div><div class="tb sm" id="tscope">SCOPE</div><div class="tb sm" id="tswap">SWAP</div>
+<div class="tb" id="tpause">PAUSE</div><div class="tb sm" id="tlight">LIGHT</div><div class="tb sm" id="treload">RELOAD</div><div class="tb sm" id="tscope">SCOPE</div><div class="tb sm" id="tswap">SWAP</div>
 <div class="tb" id="tact"></div><div class="tb" id="tcarry">CARRY</div><div class="tb" id="tshoot">SHOOT</div></div>
 <div id="ov" class="title">
 <div class="scr" id="scr-main">
@@ -124,14 +128,15 @@ body.touch.tplay #touch{display:block}
 </div>
 <div class="scr" id="scr-help" style="display:none">
 <h2>HOW TO PLAY</h2>
-<div class="keys"><div><kbd>W A S D</kbd>Move</div><div><kbd>SHIFT</kbd>Sprint</div><div><kbd>MOUSE</kbd>Look</div><div><kbd>CLICK</kbd>Shoot / chop</div><div><kbd>R</kbd>Reload</div><div><kbd>1 / 2 / 3</kbd>Rifle / shotgun / axe</div><div><kbd>RIGHT CLICK</kbd>Hold to scope</div><div><kbd>WHEEL</kbd>Zoom while scoped</div><div><kbd>E</kbd>Hide / pick up / sleep / shop</div><div><kbd>G</kbd>Drop a deer</div></div>
+<div class="keys"><div><kbd>W A S D</kbd>Move</div><div><kbd>SHIFT</kbd>Sprint</div><div><kbd>MOUSE</kbd>Look</div><div><kbd>CLICK</kbd>Shoot / chop</div><div><kbd>R</kbd>Reload</div><div><kbd>1 / 2 / 3</kbd>Rifle / shotgun / axe</div>
+<div><kbd>F</kbd>Flashlight</div><div><kbd>RIGHT CLICK</kbd>Hold to scope</div><div><kbd>WHEEL</kbd>Zoom while scoped</div><div><kbd>E</kbd>Hide / pick up / sleep / shop</div><div><kbd>G</kbd>Drop a deer</div></div>
 <ul class="tips">
 <li>Deer are <b>scarce by day</b>. At <b>night</b> there are about 1.4x as many, but it is quite dark.</li>
 <li>Walking and running spook deer from far away. Stand still to get closer.</li>
 <li>Gunshots are loud, meaning everything nearby will hear it, including the gray one.</li>
 <li>The <b>gray one</b> lives in the gray biome. If it chases you, press <b>E</b> at a bush to hide.</li>
 <li>Bear traps are inside the gray biome. Mash <b>WASD</b> to break free. Mud slows you down.</li>
-<li>You can carry 2 deer, but they slow you down a lot. Sell them at the <b>shop</b> next to the cabin for <b>$10</b> each.</li>
+<li>You can carry 2 deer, but they slow you down a lot. Sell them at the <b>shop</b> by the road east of the cabin (the arrow in the bottom left points to it) for <b>$10</b> each.</li>
 <li>Save up <b>$70</b> for the <b>axe</b>. Chop down a tree with a deer on top and the deer comes down with it.</li>
 <li>The gray one takes <b>5 shotgun hits</b> to kill, and it runs faster than you.</li>
 <li>On mobile, the left stick moves (push past the ring to sprint) and dragging anywhere else looks around.</li>
@@ -147,7 +152,7 @@ body.touch.tplay #touch{display:block}
 <div id="wnp"><button class="wnar" id="wnl" aria-label="Newer update">&#9664;&#xFE0E;</button>
 <div class="wnc"><div class="wnh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" shape-rendering="crispEdges"><path d="M3 4h14v16H5a2 2 0 0 1-2-2z"/><path d="M17 8h4v10a2 2 0 0 1-2 2h-2"/><path d="M6 8h8M6 11h8M6 14h4M12 14h2M6 17h8"/></svg><h2>WHAT'S NEW</h2></div><div class="wnv" id="wnv"></div><ul id="wnu"></ul><button class="btn" id="wnx" style="width:100%">CLOSE</button></div>
 <button class="wnar" id="wnr" aria-label="Previous updates">&#9654;&#xFE0E;</button></div>
-<div id="ver">v1.1.2</div>
+<div id="ver">v1.1.3</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 const $=id=>document.getElementById(id);
@@ -158,20 +163,24 @@ const cv=$('c'),renderer=new THREE.WebGLRenderer({canvas:cv,antialias:false});
 const scene=new THREE.Scene(),gs=new THREE.Scene();
 const cam=new THREE.PerspectiveCamera(72,1,.1,95),gcam=new THREE.PerspectiveCamera(60,1,.01,10);
 const mat=new THREE.ShaderMaterial({
-uniforms:{res:{value:new THREE.Vector2(320,240)},fogc:{value:new THREE.Color(0x7b8473)},fogn:{value:6},fogf:{value:80},tint:{value:new THREE.Vector3(1,1,1)}},
-vertexShader:`attribute vec3 color;varying vec3 vc;varying float fd;uniform vec2 res;uniform vec3 tint;
+uniforms:{res:{value:new THREE.Vector2(320,240)},fogc:{value:new THREE.Color(0x7b8473)},fogn:{value:6},fogf:{value:80},tint:{value:new THREE.Vector3(1,1,1)},fl:{value:0}},
+vertexShader:`attribute vec3 color;varying vec3 vc;varying vec3 vl;varying float fd;uniform vec2 res;uniform vec3 tint;
 void main(){vec4 mv=modelViewMatrix*vec4(position,1.);vec3 n=normalize(normalMatrix*normal);
-float l=.55+.45*max(dot(n,normalize(vec3(.4,.8,.3))),0.);vc=color*l*tint;fd=-mv.z;
+float l=.55+.45*max(dot(n,normalize(vec3(.4,.8,.3))),0.);vc=color*l*tint;vl=color*l;fd=-mv.z;
 vec4 p=projectionMatrix*mv;vec2 g=res*.25;p.xy=floor(p.xy/p.w*g+.5)/g*p.w;gl_Position=p;}`,
-fragmentShader:`varying vec3 vc;varying float fd;uniform vec3 fogc;uniform float fogn,fogf;
-void main(){float f=clamp((fd-fogn)/(fogf-fogn),0.,1.);gl_FragColor=vec4(mix(vc,fogc,f),1.);}`});
+fragmentShader:`varying vec3 vc;varying vec3 vl;varying float fd;uniform vec3 fogc;uniform float fogn,fogf;uniform float fl;uniform vec2 res;
+void main(){float f=clamp((fd-fogn)/(fogf-fogn),0.,1.);vec3 c=vc;
+if(fl>.5){vec2 uv=gl_FragCoord.xy/res-vec2(.5,.46);uv.x*=res.x/res.y;float b=(1.-smoothstep(.12,.42,length(uv)))*(1.-smoothstep(14.,48.,fd));c=mix(vc,vl*vec3(1.05,1.,.82),b);f*=1.-b*.9;}
+gl_FragColor=vec4(mix(c,fogc,f),1.);}`});
 function rs(){const w=Math.floor(innerWidth/3),h=Math.floor(innerHeight/3);renderer.setSize(w,h,false);mat.uniforms.res.value.set(w,h);cam.aspect=gcam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();gcam.updateProjectionMatrix()}
 addEventListener('resize',rs);rs();renderer.autoClear=false;
-const matT=new THREE.ShaderMaterial({uniforms:{res:mat.uniforms.res,fogc:mat.uniforms.fogc,fogn:mat.uniforms.fogn,fogf:mat.uniforms.fogf,tint:mat.uniforms.tint,map:{value:null}},
+const matT=new THREE.ShaderMaterial({uniforms:{res:mat.uniforms.res,fogc:mat.uniforms.fogc,fogn:mat.uniforms.fogn,fogf:mat.uniforms.fogf,tint:mat.uniforms.tint,fl:mat.uniforms.fl,map:{value:null}},
 vertexShader:`varying vec2 vu;varying float fd;uniform vec2 res;
 void main(){vu=uv;vec4 mv=modelViewMatrix*vec4(position,1.);fd=-mv.z;vec4 p=projectionMatrix*mv;vec2 g=res*.25;p.xy=floor(p.xy/p.w*g+.5)/g*p.w;gl_Position=p;}`,
-fragmentShader:`varying vec2 vu;varying float fd;uniform vec3 fogc;uniform vec3 tint;uniform float fogn;uniform float fogf;uniform sampler2D map;
-void main(){vec3 c=texture2D(map,vu).rgb*tint;float f=clamp((fd-fogn)/(fogf-fogn),0.,1.);gl_FragColor=vec4(mix(c,fogc,f),1.);}`});
+fragmentShader:`varying vec2 vu;varying float fd;uniform vec3 fogc;uniform vec3 tint;uniform float fogn;uniform float fogf;uniform sampler2D map;uniform float fl;uniform vec2 res;
+void main(){vec3 base=texture2D(map,vu).rgb;vec3 c=base*tint;float f=clamp((fd-fogn)/(fogf-fogn),0.,1.);
+if(fl>.5){vec2 uv=gl_FragCoord.xy/res-vec2(.5,.46);uv.x*=res.x/res.y;float b=(1.-smoothstep(.12,.42,length(uv)))*(1.-smoothstep(14.,48.,fd));c=mix(c,base,b);f*=1.-b*.9;}
+gl_FragColor=vec4(mix(c,fogc,f),1.);}`});
 const ni=g=>g.index?g.toNonIndexed():g;
 const BOX=ni(new THREE.BoxGeometry(1,1,1)),CONE=ni(new THREE.ConeGeometry(1,1,5)),ICO=ni(new THREE.IcosahedronGeometry(1,0)),PL=ni(new THREE.PlaneGeometry(1,1)),CON4=ni(new THREE.ConeGeometry(1,1,4));
 const mk=()=>({p:[],c:[]});
@@ -192,11 +201,13 @@ return false}
 const chunks={},CH=70;
 const chunk=(x,z)=>{const k=Math.floor((x+W/2)/CH)+','+Math.floor((z+W/2)/CH);return chunks[k]||(chunks[k]=mk())};
 let HB=0;
-const SH={x:-11,z:0},nearShop=()=>Math.abs(P.x-SH.x)<4.3&&P.z>SH.z+2.7&&P.z<SH.z+6.4;
-const hRaw=(x,z)=>{const f=Math.min(1,Math.max(0,(Math.hypot(x,z)-16)/30));let h=f*(Math.sin(x*.013)*Math.cos(z*.011)*7+Math.sin(x*.031+z*.027)*2.4+Math.sin(z*.05-x*.02)*1.2);
+let inMud=null;
+const SH={x:64,z:7},nearShop=()=>Math.abs(P.x-SH.x)<4.3&&P.z>SH.z+2.7&&P.z<SH.z+6.4;
+const hBase=(x,z)=>{const f=Math.min(1,Math.max(0,(Math.hypot(x,z)-16)/30));let h=f*(Math.sin(x*.013)*Math.cos(z*.011)*7+Math.sin(x*.031+z*.027)*2.4+Math.sin(z*.05-x*.02)*1.2);
 const w=Math.min(1,Math.max(0,(GZ.r+14-Math.hypot(x-GZ.x,z-GZ.z))/24));
 if(w>0)h+=w*(Math.abs(Math.sin(x*.07+Math.cos(z*.05)*2))*4.5+Math.abs(Math.sin(z*.085-x*.04))*3+Math.sin(x*.11+z*.13)*1.5-4);
 return h};
+const hRaw=(x,z)=>{let h=hBase(x,z);const sd=Math.hypot(x-SH.x,z-SH.z);if(sd<16){const t=Math.min(1,Math.max(0,(16-sd)/7));if(SH.g===undefined)SH.g=hBase(SH.x,SH.z);h=h*(1-t)+SH.g*t}return h};
 let HG=null;
 const hgt=(x,z)=>{if(!HG){HG=[];for(let i=0;i<=W/10;i++){const r=[];for(let j=0;j<=W/10;j++)r.push(hRaw(-W/2+i*10,-W/2+j*10));HG.push(r)}}
 const gx=(x+W/2)/10,gz=(z+W/2)/10;let i=Math.max(0,Math.min(W/10-1,Math.floor(gx))),j=Math.max(0,Math.min(W/10-1,Math.floor(gz)));
@@ -300,7 +311,7 @@ for(const group of mudGroups){
  bogs.push({poly,minX:Math.min(...poly.map(v=>v.x)),maxX:Math.max(...poly.map(v=>v.x)),
   minZ:Math.min(...poly.map(v=>v.z)),maxZ:Math.max(...poly.map(v=>v.z))});
 }
-function inMud(x,z,b){
+inMud=function(x,z,b){
  if(x<b.minX||x>b.maxX||z<b.minZ||z>b.maxZ)return false;
  let inside=false;const p=b.poly;
  for(let i=0,j=p.length-1;i<p.length;j=i++){
@@ -308,7 +319,7 @@ function inMud(x,z,b){
   if(((a.z>z)!==(c.z>z))&&(x<(c.x-a.x)*(z-a.z)/(c.z-a.z)+a.x))inside=!inside;
  }
  return inside;
-}
+};
 for(let i=0;i<45;i++){const a=rnd()*6.28,d=rnd()*GZ.r*.9,x=GZ.x+Math.cos(a)*d,z=GZ.z+Math.sin(a)*d;if(nearRoad(x,z))continue;HB=hgt(x,z);add(zb,BOX,0x6a4a30,x,.1,z,.8,.05,.8);add(zb,BOX,0x8a8a82,x,.14,z,.7,.04,.12);add(zb,BOX,0x8a8a82,x,.14,z,.12,.04,.7);traps.push({x,z,on:true})}
 scene.add(new THREE.Mesh(fin(zb),mat));HB=0;
 const rb=mk();
@@ -486,17 +497,23 @@ else{add(b,BOX,0x2a2c30,-.022,0,-.5,.03,.03,.9);add(b,BOX,0x2a2c30,.022,0,-.5,.0
 g.add(new THREE.Mesh(fin(b),mat));
 const fb=mk();add(fb,BOX,0xffe080,0,0,0,.12,.12,.08);const fm=new THREE.Mesh(fin(fb),mat);fm.position.set(0,0,kind?-1:-1.08);fm.visible=false;g.add(fm);g.userData.fm=fm;
 g.position.set(.24,-.25,-.55);g.visible=kind==0;gs.add(g);return g}
+const axeMat=new THREE.ShaderMaterial({uniforms:{res:mat.uniforms.res,tint:mat.uniforms.tint},
+vertexShader:`attribute vec3 color;varying vec3 vc;uniform vec2 res;uniform vec3 tint;
+void main(){vec4 mv=modelViewMatrix*vec4(position,1.);vec3 n=normalize(normalMatrix*normal);float l=.55+.45*max(dot(n,normalize(vec3(.4,.8,.3))),0.);vc=color*l*tint;
+vec4 p=projectionMatrix*mv;vec2 g=res*.14;p.xy=floor(p.xy/p.w*g+.5)/g*p.w;gl_Position=p;}`,
+fragmentShader:`varying vec3 vc;
+void main(){vec2 k=floor(gl_FragCoord.xy/3.);float n=fract(sin(dot(k,vec2(12.9898,78.233)))*43758.5453);vec3 c=vc*(.78+.44*n);c=floor(c*3.+.5)/3.;c=max(c,vec3(.07,.06,.05));float g=dot(c,vec3(.3,.5,.2));c=mix(vec3(g),c,.65);gl_FragColor=vec4(c,1.);}`});
 function axeMesh(){const b=mk(),g=new THREE.Group();
-add(b,BOX,0x7a4a25,0,-.02,0,.05,.5,.05);add(b,BOX,0x4d3524,0,-.24,0,.065,.08,.065);
-add(b,BOX,0x8d949b,.09,.2,0,.2,.14,.035);add(b,BOX,0xb9c0c6,.2,.2,0,.04,.2,.03);add(b,BOX,0x6a7076,-.04,.2,0,.07,.1,.04);
-g.add(new THREE.Mesh(fin(b),mat));g.userData.fm=new THREE.Object3D();g.position.set(.3,-.32,-.6);g.rotation.z=-.25;g.visible=false;gs.add(g);return g}
+add(b,BOX,0x7a4a25,0,0,0,.09,.8,.09);add(b,BOX,0x4d3524,0,-.38,0,.11,.1,.11);
+add(b,BOX,0x6a7076,-.1,.3,0,.14,.2,.08);add(b,BOX,0x9aa0a6,-.25,.3,0,.2,.26,.06);add(b,BOX,0xc6ccd2,-.37,.3,0,.06,.36,.05);
+g.add(new THREE.Mesh(fin(b),axeMat));g.userData.fm=new THREE.Object3D();g.position.set(.3,-.42,-.6);g.rotation.z=.25;g.visible=false;gs.add(g);return g}
 const guns=[gunMesh(0),gunMesh(1),axeMesh()];
 const WP=[{n:'RIFLE',mag:5,pel:1,spr:.012,rng:160,cd:.9,rel:1.8},{n:'SHOTGUN',mag:2,pel:7,spr:.055,rng:45,cd:.6,rel:2.2},{n:'AXE',mag:0,pel:0,spr:0,rng:0,cd:.7,rel:0}];
 let ammo=[5,2,0],cur=0,cd=0,rel=0,kick=0,flash=0;
 const P={x:0,z:9,yaw:0,pitch:0,hid:false,hx:0,hz:0,moving:false,run:false};
 const DAY_LEN=480,DEER_DAY=22,RUN_SP=8.5,GSP=RUN_SP*1.1;
-const SK='deerHunter98.stats',stats={deer:0,deaths:0,shots:0,money:0,axe:0};
-try{const s=JSON.parse(localStorage.getItem(SK)||'null');if(s&&typeof s==='object'){stats.deer=+s.deer||0;stats.deaths=+s.deaths||0;stats.shots=+s.shots||0;stats.money=+s.money||0;stats.axe=s.axe?1:0}}catch(e){}
+const SK='deerHunter98.stats',stats={deer:0,deaths:0,shots:0,money:0,axe:0,flash:0,boots:0,belt:0};
+try{const s=JSON.parse(localStorage.getItem(SK)||'null');if(s&&typeof s==='object'){stats.deer=+s.deer||0;stats.deaths=+s.deaths||0;stats.shots=+s.shots||0;stats.money=+s.money||0;stats.axe=s.axe?1:0;stats.flash=s.flash?1:0;stats.boots=s.boots?1:0;stats.belt=s.belt?1:0}}catch(e){}
 function saveStats(){try{localStorage.setItem(SK,JSON.stringify(stats))}catch(e){}}
 const statsLine=()=>'DEER '+stats.deer+'  \u00b7  SHOTS '+stats.shots+'  \u00b7  MURDERED BY THE GRAY ONE '+stats.deaths+'x';
 let clock=8,nf=0,popT=0;
@@ -507,11 +524,12 @@ mat.uniforms.fogf.value=80-28*nf;mat.uniforms.fogn.value=6-2*nf;mat.uniforms.tin
 let carry=[],sf=[16,50,50],sleepT=0,scoped=false,playing=false,G='menu',T=0,camY=1.7,bob=0,msgT=0,hb=0,ac;
 const keys={};
 const UPDATES=[
+{v:'1.1.3',t:'Gear & Night Update',n:['Actually fixed the mud freezing you in place','The gray one can now leave its biome at night, but it only runs at 0.9x your sprint speed out there','The shop moved to the road east of the cabin, and an arrow in the bottom left always points to it','New in the shop: Flashlight (F), Trail Boots and an Ammo Belt','Radar is in the shop as coming soon','The axe in your hands is now gore quality and points left']},
 {v:'1.1.2',t:'Shop, Axe & Mobile Update',n:['Mobile support: analog stick, shoot button and a carry / drop button (plus reload, swap, scope and pause)','New shop next to the cabin with a sigmund sign, and deer are now sold there for $10 each instead of being stored in the cabin','Added THE axe of your dreams','Chop down a tree with a deer on top and the deer falls with it, now unfortunately it does not survive, but you can carry it to the shop','Deer sitting in trees now stay put until you shoot them or chop the tree','The gray one now takes 5 shotgun hits to kill (it comes back after a while) and runs 1.1x faster than you','Fixed mud softlocking you and mud clipping through the floor','Added the What\'s New page and the version number']},
 {v:'1.1.1',t:'Menu Fixes',n:['Added a Back to Title button on the pause and death screens','The Multiplayer button now only shows on the title screen']},
 {v:'1.1.0',t:'Menu & Map Update',n:['How to Play moved to the top right','Added a Multiplayer button (not released yet)','Made the map a little bigger']},
 {v:'1.0.0',t:'Release',n:['Free roam with a day / night cycle, and more deer at night','Stats save in your browser','Gray biome toned down and ground collisions fixed','The gray one now paths around trees','Carry 2 deer, zoom the scope with the scroll wheel and sleep in the cabin']}];
-let isTouch=false,lastTouchT=0,wnI=0,shopHint=false;
+let isTouch=false,lastTouchT=0,wnI=0,shopHint='';
 const tj={x:0,y:0,on:false,run:false,id:null,ox:0,oy:0},lk={id:null,x:0,y:0};
 function setTouch(on){if(isTouch===on)return;isTouch=on;document.body.classList.toggle('touch',on)}
 if(matchMedia('(pointer:coarse)').matches)setTouch(true);
@@ -534,7 +552,7 @@ function setTBtn(el,label,always){const show=!!(label||always);const d=show?'fle
 function pauseGame(){if(!playing)return;playing=false;scoped=false;G='menu';joyReset();showScreen('pause')}
 function carryDrop(){if(P.hid)return;const dd=nearDead();if(dd&&carry.length<2){pickUp(dd);return}if(carry.length){dropDeer();return}if(dd){msg('HANDS FULL \u2014 MAX 2 DEER',2);return}msg('NO DEER NEARBY',1.5)}
 tbtn('tshoot',()=>shoot());tbtn('tcarry',carryDrop);tbtn('tact',()=>toggleHide());tbtn('treload',()=>reload());
-tbtn('tswap',()=>equip((cur+1)%(stats.axe?3:2)));tbtn('tscope',()=>{if(!P.hid&&cur<2)scoped=!scoped});tbtn('tpause',pauseGame);
+tbtn('tlight',toggleFlash);tbtn('tswap',()=>equip((cur+1)%(stats.axe?3:2)));tbtn('tscope',()=>{if(!P.hid&&cur<2)scoped=!scoped});tbtn('tpause',pauseGame);
 function equip(i){if(i===2&&!stats.axe){msg('BUY THE AXE AT THE SHOP ($70)',2.5);return}cur=i;guns.forEach((g,k)=>g.visible=k==cur);rel=0;if(i===2)scoped=false}
 function renderWN(){const u=UPDATES[wnI];$('wnv').textContent='v'+u.v+' \u2014 '+u.t+(wnI===0?'  (LATEST)':'');const ul=$('wnu');ul.textContent='';for(const t of u.n){const li=document.createElement('li');li.textContent=t;ul.appendChild(li)}
 $('wnl').style.visibility=wnI>0?'visible':'hidden';$('wnr').style.visibility=wnI<UPDATES.length-1?'visible':'hidden'}
@@ -544,22 +562,35 @@ $('wnp').onclick=e=>{if(e.target===$('wnp'))$('wnp').style.display='none'};
 $('wnr').onclick=()=>{wnI=Math.min(UPDATES.length-1,wnI+1);renderWN()};
 $('wnl').onclick=()=>{wnI=Math.max(0,wnI-1);renderWN()};
 $('ver').textContent='v'+UPDATES[0].v;
-const AXE_SVG='<svg viewBox="0 0 32 32" shape-rendering="crispEdges"><rect x="14" y="6" width="3" height="24" fill="#7a4a25"/><rect x="11" y="6" width="3" height="9" fill="#6a7076"/><rect x="17" y="6" width="9" height="3" fill="#aab0b6"/><rect x="17" y="9" width="11" height="3" fill="#aab0b6"/><rect x="17" y="12" width="9" height="3" fill="#8a9096"/></svg>';
-const SOON=[['FLASHLIGHT','Light up the night 🤯🤯🤯'],['AMMO BELT','Carry more ammunition duhhhh'],['TRAIL BOOTS','Walk a LITTLE faster']];
-function renderShop(){const owned=!!stats.axe,need=70-stats.money;$('shm').textContent='$'+stats.money;
-let h='<div class="it">'+AXE_SVG+'<b>AXE</b><span>Chop down trees!111!! Deer stuck in a tree come down with it too11!1!1</span><div class="ip">$70</div><button id="buyaxe"'+(owned||need>0?' disabled':'')+'>'+(owned?'OWNED':need>0?'NEED $'+need+' MORE':'BUY')+'</button></div>';
+const SVG_AXE='<svg viewBox="0 0 32 32" shape-rendering="crispEdges"><rect x="14" y="6" width="3" height="24" fill="#7a4a25"/><rect x="11" y="6" width="3" height="9" fill="#6a7076"/><rect x="17" y="6" width="9" height="3" fill="#aab0b6"/><rect x="17" y="9" width="11" height="3" fill="#aab0b6"/><rect x="17" y="12" width="9" height="3" fill="#8a9096"/></svg>';
+const SVG_FLASH='<svg viewBox="0 0 32 32" shape-rendering="crispEdges"><rect x="3" y="13" width="17" height="7" fill="#55585c"/><rect x="20" y="11" width="6" height="11" fill="#8a8e92"/><rect x="26" y="12" width="3" height="9" fill="#ffe9a0"/><rect x="9" y="11" width="3" height="2" fill="#c9a030"/></svg>';
+const SVG_BOOTS='<svg viewBox="0 0 32 32" shape-rendering="crispEdges"><rect x="8" y="4" width="9" height="15" fill="#6a4a2a"/><rect x="8" y="19" width="18" height="6" fill="#7a5532"/><rect x="8" y="25" width="19" height="3" fill="#2a1c10"/><rect x="10" y="7" width="5" height="1" fill="#d8c9a0"/><rect x="10" y="11" width="5" height="1" fill="#d8c9a0"/><rect x="10" y="15" width="5" height="1" fill="#d8c9a0"/></svg>';
+const SVG_BELT='<svg viewBox="0 0 32 32" shape-rendering="crispEdges"><rect x="2" y="14" width="28" height="7" fill="#7a4a25"/><rect x="13" y="12" width="7" height="11" fill="#c9a030"/><rect x="15" y="15" width="3" height="5" fill="#14160f"/><rect x="4" y="8" width="3" height="6" fill="#d8b040"/><rect x="9" y="8" width="3" height="6" fill="#d8b040"/><rect x="22" y="8" width="3" height="6" fill="#d8b040"/><rect x="27" y="8" width="3" height="6" fill="#d8b040"/></svg>';
+const ITEMS=[
+{id:'axe',n:'AXE',p:70,svg:SVG_AXE,d:'Chop down trees!111!! Deer stuck in a tree come down with it too11!1!1'},
+{id:'flash',n:'FLASHLIGHT',p:30,svg:SVG_FLASH,d:'Light up the night \uD83E\uDD2F\uD83E\uDD2F\uD83E\uDD2F'},
+{id:'boots',n:'TRAIL BOOTS',p:45,svg:SVG_BOOTS,d:'Walk a LITTLE faster'},
+{id:'belt',n:'AMMO BELT',p:55,svg:SVG_BELT,d:'Carry more ammunition duhhhh'}];
+const SOON=[['RADAR','Finds nearby deer.']];
+const HINTS={axe:['AXE BOUGHT \u2014 PRESS 3 TO EQUIP IT','AXE BOUGHT \u2014 USE SWAP TO EQUIP IT'],flash:['FLASHLIGHT BOUGHT \u2014 PRESS F TO TOGGLE IT','FLASHLIGHT BOUGHT \u2014 TAP LIGHT TO TOGGLE IT'],boots:['TRAIL BOOTS ON \u2014 YOU MOVE A LITTLE FASTER','TRAIL BOOTS ON \u2014 YOU MOVE A LITTLE FASTER'],belt:['AMMO BELT ON \u2014 MORE ROUNDS PER RELOAD','AMMO BELT ON \u2014 MORE ROUNDS PER RELOAD']};
+let flOn=false;
+function toggleFlash(){if(!stats.flash||!playing)return;flOn=!flOn;mat.uniforms.fl.value=flOn?1:0;msg(flOn?'FLASHLIGHT ON':'FLASHLIGHT OFF',1)}
+function applyGear(){WP[0].mag=stats.belt?8:5;WP[1].mag=stats.belt?4:2;ammo[0]=WP[0].mag;ammo[1]=WP[1].mag}
+function renderShop(){$('shm').textContent='$'+stats.money;let h='';const left=ITEMS.filter(i=>!stats[i.id]);
+for(const it of ITEMS){const own=!!stats[it.id],need=it.p-stats.money;
+h+='<div class="it">'+it.svg+'<b>'+it.n+'</b><span>'+it.d+'</span><div class="ip">$'+it.p+'</div><button data-id="'+it.id+'"'+(own||need>0?' disabled':'')+'>'+(own?'OWNED':need>0?'NEED $'+need+' MORE':'BUY')+'</button></div>'}
 for(const [n,d] of SOON)h+='<div class="it soon"><div class="qm">?</div><b>'+n+'</b><span>'+d+'</span><div class="ip">COMING SOON</div></div>';
-$('shg').innerHTML=h;$('shbar').style.width=Math.min(100,stats.money/70*100)+'%';$('shbw').style.display=owned?'none':'block';
-const b=$('buyaxe');if(b)b.onclick=buyAxe}
-function buyAxe(){if(stats.axe||stats.money<70)return;stats.money-=70;stats.axe=1;saveStats();snd(520,.15,'square',.25,1.8);shopHint=true;renderShop()}
+$('shg').innerHTML=h;const nx=left.length?Math.min(...left.map(i=>i.p)):0;$('shbw').style.display=nx?'block':'none';$('shbar').style.width=nx?Math.min(100,stats.money/nx*100)+'%':'0'}
+function buyItem(id){const it=ITEMS.find(i=>i.id===id);if(!it||stats[id]||stats.money<it.p)return;stats.money-=it.p;stats[id]=1;saveStats();applyGear();snd(520,.15,'square',.25,1.8);shopHint=id;renderShop()}
 function openShop(){if(G!=='play')return;playing=false;scoped=false;G='shop';joyReset();lookReset();document.exitPointerLock();renderShop();$('shop').style.display='flex'}
-function closeShop(){if(G!=='shop')return;$('shop').style.display='none';G='play';playing=true;if(!isTouch)cv.requestPointerLock();if(shopHint){shopHint=false;msg(isTouch?'AXE BOUGHT \u2014 USE SWAP TO EQUIP IT':'AXE BOUGHT \u2014 PRESS 3 TO EQUIP IT',4)}}
+function closeShop(){if(G!=='shop')return;$('shop').style.display='none';G='play';playing=true;if(!isTouch)cv.requestPointerLock();if(shopHint){const h=HINTS[shopHint];shopHint='';if(h)msg(isTouch?h[1]:h[0],4)}}
 $('shx').onclick=closeShop;
+$('shg').onclick=e=>{const b=e.target.closest('button[data-id]');if(b)buyItem(b.dataset.id)};
 addEventListener('keydown',e=>{if(e.code==='Escape'){if(G==='shop')closeShop();else if($('wnp').style.display==='flex')$('wnp').style.display='none'}});
 function msg(t,s){$('ms').textContent=t;msgT=s||3}
 function noise(dur,vol){if(!ac)return;const n=ac.sampleRate*dur,b=ac.createBuffer(1,n,ac.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*(1-i/n);const s=ac.createBufferSource(),g=ac.createGain();g.gain.value=vol;s.buffer=b;s.connect(g).connect(ac.destination);s.start()}
 function snd(f,dur,type,vol,sw){if(!ac)return;const o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime;o.type=type;o.frequency.setValueAtTime(f,t);o.frequency.exponentialRampToValueAtTime(Math.max(20,f*sw),t+dur);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(g).connect(ac.destination);o.start();o.stop(t+dur)}
-function respawn(){carry.forEach(d=>d.active=false);carry=[];scoped=false;P.stuck=0;P.x=0;P.z=9;P.yaw=0;P.pitch=0;P.hid=false;ammo=[5,2,0];rel=0;cd=0;resetGiant()}
+function respawn(){carry.forEach(d=>d.active=false);carry=[];scoped=false;P.stuck=0;P.x=0;P.z=9;P.yaw=0;P.pitch=0;P.hid=false;ammo=[WP[0].mag,WP[1].mag,0];rel=0;cd=0;resetGiant()}
 function resetGiant(){giant.x=GZ.x;giant.z=GZ.z;giant.st='stalk';giant.angry=0;giant.roadI=Math.floor(Math.random()*grayRoad.length);giant.alive=true;giant.active=true;giant.us=0;giant.hp=5;giant.dT=0;giant.g.rotation.set(0,0,0);giant.px=undefined;giant.g.position.set(giant.x,hgt(giant.x,giant.z),giant.z);giant.g.visible=true}
 function die(){if(G==='dead')return;stats.deaths++;saveStats();playing=false;scoped=false;G='dead';document.exitPointerLock();snd(70,.8,'sawtooth',.5,.3);noise(.6,.5);
 showScreen('dead')}
@@ -582,6 +613,7 @@ addEventListener('mousedown',e=>{if(!playing||performance.now()-lastTouchT<700)r
 addEventListener('keydown',e=>{keys[e.code]=true;if(!playing||e.repeat)return;
 if(e.code==='KeyR')reload();
 if(e.code==='Digit1'||e.code==='Digit2'||e.code==='Digit3')equip(+e.code.slice(5)-1);
+if(e.code==='KeyF')toggleFlash();
 if(P.stuck>0&&/^Key[WASD]$/.test(e.code))P.stuck-=.35;if(e.code==='KeyE')toggleHide();if(e.code==='KeyG')dropDeer()});
 addEventListener('keyup',e=>keys[e.code]=false);
 function nearDead(){let b=null,bd=3.6;for(const d of deers)if(d.active&&!d.alive&&!d.carried&&!d.done&&!d.falling){const k=Math.hypot(d.x-P.x,d.z-P.z);if(k<bd){bd=k;b=d}}return b}
@@ -664,22 +696,24 @@ else{ty=d.wy;sp=1.8;d.t-=dt;if(d.t<=0){d.st='idle';d.t=2+Math.random()*5}}
 move(d,ty,sp,dt,.8)}
 function move(d,ty,sp,dt,r){
 // The gray deer is fenced to its gray biome; steer it inward at the boundary.
-if(d.giant){const dd=Math.hypot(d.x-GZ.x,d.z-GZ.z);if(dd>GZ.r-2.4){ty=Math.atan2(GZ.x-d.x,GZ.z-d.z);sp=Math.max(sp,4.5)} }
+if(d.giant&&nf<=.5){const dd=Math.hypot(d.x-GZ.x,d.z-GZ.z);if(dd>GZ.r-2.4){ty=Math.atan2(GZ.x-d.x,GZ.z-d.z);sp=Math.max(sp,4.5)} }
 let df=((ty-d.yaw+PI*3)%(PI*2))-PI;d.yaw+=Math.max(-5*dt,Math.min(5*dt,df));
 const nx=d.x+Math.sin(d.yaw)*sp*dt,nz=d.z+Math.cos(d.yaw)*sp*dt;let mv=false;
-const inside=(x,z)=>!d.giant||Math.hypot(x-GZ.x,z-GZ.z)<=GZ.r-1.5;
+const cd0=d.giant?Math.hypot(d.x-GZ.x,d.z-GZ.z):0,inside=(x,z)=>!d.giant||nf>.5||Math.hypot(x-GZ.x,z-GZ.z)<=Math.max(GZ.r-1.5,cd0);
 if(inside(nx,d.z)&&!hit(nx,d.z,r)&&Math.abs(nx)<W/2-3){d.x=nx;mv=true}
 if(inside(d.x,nz)&&!hit(d.x,nz,r)&&Math.abs(nz)<W/2-3){d.z=nz;mv=true}
 if(!mv&&sp>0)d.wy=Math.random()*6.28;
 d.ph+=sp*dt*1.4;if(d.giant){d.legs.forEach(l=>l.rotation.x=0)}else{d.legs.forEach((l,i)=>l.rotation.x=sp>0?Math.sin(d.ph+(i%2?PI:0)+(i>1?PI:0))*.7:0)}
 d.g.position.x=d.x;d.g.position.z=d.z;d.g.position.y=hgt(d.x,d.z)+(d.perched?d.perchY:0);d.g.rotation.y=d.yaw}
 function pickFar(){let b=0,bd=-1;for(let i=0;i<grayRoad.length;i+=4){const q=grayRoad[i],dd=Math.hypot(q.x-P.x,q.z-P.z);if(dd>bd){bd=dd;b=i}}giant.roadI=b}
+function freeHeading(d,tx,tz){const a=Math.atan2(tx-d.x,tz-d.z);for(const o of[0,.5,-.5,1,-1,1.6,-1.6]){const h=a+o;if(!hit(d.x+Math.sin(h)*2.4,d.z+Math.cos(h)*2.4,1.1))return h}return a+PI}
 function gClamp(x,z){const dx=x-GZ.x,dz=z-GZ.z,l=Math.hypot(dx,dz);if(l>GZ.r-5)return{x:GZ.x+dx/l*(GZ.r-5),z:GZ.z+dz/l*(GZ.r-5)};return{x,z}}
 function updGiant(dt){
 const d=giant,dx=P.x-d.x,dz=P.z-d.z,dist=Math.hypot(dx,dz);
 if(!d.alive){d.dT+=dt;if(d.dT>150){resetGiant();msg('THE GRAY ONE HAS RETURNED...',4)}return 999}
 d.angry-=dt;
 const inZ=Math.hypot(d.x-GZ.x,d.z-GZ.z)<GZ.r;
+const night=nf>.5,outZ=Math.hypot(d.x-GZ.x,d.z-GZ.z)>GZ.r-3,nh=(tx,tz)=>outZ?freeHeading(d,tx,tz):navHeading(d,tx,tz,dt),gC=(x,z)=>night?{x,z}:gClamp(x,z);
 const playerFromGray=Math.max(0,Math.hypot(P.x-GZ.x,P.z-GZ.z)-GZ.r);
 const see=!P.hid&&(dist<(P.run?42:P.moving?30:16)*(inZ?1.4:1) ||
  (playerFromGray<=15 && dist<58));
@@ -689,18 +723,19 @@ if(d.st==='stalk'){
  else{
   const wp=grayRoad[d.roadI??0];
   if(Math.hypot(wp.x-d.x,wp.z-d.z)<3)d.roadI=((d.roadI??0)+1)%grayRoad.length;
-  const target=grayRoad[d.roadI??0];ty=navHeading(d,target.x,target.z,dt);sp=2.15;
+  const target=grayRoad[d.roadI??0];ty=nh(target.x,target.z);sp=2.15;
  }
 }
 else if(d.st==='chase'){
 if(P.hid){d.st='search';d.t=9}
-else{const g=gClamp(P.x,P.z);ty=navHeading(d,g.x,g.z,dt);sp=GSP;if(dist>75&&d.angry<=0)d.st='stalk';if(dist<2.6)die()}}
+else{const g=gC(P.x,P.z);ty=nh(g.x,g.z);sp=outZ?RUN_SP*.9:GSP;if(dist>75&&d.angry<=0)d.st='stalk';if(dist<2.6)die()}}
 else if(d.st==='search'){
 const hd=Math.hypot(P.hx-d.x,P.hz-d.z);
 if(!P.hid){d.st=dist<16?'chase':'stalk'}
-else{if(hd>4.5){const g=gClamp(P.hx,P.hz);ty=navHeading(d,g.x,g.z,dt);sp=3.5}else{ty=d.yaw+Math.sin(T)*2;sp=.3}
+else{if(hd>4.5){const g=gC(P.hx,P.hz);ty=nh(g.x,g.z);sp=3.5}else{ty=d.yaw+Math.sin(T)*2;sp=.3}
 d.t-=dt;if(d.t<=0){d.st='leave';d.t=10;pickFar();msg('It leaves.',3)}}}
-else{const target=grayRoad[d.roadI??0];if(Math.hypot(target.x-d.x,target.z-d.z)<3)d.roadI=((d.roadI??0)+1)%grayRoad.length;ty=navHeading(d,target.x,target.z,dt);sp=3.2;d.t-=dt;if(d.t<=0)d.st='stalk';if(!P.hid&&dist<14){d.st='chase'}}
+else{const target=grayRoad[d.roadI??0];if(Math.hypot(target.x-d.x,target.z-d.z)<3)d.roadI=((d.roadI??0)+1)%grayRoad.length;ty=nh(target.x,target.z);sp=3.2;d.t-=dt;if(d.t<=0)d.st='stalk';if(!P.hid&&dist<14){d.st='chase'}}
+if(!night&&outZ&&!(d.st==='chase'&&dist<30)){ty=freeHeading(d,GZ.x,GZ.z);sp=6}
 if(d.us>0){d.us-=dt;ty=d.ush}
 move(d,ty,sp,dt,.9);
 d.sT=(d.sT||0)+dt;
@@ -716,7 +751,7 @@ for(const t of traps)if(t.on&&!P.hid&&Math.hypot(P.x-t.x,P.z-t.z)<.8){t.on=false
 const dA=Math.hypot(P.x,P.z-4.6)<5.5?1.5:0;door.rotation.y+=(dA-door.rotation.y)*Math.min(1,dt*6);RC[5]=door.rotation.y>.9?[999,999,999,999]:[-.35,.35,3.7,3.9];
 const tjOn=tj.on&&Math.hypot(tj.x,tj.y)>.14,kbd=!!(keys.KeyA||keys.KeyD||keys.KeyW||keys.KeyS),kx=(keys.KeyD?1:0)-(keys.KeyA?1:0)+(tjOn?tj.x:0),kz=(keys.KeyW?1:0)-(keys.KeyS?1:0)+(tjOn?-tj.y:0),am=tjOn&&!kbd?Math.max(.4,Math.min(1,Math.hypot(tj.x,tj.y))):1;
 P.moving=!P.hid&&!(P.stuck>0)&&!!(kx||kz);P.run=P.moving&&!scoped&&!!(keys.ShiftLeft||keys.ShiftRight||(tjOn&&tj.run));
-if(P.moving){let inBog=false;for(let bi=0;bi<bogs.length;bi++){const b=bogs[bi];if(P.x>=b.minX&&P.x<=b.maxX&&P.z>=b.minZ&&P.z<=b.maxZ&&inMud(P.x,P.z,b)){inBog=true;break}}const bg=inBog?.6:1;if(bg<1&&!P.inBog)msg('STUCK IN THE MUD \u2014 YOU MOVE SLOWLY',2);P.inBog=bg<1;const sp=Math.max(inBog?1.6:0,(scoped?2.2:(P.run?RUN_SP:5))*(carry.length>1?.4:carry.length?.7:1)*bg*am),l=Math.hypot(kx,kz),s=Math.sin(P.yaw),c=Math.cos(P.yaw);
+if(P.moving){let inBog=false;for(let bi=0;bi<bogs.length;bi++){const b=bogs[bi];if(P.x>=b.minX&&P.x<=b.maxX&&P.z>=b.minZ&&P.z<=b.maxZ&&inMud(P.x,P.z,b)){inBog=true;break}}const bg=inBog?.6:1;if(bg<1&&!P.inBog)msg('STUCK IN THE MUD \u2014 YOU MOVE SLOWLY',2);P.inBog=bg<1;const sp=Math.max(inBog?1.6:0,(scoped?2.2:(P.run?RUN_SP:5))*(carry.length>1?.4:carry.length?.7:1)*bg*am*(stats.boots?1.08:1)),l=Math.hypot(kx,kz),s=Math.sin(P.yaw),c=Math.cos(P.yaw);
 const ux=(-s*kz+c*kx)/l,uz=(-c*kz-s*kx)/l,gr=hgt(P.x+ux,P.z+uz)-hgt(P.x,P.z),sl=Math.max(inBog?.8:.4,Math.min(1.2,1-gr*.5));const dx=ux*sp*sl*dt,dz=uz*sp*sl*dt;
 if(!hit(P.x+dx,P.z,.45))P.x+=dx;if(!hit(P.x,P.z+dz,.45))P.z+=dz;
 P.x=Math.max(-W/2+3,Math.min(W/2-3,P.x));P.z=Math.max(-W/2+3,Math.min(W/2-3,P.z));bob+=dt*(P.run?12:8)}
@@ -728,7 +763,7 @@ const gd=updGiant(dt);
 const g=guns[cur];kick=Math.max(0,kick-dt*6);flash-=dt;g.userData.fm.visible=flash>0;
 const reloadDip=rel>0?Math.sin(Math.PI*(1-rel/WP[cur].rel))*.16:0;
 g.position.set(.24+(P.moving?Math.sin(bob*.5)*.01:0),-.25+(P.moving?Math.abs(Math.sin(bob))*.012:0)-reloadDip,-.55+kick*.08);g.rotation.x=kick*.12;
-if(cur===2){swing=Math.max(0,swing-dt*3.2);const sw=swing>0?Math.sin((1-swing)*PI):0;g.position.set(.3,-.32-sw*.05,-.6-sw*.1);g.rotation.set(-sw*1.35,0,-.25-sw*.3)}
+if(cur===2){swing=Math.max(0,swing-dt*3.2);const sw=swing>0?Math.sin((1-swing)*PI):0;g.position.set(.3,-.42-sw*.05,-.6-sw*.1);g.rotation.set(-sw*1.35,0,.25+sw*.3)}
 const o=parseFloat($('fl').style.opacity)||0;if(o>0)$('fl').style.opacity=Math.max(0,o-dt*2);
 if(gd<50){hb-=dt;if(hb<=0){snd(55,.18,'sine',.7,.6);hb=.3+gd/70}}
 $('dg').style.opacity=Math.max(0,Math.min(.8,1-(gd-6)/42));
@@ -740,14 +775,15 @@ $('tl').textContent='DEER '+stats.deer+'   SHOTS '+stats.shots+'   MURDERED '+st
 $('br').textContent=WP[cur].n+(cur<2?' '+ammo[cur]+'/'+WP[cur].mag:'')+(rel>0?'  RELOADING':'')+(scoped?'  ZOOM '+(72/sf[cur]).toFixed(1)+'x':'');
 const tx=Math.atan2(-P.x,-P.z),h=Math.atan2(-Math.sin(P.yaw),-Math.cos(P.yaw));
 $('ar').style.transform='rotate('+(-(tx-h))+'rad)';$('cd').textContent='CABIN '+Math.round(Math.hypot(P.x,P.z))+'m';
+{const sbx=Math.atan2(SH.x-P.x,SH.z+4-P.z);$('sha').style.transform='rotate('+(-(sbx-h))+'rad)';$('shd').textContent='SHOP '+Math.round(Math.hypot(SH.x-P.x,SH.z+4-P.z))+'m'}
 {const nd=nearDead(),bd=bedD(),ns=!P.hid&&!bd&&!nd&&nearShop(),nb=(!P.hid&&!bd&&!nd&&!ns)?nearBush():null;
 const pr=P.hid?'[E] LEAVE BUSH':(bd?(nf>.5?'[E] SLEEP':'[E] BED \u2014 SLEEP AT NIGHT'):(nd?(carry.length<2?'[E] PICK UP DEER':'HANDS FULL'):(ns?'[E] SHOP':(nb?'[E] HIDE':(carry.length?'[G] DROP DEER':'')))));
 $('pr').textContent=isTouch?pr.replace(/^\[[EG]\] /,''):pr;
-if(isTouch){setTBtn($('tact'),P.hid?'LEAVE':(bd&&nf>.5?'SLEEP':(ns?'SHOP':(nb?'HIDE':''))));setTBtn($('tcarry'),nd&&carry.length<2?'CARRY':(carry.length?'DROP':'CARRY'),true)}}}
+if(isTouch){setTBtn($('tlight'),stats.flash?(flOn?'LIGHT ON':'LIGHT'):'');setTBtn($('tact'),P.hid?'LEAVE':(bd&&nf>.5?'SLEEP':(ns?'SHOP':(nb?'HIDE':''))));setTBtn($('tcarry'),nd&&carry.length<2?'CARRY':(carry.length?'DROP':'CARRY'),true)}}}
 let last=performance.now();
 function loop(n){requestAnimationFrame(loop);const dt=Math.min(.05,(n-last)/1000);last=n;if(playing)upd(dt);document.body.classList.toggle('tplay',isTouch&&playing);if(!playing&&(tj.id!==null||lk.id!==null)){joyReset();lookReset()}
 const ft=scoped&&!P.hid?sf[cur]:72;if(Math.abs(cam.fov-ft)>.05){cam.fov+=(ft-cam.fov)*Math.min(1,dt*14);cam.updateProjectionMatrix()}
 const sv=scoped&&cur==0&&cam.fov<34;$('sc').style.opacity=sv?1:0;$('ch').style.display=scoped?'none':'block';
 renderer.clear();renderer.render(scene,cam);if(!P.hid&&!sv){renderer.clearDepth();renderer.render(gs,gcam)}}
-skyUpdate();popTick(true);resetGiant();showScreen('title');cam.position.set(P.x,1.7,P.z);loop(last);
+applyGear();skyUpdate();popTick(true);resetGiant();showScreen('title');cam.position.set(P.x,1.7,P.z);loop(last);
 </script></body></html>
