@@ -16,6 +16,7 @@ html,body{margin:0;height:100%;background:var(--bg);overflow:hidden;font-family:
 #bk{background:#000;opacity:0;transition:opacity 1s}
 #hud{position:fixed;inset:0;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0);pointer-events:none;text-shadow:2px 2px #000;font-size:18px;letter-spacing:1px}
 #tl{position:absolute;left:18px;top:14px}
+#hearts{position:absolute;left:50%;top:14px;transform:translateX(-50%);font-size:28px;letter-spacing:8px;color:#e85b55;text-shadow:2px 2px #000;display:none;white-space:nowrap}
 #clk{position:absolute;right:18px;top:14px;text-align:right}
 
 #br{position:absolute;right:18px;bottom:14px;text-align:right}
@@ -36,7 +37,7 @@ body.touch #shp{bottom:182px}
 #ov.pause h1{font-size:clamp(26px,4.5vw,46px)}
 #ov.dead h1{color:#d9645a}
 #t2{margin:6px 0 26px;color:var(--dim);line-height:1.5}
-.btns{display:flex;flex-direction:column;gap:12px;width:min(320px,85%)}
+.modebox{width:min(420px,90%);box-sizing:border-box;border:1px solid #6f6b55;background:rgba(0,0,0,.42);padding:12px;margin:0 0 16px}.modebox .mt{font-size:12px;letter-spacing:3px;color:var(--dim);margin-bottom:9px}.modechoices{display:flex;gap:10px}.modechoices button{flex:1;font:inherit;font-size:14px;letter-spacing:2px;padding:10px 5px;color:var(--fg);background:transparent;border:1px solid #6f6b55;cursor:pointer}.modechoices button.selected{color:#14160f;background:#e8d9a0;border-color:#e8d9a0}.modedesc{font-size:11px;line-height:1.4;color:var(--dim);margin-top:9px;min-height:28px}.btns{display:flex;flex-direction:column;gap:12px;width:min(320px,85%)}
 .btn{font:inherit;font-size:20px;letter-spacing:3px;padding:12px 18px;color:#14160f;background:#e8d9a0;border:2px solid #e8d9a0;cursor:pointer}
 .btn:hover{background:#f6ecbd;border-color:#f6ecbd}
 .btn.sec{background:transparent;color:var(--fg);border-color:#6f6b55}
@@ -108,9 +109,9 @@ body.touch.tplay #touch{display:block}
 #treload{right:calc(134px + env(safe-area-inset-right,0px))}
 #tpause{left:50%;margin-left:-22px;top:calc(10px + env(safe-area-inset-top,0px));width:44px;height:44px;font-size:11px}
 </style></head><body>
-<canvas id="c"></canvas>
+<canvas id="c"></canvas><audio id="whatSong" src="WHAT.mp3" loop preload="auto"></audio>
 <div class="f" id="hd"></div><div class="f" id="dg"></div><div class="f" id="fl"></div><div class="f" id="sc"></div><div class="f" id="bk"></div><div class="f" id="scan"></div>
-<div id="hud"><div id="ch"></div><div id="tl"></div><div id="clk"></div><div id="br"></div><div id="cp"><span id="ar">▲</span> <span id="cd"></span></div><div id="ms"></div><div id="pr"></div><div id="shp"><span id="sha">▲</span> <span id="shd"></span></div></div>
+<div id="hud"><div id="hearts" aria-label="Lives">♥ ♥ ♥</div><div id="ch"></div><div id="tl"></div><div id="clk"></div><div id="br"></div><div id="cp"><span id="ar">▲</span> <span id="cd"></span></div><div id="ms"></div><div id="pr"></div><div id="shp"><span id="sha">▲</span> <span id="shd"></span></div></div>
 <div id="touch"><div id="tz"></div><div id="jb"><div id="jk"></div></div>
 <div class="tb" id="tpause">PAUSE</div><div class="tb sm" id="tlight">LIGHT</div><div class="tb sm" id="treload">RELOAD</div><div class="tb sm" id="tscope">SCOPE</div><div class="tb sm" id="tswap">SWAP</div>
 <div class="tb" id="tact"></div><div class="tb" id="tcarry">CARRY</div><div class="tb" id="tshoot">SHOOT</div></div>
@@ -121,6 +122,7 @@ body.touch.tplay #touch{display:block}
 <div id="kick">&mdash; Made by RandomStuff.CO &mdash;</div>
 <h1 id="t1">DEER HUNTING SIMULATOR</h1>
 <p id="t2"></p>
+<div id="mode-overlay" style="display:none;position:fixed;inset:0;z-index:30;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;background:rgba(0,0,0,.86);backdrop-filter:blur(4px)"><div class="modebox" id="modebox" style="width:min(440px,94%);margin:0;padding:22px;background:rgba(12,14,10,.98);box-shadow:0 12px 60px #000"><div class="mt">CHOOSE YOUR GAMEMODE</div><div class="modechoices" style="flex-direction:column"><button type="button" id="mode-regular" class="selected">REGULAR</button><button type="button" id="mode-defense">DEFENSE</button></div></div></div>
 <div class="btns"><button class="btn" id="go">PLAY</button><button class="btn sec" id="mp">MULTIPLAYER</button><button class="btn sec" id="tt">BACK TO TITLE</button></div>
 <div id="mpmsg" style="display:none;margin-top:14px;font-size:15px;letter-spacing:1px;color:#f0e6a8">My bad yo this isn't released yet so like uhh play singleplayer</div>
 <div id="stats"><div class="st"><b id="sv-deer">0</b><span>DEER HUNTED</span></div><div class="st"><b id="sv-shots">0</b><span>SHOTS FIRED</span></div><div class="st"><b id="sv-dead">0</b><span>TIMES MURDERED</span></div></div>
@@ -521,7 +523,7 @@ const cDay=new THREE.Color(0x7b8473),cNight=new THREE.Color(0x070a14),_c=new THR
 function skyUpdate(){const sun=Math.cos((clock-12)/12*PI),dl=Math.max(0,Math.min(1,(sun+.4)/.5));nf=1-dl;
 _c.lerpColors(cDay,cNight,nf);mat.uniforms.fogc.value.copy(_c);renderer.setClearColor(_c);
 mat.uniforms.fogf.value=80-28*nf;mat.uniforms.fogn.value=6-2*nf;mat.uniforms.tint.value.set(1-.5*nf,1-.45*nf,1-.22*nf)}
-let carry=[],sf=[16,50,50],sleepT=0,scoped=false,playing=false,G='menu',T=0,camY=1.7,bob=0,msgT=0,hb=0,ac;
+let cheatAmmo=false,gameMode='regular',defenseLives=3,defenseHitCooldown=0,carry=[],sf=[16,50,50],sleepT=0,scoped=false,playing=false,G='menu',T=0,camY=1.7,bob=0,msgT=0,hb=0,ac;
 const keys={};
 const UPDATES=[
 {v:'1.1.3',t:'Gear & Night Update',n:['Actually fixed the mud freezing you in place','The gray one can now leave its biome at night, but it only runs at 0.9x your sprint speed out there','The shop moved to the road east of the cabin, and an arrow in the bottom left always points to it','New in the shop: Flashlight (F), Trail Boots and an Ammo Belt','Radar is in the shop as coming soon','The axe in your hands is now gore quality and points left']},
@@ -575,7 +577,7 @@ const SOON=[['RADAR','Finds nearby deer.']];
 const HINTS={axe:['AXE BOUGHT \u2014 PRESS 3 TO EQUIP IT','AXE BOUGHT \u2014 USE SWAP TO EQUIP IT'],flash:['FLASHLIGHT BOUGHT \u2014 PRESS F TO TOGGLE IT','FLASHLIGHT BOUGHT \u2014 TAP LIGHT TO TOGGLE IT'],boots:['TRAIL BOOTS ON \u2014 YOU MOVE A LITTLE FASTER','TRAIL BOOTS ON \u2014 YOU MOVE A LITTLE FASTER'],belt:['AMMO BELT ON \u2014 MORE ROUNDS PER RELOAD','AMMO BELT ON \u2014 MORE ROUNDS PER RELOAD']};
 let flOn=false;
 function toggleFlash(){if(!stats.flash||!playing)return;flOn=!flOn;mat.uniforms.fl.value=flOn?1:0;msg(flOn?'FLASHLIGHT ON':'FLASHLIGHT OFF',1)}
-function applyGear(){WP[0].mag=stats.belt?8:5;WP[1].mag=stats.belt?4:2;ammo[0]=WP[0].mag;ammo[1]=WP[1].mag}
+function applyGear(){WP[0].mag=cheatAmmo?100:(stats.belt?8:5);WP[1].mag=stats.belt?4:2;ammo[0]=WP[0].mag;ammo[1]=WP[1].mag}
 function renderShop(){$('shm').textContent='$'+stats.money;let h='';const left=ITEMS.filter(i=>!stats[i.id]);
 for(const it of ITEMS){const own=!!stats[it.id],need=it.p-stats.money;
 h+='<div class="it">'+it.svg+'<b>'+it.n+'</b><span>'+it.d+'</span><div class="ip">$'+it.p+'</div><button data-id="'+it.id+'"'+(own||need>0?' disabled':'')+'>'+(own?'OWNED':need>0?'NEED $'+need+' MORE':'BUY')+'</button></div>'}
@@ -590,21 +592,64 @@ addEventListener('keydown',e=>{if(e.code==='Escape'){if(G==='shop')closeShop();e
 function msg(t,s){$('ms').textContent=t;msgT=s||3}
 function noise(dur,vol){if(!ac)return;const n=ac.sampleRate*dur,b=ac.createBuffer(1,n,ac.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*(1-i/n);const s=ac.createBufferSource(),g=ac.createGain();g.gain.value=vol;s.buffer=b;s.connect(g).connect(ac.destination);s.start()}
 function snd(f,dur,type,vol,sw){if(!ac)return;const o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime;o.type=type;o.frequency.setValueAtTime(f,t);o.frequency.exponentialRampToValueAtTime(Math.max(20,f*sw),t+dur);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(g).connect(ac.destination);o.start();o.stop(t+dur)}
-function respawn(){carry.forEach(d=>d.active=false);carry=[];scoped=false;P.stuck=0;P.x=0;P.z=9;P.yaw=0;P.pitch=0;P.hid=false;ammo=[WP[0].mag,WP[1].mag,0];rel=0;cd=0;resetGiant()}
+function respawn(){defenseLives=3;defenseHitCooldown=0;updateHearts();carry.forEach(d=>d.active=false);carry=[];scoped=false;P.stuck=0;P.x=0;P.z=9;P.yaw=0;P.pitch=0;P.hid=false;ammo=[WP[0].mag,WP[1].mag,0];rel=0;cd=0;resetGiant()}
 function resetGiant(){giant.x=GZ.x;giant.z=GZ.z;giant.st='stalk';giant.angry=0;giant.roadI=Math.floor(Math.random()*grayRoad.length);giant.alive=true;giant.active=true;giant.us=0;giant.hp=5;giant.dT=0;giant.g.rotation.set(0,0,0);giant.px=undefined;giant.g.position.set(giant.x,hgt(giant.x,giant.z),giant.z);giant.g.visible=true}
-function die(){if(G==='dead')return;stats.deaths++;saveStats();playing=false;scoped=false;G='dead';document.exitPointerLock();snd(70,.8,'sawtooth',.5,.3);noise(.6,.5);
+function die(){if(G==='dead')return;stats.deaths++;saveStats();playing=false;scoped=false;G='dead';updateHearts();document.exitPointerLock();snd(70,.8,'sawtooth',.5,.3);noise(.6,.5);
 showScreen('dead')}
-function showScreen(m){const c={title:['DEER HUNTING SIMULATOR','Hey this game is like REALLY buggy, too much stuff softlocks you and it overall sucks. This is a JOKE game, not one to be taken SERIOUSLY.','PLAY'],pause:['PAUSED','Hey why we pause the game?','RESUME'],dead:['THE GRAY ONE FOUND YOU','Murdered by the gray one: '+stats.deaths+(stats.deaths==1?' time.':' times.'),'RESPAWN AT THE CABIN']}[m];
-$('t1').textContent=c[0];$('t2').textContent=c[1];$('go').textContent=c[2];$('kick').style.display=m==='title'?'block':'none';
+function showScreen(m){const c={title:['DEER HUNTING SIMULATOR','Hey this game is like REALLY buggy, too much stuff softlocks you and it overall sucks. This is a JOKE game, not one to be taken SERIOUSLY.','PLAY'],pause:['PAUSED','Hey why we pause the game?','RESUME'],dead:[gameMode==='defense'&&defenseLives<=0?'YOU WERE OVERRUN':'THE GRAY ONE FOUND YOU',gameMode==='defense'&&defenseLives<=0?'Defense run over. Choose a mode and try again.':'Murdered by the gray one: '+stats.deaths+(stats.deaths==1?' time.':' times.'),'RESPAWN AT THE CABIN']}[m];
+$('t1').textContent=c[0];$('t2').textContent=c[1];$('go').textContent=c[2];$('kick').style.display=m==='title'?'block':'none';$('mode-overlay').style.display='none';
 $('sv-deer').textContent=stats.deer;$('sv-shots').textContent=stats.shots;$('sv-dead').textContent=stats.deaths;
 $('mpmsg').style.display='none';$('wn').style.display=m==='title'?'flex':'none';$('wnp').style.display='none';$('mp').style.display=m==='title'?'':'none';$('tt').style.display=m==='title'?'none':'';$('ov').className=m;$('scr-help').style.display='none';$('scr-main').style.display='flex';$('ov').style.display='flex'}
-$('go').onclick=()=>{if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();
-if(G==='dead')respawn();else if(G==='menu'&&!qStarted){qStarted=true;msg('FREE ROAM \u2014 FIND SOME DEER',4)}
-G='play';playing=true;$('ov').style.display='none';if(!isTouch)cv.requestPointerLock()};
+function updateHearts(){const h=$('hearts');h.style.display=playing&&gameMode==='defense'?'block':'none';h.textContent='♥ '.repeat(Math.max(0,defenseLives)).trim();h.style.color=defenseLives===1?'#ff3939':'#e85b55'}
+function setGameMode(mode){gameMode=mode;$('mode-regular').classList.toggle('selected',mode==='regular');$('mode-defense').classList.toggle('selected',mode==='defense')}
+function launchSelectedMode(mode){
+setGameMode(mode);$('mode-overlay').style.display='none';
+if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();
+if(G==='dead')respawn();else if(G==='menu'&&!qStarted){qStarted=true;msg('FREE ROAM — FIND SOME DEER',4)}
+G='play';playing=true;
+if(gameMode==='defense'){defenseLives=3;defenseHitCooldown=0;for(const d of deers){if(d.active&&d.alive){d.perched=false;d.g.position.y=hgt(d.x,d.z)}}}
+updateHearts();$('ov').style.display='none';if(!isTouch)cv.requestPointerLock();
+}
+function launchSelectedMode(mode){
+setGameMode(mode);$('mode-overlay').style.display='none';
+if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();
+if(G==='dead')respawn();else if(G==='menu'&&!qStarted){qStarted=true;msg('FREE ROAM \\u2014 FIND SOME DEER',4)}
+G='play';playing=true;
+if(gameMode==='defense'){defenseLives=3;defenseHitCooldown=0;for(const d of deers){if(d.active&&d.alive){d.perched=false;d.g.position.y=hgt(d.x,d.z)}}}
+updateHearts();$('ov').style.display='none';if(!isTouch)cv.requestPointerLock();
+}
+$('mode-regular').onclick=()=>launchSelectedMode('regular');
+$('mode-defense').onclick=()=>launchSelectedMode('defense');
+function hurtDefense(){if(gameMode!=='defense'||defenseHitCooldown>0||G!=='play')return;defenseLives=Math.max(0,defenseLives-1);defenseHitCooldown=1.15;updateHearts();$('dg').style.opacity=.8;snd(95,.22,'sawtooth',.35,.55);msg(defenseLives?'A DEER HIT YOU!':'YOU WERE OVERRUN',2);if(defenseLives<=0)die()}
+$('go').onclick=()=>{$('mode-overlay').style.display='flex'};
+$('mode-overlay').addEventListener('click',e=>{if(e.target===$('mode-overlay'))$('mode-overlay').style.display='none'});
 $('tt').onclick=()=>{respawn();G='menu';qStarted=false;playing=false;showScreen('title')};
 $('mp').onclick=()=>{$('mpmsg').style.display='block'};
 $('htp').onclick=()=>{$('scr-main').style.display='none';$('scr-help').style.display='flex'};
 $('hback').onclick=()=>{$('scr-help').style.display='none';$('scr-main').style.display='flex'};
+
+// Title-screen keyboard secrets. Type each word in order while the title screen is open.
+const secretCodes=['makemerich','hellaammo'];
+let secretBuffer='';
+function activateSecret(code){
+ if(code==='makemerich'){
+  stats.money+=200;saveStats();$('sv-deer').textContent=stats.deer;
+  $('t2').textContent='SECRET UNLOCKED: +$200';
+  snd(660,.22,'sine',.25,1.8);
+ }else if(code==='hellaammo'){
+  cheatAmmo=true;WP[0].mag=100;WP[0].rng=1000;WP[0].cd=0;
+  ammo[0]=100;rel=0;cd=0;
+  $('t2').textContent='SECRET UNLOCKED: 100 AMMO · NO COOLDOWN · EXTREME RANGE';
+  const song=$('whatSong');song.volume=.55;song.play().catch(()=>{});
+  snd(880,.35,'square',.22,1.5);
+ }
+}
+addEventListener('keydown',e=>{
+ if(e.repeat||playing||$('scr-main').style.display==='none'||$('ov').style.display==='none'||$('wnp').style.display==='flex')return;
+ if(!/^[a-z]$/i.test(e.key))return;
+ secretBuffer=(secretBuffer+e.key.toLowerCase()).slice(-Math.max(...secretCodes.map(x=>x.length)));
+ for(const code of secretCodes)if(secretBuffer.endsWith(code)){activateSecret(code);secretBuffer='';break}
+});
 addEventListener('keydown',e=>{if(!playing&&e.code==='Enter'&&$('ov').style.display!=='none'&&$('scr-main').style.display!=='none'&&$('wnp').style.display!=='flex')$('go').click()});
 let qStarted=false;
 document.addEventListener('pointerlockchange',()=>{if(document.pointerLockElement!==cv&&playing){playing=false;scoped=false;G='menu';showScreen('pause')}});
@@ -660,10 +705,10 @@ function killGiant(){giant.alive=false;giant.st='dead';giant.dT=0;giant.g.rotati
 function rayS(o,d,c,r){const ox=c.x-o.x,oy=c.y-o.y,oz=c.z-o.z,tca=ox*d.x+oy*d.y+oz*d.z;if(tca<0)return 1e9;const d2=ox*ox+oy*oy+oz*oz-tca*tca;if(d2>r*r)return 1e9;return tca-Math.sqrt(r*r-d2)}
 function rayBlocked(o,d,t){for(let k=1;k<t;k+=1.2){const y=o.y+d.y*k,qx=o.x+d.x*k,qz=o.z+d.z*k,hh=hgt(qx,qz);if(y<hh)return true;if(y<hh+6&&hit(qx,qz,.05))return true}return false}
 function shoot(){
-const w=WP[cur];if(!playing||P.hid||rel>0||cd>0)return;
+const w=WP[cur];if(!playing||P.hid||rel>0||(!cheatAmmo&&cd>0))return;
 if(cur===2){swingAxe();return}
-if(ammo[cur]<=0){reload();return}
-ammo[cur]--;stats.shots++;saveStats();cd=w.cd;kick=1;flash=.06;noise(.4,.6);snd(110,.3,'square',.3,.3);$('fl').style.opacity=.3;
+if(ammo[cur]<=0){if(!cheatAmmo)reload();return}
+ammo[cur]--;stats.shots++;saveStats();cd=cheatAmmo?0:w.cd;kick=1;flash=.06;noise(.4,.6);snd(110,.3,'square',.3,.3);$('fl').style.opacity=.3;
 const o={x:P.x,y:camY,z:P.z},cp=Math.cos(P.pitch);
 for(const d of deers)if(d.active&&d.alive&&Math.hypot(d.x-P.x,d.z-P.z)<75){d.st='flee';d.t=4}
 if(giant.alive&&giant.st!=='chase'&&!P.hid&&Math.hypot(giant.x-P.x,giant.z-P.z)<80){giant.st='chase';giant.angry=5}
@@ -684,13 +729,12 @@ function updDeer(d,dt){
 if(!d.active)return;
 const dx=P.x-d.x,dz=P.z-d.z,dist=Math.hypot(dx,dz);
 if(!d.alive){if(!d.carried){d.deadT+=dt;if(d.deadT>150&&dist>25){d.active=false;d.g.visible=false}}return}
-if(dist>130){d.g.visible=false;return}
-d.g.visible=dist<88;
-const sense=P.hid?0:(P.run?46:(P.moving?30:13));
-if(!d.perched&&dist<sense&&d.st!=='flee'){d.st='flee';d.t=3+Math.random()*3;d.perched=false}
+if(gameMode==='defense'){d.g.visible=true;if(!d.perched){d.st='hunt';d.perched=false}}
+else{if(dist>130){d.g.visible=false;return}d.g.visible=dist<88;const sense=P.hid?0:(P.run?46:(P.moving?30:13));if(!d.perched&&dist<sense&&d.st!=='flee'){d.st='flee';d.t=3+Math.random()*3;d.perched=false}}
 if(d.perched){d.g.position.set(d.x,hgt(d.x,d.z)+d.perchY,d.z);d.g.rotation.y=d.yaw;return}
 let sp=0,ty=d.yaw;
-if(d.st==='flee'){ty=Math.atan2(-dx,-dz);sp=10;d.t-=dt;if(d.t<=0){d.st='idle';d.t=2}}
+if(gameMode==='defense'){ty=Math.atan2(dx,dz);sp=5.4;if(dist<1.85)hurtDefense()}
+else if(d.st==='flee'){ty=Math.atan2(-dx,-dz);sp=10;d.t-=dt;if(d.t<=0){d.st='idle';d.t=2}}
 else if(d.st==='idle'){d.t-=dt;if(d.t<=0){d.st='wander';d.t=3+Math.random()*5;d.wy=Math.random()*6.28}}
 else{ty=d.wy;sp=1.8;d.t-=dt;if(d.t<=0){d.st='idle';d.t=2+Math.random()*5}}
 move(d,ty,sp,dt,.8)}
@@ -743,7 +787,7 @@ if(d.sT>1){if(sp>1&&d.px!==undefined&&Math.hypot(d.x-d.px,d.z-d.pz)<.6){d.us=.8;
 d.g.visible=dist<92;
 return dist}
 function upd(dt){
-T+=dt;
+T+=dt;if(defenseHitCooldown>0)defenseHitCooldown=Math.max(0,defenseHitCooldown-dt);
 if(sleepT>0){sleepT-=dt;if(sleepT<=0){$('bk').style.opacity=0;clock=6.5;skyUpdate();popTick()}return}
 updFalls(dt);clock=(clock+dt*24/DAY_LEN)%24;skyUpdate();popT-=dt;if(popT<=0){popT=1;popTick()}
 if(P.stuck>0)P.stuck-=dt;
@@ -781,7 +825,7 @@ const pr=P.hid?'[E] LEAVE BUSH':(bd?(nf>.5?'[E] SLEEP':'[E] BED \u2014 SLEEP AT 
 $('pr').textContent=isTouch?pr.replace(/^\[[EG]\] /,''):pr;
 if(isTouch){setTBtn($('tlight'),stats.flash?(flOn?'LIGHT ON':'LIGHT'):'');setTBtn($('tact'),P.hid?'LEAVE':(bd&&nf>.5?'SLEEP':(ns?'SHOP':(nb?'HIDE':''))));setTBtn($('tcarry'),nd&&carry.length<2?'CARRY':(carry.length?'DROP':'CARRY'),true)}}}
 let last=performance.now();
-function loop(n){requestAnimationFrame(loop);const dt=Math.min(.05,(n-last)/1000);last=n;if(playing)upd(dt);document.body.classList.toggle('tplay',isTouch&&playing);if(!playing&&(tj.id!==null||lk.id!==null)){joyReset();lookReset()}
+function loop(n){requestAnimationFrame(loop);const dt=Math.min(.05,(n-last)/1000);last=n;if(playing)upd(dt);else if($('hearts').style.display!=='none')$('hearts').style.display='none';document.body.classList.toggle('tplay',isTouch&&playing);if(!playing&&(tj.id!==null||lk.id!==null)){joyReset();lookReset()}
 const ft=scoped&&!P.hid?sf[cur]:72;if(Math.abs(cam.fov-ft)>.05){cam.fov+=(ft-cam.fov)*Math.min(1,dt*14);cam.updateProjectionMatrix()}
 const sv=scoped&&cur==0&&cam.fov<34;$('sc').style.opacity=sv?1:0;$('ch').style.display=scoped?'none':'block';
 renderer.clear();renderer.render(scene,cam);if(!P.hid&&!sv){renderer.clearDepth();renderer.render(gs,gcam)}}
