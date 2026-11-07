@@ -636,9 +636,8 @@ function makeAuraCrater(x,z){
  bowl.rotation.x=-Math.PI/2;bowl.position.y=.015;g.add(bowl);
  const rim=new THREE.Mesh(new THREE.TorusGeometry(.39,.085,6,20),new THREE.MeshBasicMaterial({color:0x393027,transparent:true,opacity:.95}));
  rim.rotation.x=Math.PI/2;rim.position.y=.045;g.add(rim);
- g.position.set(x,y,z);scene.add(g);auraCraters.push(g);
+ g.position.set(x,y,z);g.userData.life=5.5;scene.add(g);auraCraters.push(g);
  if(auraCraters.length>36){scene.remove(auraCraters.shift())}
- noise(.42,.95);snd(82,.48,'sawtooth',.75,.22);snd(43,.55,'triangle',.55,.35);
 }
 
 function activateSecret(code){
@@ -804,7 +803,7 @@ if(d.sT>1){if(sp>1&&d.px!==undefined&&Math.hypot(d.x-d.px,d.z-d.pz)<.6){d.us=.8;
 d.g.visible=dist<92;
 return dist}
 function upd(dt){
-T+=dt;if(defenseHitCooldown>0)defenseHitCooldown=Math.max(0,defenseHitCooldown-dt);
+T+=dt;for(let i=auraCraters.length-1;i>=0;i--){const crater=auraCraters[i];crater.userData.life-=dt;const fade=Math.max(0,Math.min(1,crater.userData.life/1.4));crater.traverse(o=>{if(o.material&&o.material.transparent)o.material.opacity=(o.userData.baseOpacity??(o.userData.baseOpacity=o.material.opacity))*fade});if(crater.userData.life<=0){scene.remove(crater);auraCraters.splice(i,1)}}if(defenseHitCooldown>0)defenseHitCooldown=Math.max(0,defenseHitCooldown-dt);
 if(sleepT>0){sleepT-=dt;if(sleepT<=0){$('bk').style.opacity=0;clock=6.5;skyUpdate();popTick()}return}
 updFalls(dt);clock=(clock+dt*24/DAY_LEN)%24;skyUpdate();popT-=dt;if(popT<=0){popT=1;popTick()}
 if(P.stuck>0)P.stuck-=dt;
@@ -817,7 +816,7 @@ const ux=(-s*kz+c*kx)/l,uz=(-c*kz-s*kx)/l,gr=hgt(P.x+ux,P.z+uz)-hgt(P.x,P.z),sl=
 if(!hit(P.x+dx,P.z,.45))P.x+=dx;if(!hit(P.x,P.z+dz,.45))P.z+=dz;
 P.x=Math.max(-W/2+3,Math.min(W/2-3,P.x));P.z=Math.max(-W/2+3,Math.min(W/2-3,P.z));if(auraEnabled){auraStepDistance+=Math.hypot(P.x-auraLastX,P.z-auraLastZ);auraLastX=P.x;auraLastZ=P.z;if(auraStepDistance>=2.25){auraStepDistance=0;makeAuraCrater(P.x,P.z)}}bob+=dt*(P.run?12:8)}
 camY=hgt(P.x,P.z)+(P.hid?.6:1.7+(P.moving?Math.sin(bob)*.06:0));
-cam.position.set(P.x,camY,P.z);cam.rotation.set(P.pitch,P.yaw,0,'YXZ');
+cam.position.set(P.x,camY,P.z);cam.rotation.set(P.pitch,P.yaw,0,'YXZ');if(auraEnabled&&P.moving){const shake=T*24;cam.position.x+=Math.sin(shake)*.012;cam.position.y+=Math.sin(shake*1.7)*.009;cam.position.z+=Math.cos(shake*.8)*.012;cam.rotation.x+=Math.sin(shake*1.3)*.004;cam.rotation.z+=Math.cos(shake)*.0035;}
 cd-=dt;if(rel>0){rel-=dt;if(rel<=0)ammo[cur]=WP[cur].mag}
 for(const d of deers)updDeer(d,dt);
 const gd=updGiant(dt);
