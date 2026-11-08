@@ -118,6 +118,23 @@ body.touch.portrait #rot{display:flex}
 @keyframes rotph{0%,15%{transform:rotate(0)}55%,85%{transform:rotate(-90deg)}100%{transform:rotate(0)}}
 #rot b{font-size:22px;letter-spacing:4px}
 #rot span{font-size:14px;letter-spacing:1px;color:var(--dim)}
+#shtabs{display:flex;gap:6px;margin-bottom:10px}
+#shtabs button{flex:1;font:inherit;font-size:15px;letter-spacing:3px;padding:8px 6px;color:#e8d9a0;background:rgba(0,0,0,.4);border:2px solid #4a4836;cursor:pointer}
+#shtabs button.on{background:#e8d9a0;color:#14160f;border-color:#e8d9a0}
+#qdot{display:none;color:#e85b55}
+#shtabs button.on #qdot{color:#a02a22}
+.qg{flex-direction:column;gap:10px;margin-bottom:14px}
+.qc{border:1px solid #4a4836;background:rgba(0,0,0,.4);padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.qc.ok{border-color:#9fd27a}
+.qt{color:#e8d9a0;font-size:15px;letter-spacing:1px;line-height:1.3}
+.qb{height:8px;border:1px solid #4a4836;background:#000}
+.qb i{display:block;height:100%;background:#9fd27a}
+.qr{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--dim)}
+.qr .ip{color:#9fd27a;font-size:16px;letter-spacing:1px}
+.qc button{font:inherit;font-size:14px;letter-spacing:2px;padding:8px 10px;width:100%;color:#14160f;background:#e8d9a0;border:2px solid #e8d9a0;cursor:pointer}
+.qc button.sw{background:transparent;color:#e8d9a0;border-color:#6f6b55}
+.qc button:disabled{opacity:.45;cursor:default}
+@media (max-height:520px){#shtabs{margin-bottom:6px}#shtabs button{padding:5px;font-size:13px}.qg{gap:6px;margin-bottom:8px}.qc{padding:6px 8px;gap:4px}.qt{font-size:13px}.qc button{padding:6px}}
 </style></head><body>
 <canvas id="c"></canvas><audio id="whatSong" src="WHAT.mp3" loop preload="auto"></audio>
 <div class="f" id="hd"></div><div class="f" id="dg"></div><div class="f" id="fl"></div><div class="f" id="sc"></div><div class="f" id="bk"></div><div class="f" id="scan"></div>
@@ -151,15 +168,18 @@ body.touch.portrait #rot{display:flex}
 <li>You can carry 2 deer, but they slow you down a lot. Sell them at the <b>shop</b> by the road east of the cabin (the arrow in the bottom left points to it) for <b>$10</b> each.</li>
 <li>Save up <b>$70</b> for the <b>axe</b>. Chop down a tree with a deer on top and the deer comes down with it.</li>
 <li>The gray one takes <b>5 shotgun hits</b> to kill, and it runs faster than you.</li>
+<li>You can even carry the dead <b>gray one</b> (both hands, so you move like you carry 2 deer) and sell it for <b>$30</b>. Check the <b>Quests</b> tab in the shop for extra cash.</li>
 <li>On mobile, the left stick moves (push past the ring to sprint) and dragging anywhere else looks around.</li>
 </ul>
 <button class="btn" id="hback" style="width:min(320px,85%)">BACK</button>
 </div>
 </div>
 <div id="shop"><div class="shp"><div class="shh"><h2>SHOP :)</h2><div id="shm">$0</div></div>
-<div class="shn">If you bring deer to the counter, you get $10 for each one!1!111!</div>
+<div id="shtabs"><button data-t="shop" class="on">SHOP</button><button data-t="quests">QUESTS<span id="qdot"> !</span></button></div>
+<div class="shn" id="shn">If you bring deer to the counter, you get $10 for each one!1!111!</div>
 <div class="shb" id="shbw"><i id="shbar"></i></div>
 <div class="shg" id="shg"></div>
+<div class="qg" id="qg" style="display:none"></div>
 <button class="btn" id="shx" style="width:100%">EXIT</button></div></div>
 <div id="wnp"><button class="wnar" id="wnl" aria-label="Newer update">&#9664;&#xFE0E;</button>
 <div class="wnc"><div class="wnh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" shape-rendering="crispEdges"><path d="M3 4h14v16H5a2 2 0 0 1-2-2z"/><path d="M17 8h4v10a2 2 0 0 1-2 2h-2"/><path d="M6 8h8M6 11h8M6 14h4M12 14h2M6 17h8"/></svg><h2>WHAT'S NEW</h2></div><div class="wnv" id="wnv"></div><ul id="wnu"></ul><button class="btn" id="wnx" style="width:100%">CLOSE</button></div>
@@ -169,7 +189,7 @@ body.touch.portrait #rot{display:flex}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 const $=id=>document.getElementById(id);
-const W=560,PI=Math.PI;
+const W=1400,PI=Math.PI;
 let seed=1337;
 const rnd=()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
 const cv=$('c'),renderer=new THREE.WebGLRenderer({canvas:cv,antialias:false});
@@ -228,9 +248,9 @@ const u=Math.max(0,Math.min(1,gx-i)),v=Math.max(0,Math.min(1,gz-j)),hA=HG[i][j],
 return v>=u?hA+(hD-hA)*v+(hC-hD)*u:hA+(hB-hA)*u+(hC-hB)*v};
 const RC=[[-5,5,-4,-3.6],[-5,-.85,3.6,4],[.85,5,3.6,4],[-5,-4.6,-4,4],[4.6,5,-4,4],[-.35,.35,3.7,3.9],[-4.4,-2.6,-4,-.8],[1,3,-1.6,-.4],[3.2,4.4,-3.6,-2.4],[-.5,2.3,-3.8,-3],[3.5,4.6,.3,2.7],[-4.6,-4.2,1.2,3.2],[-2.55,-0.55,6.55,6.85],[0.55,2.55,6.55,6.85],[-2.62,-2.32,4.05,6.65],[2.32,2.62,4.05,6.65]];
 const roadPts=[],pois=[];
-[0,1,2,3].forEach(i=>{const a=i*PI/2+.4,L=[];for(let r=12;r<=230;r+=6)L.push([Math.cos(a)*r+Math.sin(r*.021+a)*20,Math.sin(a)*r+Math.cos(r*.017+a*2)*20]);roadPts.push(L);const e=L[L.length-1];pois.push({x:e[0]+Math.cos(a)*10,z:e[1]+Math.sin(a)*10,t:i})});
+[0,1,2,3].forEach(i=>{const a=i*PI/2+.4,L=[];for(let r=12;r<=575;r+=6)L.push([Math.cos(a)*r+Math.sin(r*.021+a)*20,Math.sin(a)*r+Math.cos(r*.017+a*2)*20]);roadPts.push(L);const e=L[L.length-1];pois.push({x:e[0]+Math.cos(a)*10,z:e[1]+Math.sin(a)*10,t:i})});
 const nearRoad=(x,z)=>{for(const p of pois)if(Math.hypot(x-p.x,z-p.z)<16)return true;for(const L of roadPts)for(const q of L)if(Math.abs(q[0]-x)<6&&Math.abs(q[1]-z)<6)return true;return false};
-const gq=roadPts[1][14],GZ={x:gq[0],z:gq[1],r:70},door=new THREE.Group(),bogs=[],traps=[];
+const gq=roadPts[2][48],GZ={x:gq[0],z:gq[1],r:170},door=new THREE.Group(),bogs=[],traps=[];
 const grayRoad=[];
 // Keep vegetation clear of the gray-biome loop road (including its shoulders).
 const nearGrayRoad=(x,z)=>Math.abs(Math.hypot(x-GZ.x,z-GZ.z)-(GZ.r-5))<5.5;
@@ -247,7 +267,7 @@ const A=[x0,hgt(x0,z0),z0],B=[x1,hgt(x1,z0),z0],C=[x1,hgt(x1,z1),z1],D=[x0,hgt(x
 tri(gb,c,A,D,C,l*(.95+rnd()*.1));tri(gb,c,A,C,B,l*(.95+rnd()*.1))}
 scene.add(new THREE.Mesh(fin(gb),mat));
 const pines=[0x1f3a1c,0x2a4a26,0x233f20,0x2d4a2a];
-for(let i=0;i<2900;i++){
+for(let i=0;i<8500;i++){
 const x=(rnd()-.5)*(W-4),z=(rnd()-.5)*(W-4);if(Math.hypot(x,z)<14||nearRoad(x,z)||nearGrayRoad(x,z))continue;
 const b=chunk(x,z),s=1.15+rnd()*.9;HB=hgt(x,z);const v0=b.p.length/3;
 const gray=Math.hypot(x-GZ.x,z-GZ.z)<GZ.r+6;
@@ -259,18 +279,18 @@ if(gray){
 }else{const c=pines[Math.floor(rnd()*4)];add(b,BOX,0x4a3320,x,1.5*s,z,.55*s,3*s,.55*s);add(b,CONE,c,x,4*s,z,2.3*s,4.5*s,2.3*s);add(b,CONE,c,x,6.2*s,z,1.7*s,3.8*s,1.7*s);treeSpots.push({x,z,y:8.1*s,b,v0,v1:b.p.length/3,hp:4})}
 treeSpots[treeSpots.length-1].c=addC(x,z,.65*s)}
 // Extra dense, bushy trees specifically throughout the gray biome.
-for(let i=0;i<240;i++){const a=rnd()*6.283,d=Math.sqrt(rnd())*(GZ.r-3),x=GZ.x+Math.cos(a)*d,z=GZ.z+Math.sin(a)*d;if(nearRoad(x,z)||nearGrayRoad(x,z))continue;const b=chunk(x,z),s=1.5+rnd()*.8;HB=hgt(x,z);const v0=b.p.length/3;add(b,BOX,0x554331,x,2*s,z,.55*s,4*s,.55*s);for(let k=0;k<6;k++){const aa=k*1.047,rr=.8*s;add(b,ICO,[0x454f43,0x59604d,0x68705a,0x3d4b40][Math.floor(rnd()*4)],x+Math.cos(aa)*rr,3.5*s+(k%2)*.45*s,z+Math.sin(aa)*rr,1.25*s,1.3*s,1.25*s,0,0,rnd()*6.28)}treeSpots.push({x,z,y:5.7*s,b,v0,v1:b.p.length/3,hp:4});treeSpots[treeSpots.length-1].c=addC(x,z,.8*s)}
-for(let i=0;i<255;i++){const x=(rnd()-.5)*(W-20),z=(rnd()-.5)*(W-20);if(Math.hypot(x,z)<10||nearRoad(x,z)||nearGrayRoad(x,z))continue;
+for(let i=0;i<1100;i++){const a=rnd()*6.283,d=Math.sqrt(rnd())*(GZ.r-3),x=GZ.x+Math.cos(a)*d,z=GZ.z+Math.sin(a)*d;if(nearRoad(x,z)||nearGrayRoad(x,z))continue;const b=chunk(x,z),s=1.5+rnd()*.8;HB=hgt(x,z);const v0=b.p.length/3;add(b,BOX,0x554331,x,2*s,z,.55*s,4*s,.55*s);for(let k=0;k<6;k++){const aa=k*1.047,rr=.8*s;add(b,ICO,[0x454f43,0x59604d,0x68705a,0x3d4b40][Math.floor(rnd()*4)],x+Math.cos(aa)*rr,3.5*s+(k%2)*.45*s,z+Math.sin(aa)*rr,1.25*s,1.3*s,1.25*s,0,0,rnd()*6.28)}treeSpots.push({x,z,y:5.7*s,b,v0,v1:b.p.length/3,hp:4});treeSpots[treeSpots.length-1].c=addC(x,z,.8*s)}
+for(let i=0;i<1100;i++){const x=(rnd()-.5)*(W-20),z=(rnd()-.5)*(W-20);if(Math.hypot(x,z)<10||nearRoad(x,z)||nearGrayRoad(x,z))continue;
 const b=chunk(x,z),s=(1.35+rnd()*.9)*.78;HB=hgt(x,z);const v0=b.p.length/3;add(b,ICO,0x2d4a2a,x,.85,z,1.5*s,1.05*s,1.5*s,0,0,rnd()*3);add(b,ICO,0x3c5c33,x+.55*s,1.35*s,z+.3*s,1*s,.85*s,1*s);bushes.push({x,z,b,v0,v1:b.p.length/3})}
 HB=0;
-for(let i=0;i<45;i++){const a=rnd()*6.28,d=Math.sqrt(rnd())*(GZ.r-4),x=GZ.x+Math.cos(a)*d,z=GZ.z+Math.sin(a)*d;if(nearRoad(x,z)||nearGrayRoad(x,z))continue;const b=chunk(x,z),s=1.4+rnd()*1.5;HB=hgt(x,z);add(b,ICO,[0x6c6c68,0x5a5a56,0x7a7a74][Math.floor(rnd()*3)],x,.5*s,z,1.2*s,.9*s,1.1*s,rnd()*.4,rnd()*.4,rnd()*6.28);addC(x,z,.95*s)}
-for(let i=0;i<150;i++){const a=rnd()*6.28,d=Math.sqrt(rnd())*(GZ.r-2),x=GZ.x+Math.cos(a)*d,z=GZ.z+Math.sin(a)*d;if(nearRoad(x,z)||nearGrayRoad(x,z))continue;const b=chunk(x,z),s=(1.5+rnd()*.9)*.78;HB=hgt(x,z);add(b,ICO,0x45453f,x,.8,z,1.7*s,1.1*s,1.7*s,0,0,rnd()*3);add(b,ICO,0x5a5a52,x+.55*s,1.35*s,z+.3*s,1.05*s,.9*s,1.05*s);bushes.push({x,z})}
+for(let i=0;i<260;i++){const a=rnd()*6.28,d=Math.sqrt(rnd())*(GZ.r-4),x=GZ.x+Math.cos(a)*d,z=GZ.z+Math.sin(a)*d;if(nearRoad(x,z)||nearGrayRoad(x,z))continue;const b=chunk(x,z),s=1.4+rnd()*1.5;HB=hgt(x,z);add(b,ICO,[0x6c6c68,0x5a5a56,0x7a7a74][Math.floor(rnd()*3)],x,.5*s,z,1.2*s,.9*s,1.1*s,rnd()*.4,rnd()*.4,rnd()*6.28);addC(x,z,.95*s)}
+for(let i=0;i<800;i++){const a=rnd()*6.28,d=Math.sqrt(rnd())*(GZ.r-2),x=GZ.x+Math.cos(a)*d,z=GZ.z+Math.sin(a)*d;if(nearRoad(x,z)||nearGrayRoad(x,z))continue;const b=chunk(x,z),s=(1.5+rnd()*.9)*.78;HB=hgt(x,z);add(b,ICO,0x45453f,x,.8,z,1.7*s,1.1*s,1.7*s,0,0,rnd()*3);add(b,ICO,0x5a5a52,x+.55*s,1.35*s,z+.3*s,1.05*s,.9*s,1.05*s);bushes.push({x,z})}
 const zb=mk();
 // Mud patches are built as terrain-conforming meshes. Nearby circles are
 // grouped first, so touching/near-touching mud becomes one continuous patch.
 const mudGroups=[],MUD_SPAN=24,mudSpan=(cs,n)=>{let a=1e9,b=-1e9,c=1e9,d=-1e9;for(const q of n?cs.concat([n]):cs){a=Math.min(a,q.x-q.r);b=Math.max(b,q.x+q.r);c=Math.min(c,q.z-q.r);d=Math.max(d,q.z+q.r)}return Math.max(b-a,d-c)},
 mudMat=new THREE.ShaderMaterial({uniforms:mat.uniforms,vertexShader:mat.vertexShader,fragmentShader:mat.fragmentShader,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2});let mudIdx=0;
-for(let i=0;i<80;i++){
+for(let i=0;i<280;i++){
  const a=rnd()*6.28,d=rnd()*GZ.r*.85,x=GZ.x+Math.cos(a)*d,z=GZ.z+Math.sin(a)*d,r=3.2+rnd()*2;
  if(nearRoad(x,z)||nearGrayRoad(x,z))continue;
  let group=null;
@@ -284,8 +304,8 @@ let merged=true;
 while(merged){
  merged=false;
  outerMud: for(let i=0;i<mudGroups.length;i++)for(let j=i+1;j<mudGroups.length;j++){
-  if(mudSpan(mudGroups[i].circles.concat(mudGroups[j].circles))<=MUD_SPAN&&mudGroups[i].circles.some(a=>mudGroups[j].circles.some(b=>Math.hypot(a.x-b.x,a.z-b.z)<=a.r+b.r+1.15))){
-   mudGroups[i].circles.push(...mudGroups[j].circles);mudGroups.splice(j,1);merged=true;break outerMud;
+  if(mudGroups[i].circles.some(a=>mudGroups[j].circles.some(b=>Math.hypot(a.x-b.x,a.z-b.z)<=a.r+b.r+1.15))&&mudSpan(mudGroups[i].circles.concat(mudGroups[j].circles))<=MUD_SPAN){
+   mudGroups[i].circles.push(...mudGroups[j].circles);mudGroups.splice(j,1);merged=true;j--;
   }
  }
 }
@@ -294,7 +314,7 @@ for(const group of mudGroups){
  const total=circles.reduce((v,c)=>v+c.r*c.r,0);
  const cx=circles.reduce((v,c)=>v+c.x*c.r*c.r,0)/total;
  const cz=circles.reduce((v,c)=>v+c.z*c.r*c.r,0)/total;
- const poly=[],segments=96;
+ const poly=[],segments=64;
  // Cast radial lines from the patch center and find the outer edge of the
  // union of its source circles. The same polygon drives visuals and collision.
  for(let k=0;k<segments;k++){
@@ -307,7 +327,7 @@ for(const group of mudGroups){
   const rr=Math.max(1,edge*wobble);
   poly.push({x:cx+dx*rr,z:cz+dz*rr});
  }
- const off=.13+(mudIdx++)*.006,maxR=Math.max(...poly.map(v=>Math.hypot(v.x-cx,v.z-cz))),rings=Math.max(3,Math.ceil(maxR/.65));
+ const off=.13+(mudIdx++)*.006,maxR=Math.max(...poly.map(v=>Math.hypot(v.x-cx,v.z-cz))),rings=Math.max(3,Math.ceil(maxR/.9));
  const verts=[],cols=[],indices=[];
  const pv=(x,z)=>{verts.push(x,hgt(x,z)+off,z);const j=.88+.12*Math.sin(x*2.7+z*1.9)*Math.cos(z*1.3-x*.8);cols.push(.23*j,.17*j,.11*j)};
  pv(cx,cz);
@@ -333,13 +353,13 @@ inMud=function(x,z,b){
  }
  return inside;
 };
-for(let i=0;i<45;i++){const a=rnd()*6.28,d=rnd()*GZ.r*.9,x=GZ.x+Math.cos(a)*d,z=GZ.z+Math.sin(a)*d;if(nearRoad(x,z))continue;HB=hgt(x,z);add(zb,BOX,0x6a4a30,x,.1,z,.8,.05,.8);add(zb,BOX,0x8a8a82,x,.14,z,.7,.04,.12);add(zb,BOX,0x8a8a82,x,.14,z,.12,.04,.7);traps.push({x,z,on:true})}
+for(let i=0;i<160;i++){const a=rnd()*6.28,d=rnd()*GZ.r*.9,x=GZ.x+Math.cos(a)*d,z=GZ.z+Math.sin(a)*d;if(nearRoad(x,z))continue;HB=hgt(x,z);add(zb,BOX,0x6a4a30,x,.1,z,.8,.05,.8);add(zb,BOX,0x8a8a82,x,.14,z,.7,.04,.12);add(zb,BOX,0x8a8a82,x,.14,z,.12,.04,.7);traps.push({x,z,on:true})}
 scene.add(new THREE.Mesh(fin(zb),mat));HB=0;
 const rb=mk();
 for(const L of roadPts)for(let i=0;i<L.length-1;i++)roadSeg(rb,0x8a7a58,L[i][0],L[i][1],L[i+1][0],L[i+1][1],2.6,.4,5);
 scene.add(new THREE.Mesh(fin(rb),mat));
 // A dedicated loop road circles the gray biome, following the terrain.
-for(let i=0;i<120;i++){const a=i/120*Math.PI*2;grayRoad.push({x:GZ.x+Math.cos(a)*(GZ.r-5),z:GZ.z+Math.sin(a)*(GZ.r-5)})}
+for(let i=0;i<300;i++){const a=i/300*Math.PI*2;grayRoad.push({x:GZ.x+Math.cos(a)*(GZ.r-5),z:GZ.z+Math.sin(a)*(GZ.r-5)})}
 const grb=mk();
 for(let i=0;i<grayRoad.length;i++){const p=grayRoad[i],q=grayRoad[(i+1)%grayRoad.length];roadSeg(grb,0x806f50,p.x,p.z,q.x,q.z,2.15,.42,4)}
 scene.add(new THREE.Mesh(fin(grb),mat));
@@ -439,8 +459,8 @@ const hK=[],hV=[];let hPK=0;
 function hPush(k,v){let i=hK.length;hK.push(k);hV.push(v);while(i>0){const p=(i-1)>>1;if(hK[p]<=k)break;hK[i]=hK[p];hV[i]=hV[p];i=p}hK[i]=k;hV[i]=v}
 function hPop(){const v0=hV[0];hPK=hK[0];const kl=hK.pop(),vl=hV.pop(),n=hK.length;if(n){let i=0;for(;;){let c=2*i+1;if(c>=n)break;if(c+1<n&&hK[c+1]<hK[c])c++;if(hK[c]>=kl)break;hK[i]=hK[c];hV[i]=hV[c];i=c}hK[i]=kl;hV[i]=vl}return v0}
 const D8=[[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]];
-function nBuild(goal){nDst.fill(1e9);nDst[goal]=0;hK.length=0;hV.length=0;hPush(0,goal);const n=NAV.n;
-while(hK.length){const v=hPop(),k=hPK;if(k>nDst[v])continue;const vi=v%n,vj=(v/n)|0;
+function nBuild(goal,start){nDst.fill(1e9);nDst[goal]=0;hK.length=0;hV.length=0;hPush(0,goal);const n=NAV.n;
+while(hK.length){const v=hPop(),k=hPK;if(k>nDst[v])continue;if(v===start)break;const vi=v%n,vj=(v/n)|0;
 for(const[di,dj]of D8){const ni=vi+di,nj=vj+dj;if(ni<0||nj<0||ni>=n||nj>=n)continue;const q=nj*n+ni;if(nBlk[q])continue;if(di&&dj&&(nBlk[vj*n+ni]||nBlk[nj*n+vi]))continue;const c=k+(di&&dj?1.414:1);if(c<nDst[q]){nDst[q]=c;hPush(c,q)}}}
 NAV.goal=goal;NAV.age=0}
 function nStep(c){const n=NAV.n,ci=c%n,cj=(c/n)|0;let best=-1,bd=nDst[c];
@@ -451,7 +471,7 @@ NAV.age+=dt;NAV.lt-=dt;
 if(NAV.lt<=0){NAV.clear=clearLine(d.x,d.z,tx,tz,1.05);NAV.lt=.12}
 if(NAV.clear)return Math.atan2(tx-d.x,tz-d.z);
 const g=nFree(nCell(tx,tz));
-if(NAV.goal<0||(g!==NAV.goal&&NAV.age>.3)||NAV.age>1.5)nBuild(g);
+if(NAV.goal<0||(g!==NAV.goal&&NAV.age>.3)||NAV.age>1.5)nBuild(g,nFree(nCell(d.x,d.z)));
 let s=nStep(nCell(d.x,d.z));
 if(s<0)return Math.atan2(tx-d.x,tz-d.z);
 const s2=nStep(s);if(s2>=0)s=s2;
@@ -524,9 +544,9 @@ const guns=[gunMesh(0),gunMesh(1),axeMesh()];
 const WP=[{n:'RIFLE',mag:5,pel:1,spr:.012,rng:160,cd:.9,rel:1.8},{n:'SHOTGUN',mag:2,pel:7,spr:.055,rng:45,cd:.6,rel:2.2},{n:'AXE',mag:0,pel:0,spr:0,rng:0,cd:.7,rel:0}];
 let ammo=[5,2,0],cur=0,cd=0,rel=0,kick=0,flash=0;
 const P={x:0,z:9,yaw:0,pitch:0,hid:false,hx:0,hz:0,moving:false,run:false};
-const DAY_LEN=480,DEER_DAY=22,RUN_SP=8.5,GSP=RUN_SP*1.1;
-const SK='deerHunter98.stats',stats={deer:0,deaths:0,shots:0,money:0,axe:0,flash:0,boots:0,belt:0};
-try{const s=JSON.parse(localStorage.getItem(SK)||'null');if(s&&typeof s==='object'){stats.deer=+s.deer||0;stats.deaths=+s.deaths||0;stats.shots=+s.shots||0;stats.money=+s.money||0;stats.axe=s.axe?1:0;stats.flash=s.flash?1:0;stats.boots=s.boots?1:0;stats.belt=s.belt?1:0}}catch(e){}
+const DAY_LEN=480,DEER_DAY=40,RUN_SP=8.5,GSP=RUN_SP*1.1;
+const SK='deerHunter98.stats',QK=['deer','sold','nightDeer','chopped','hides','mudT','grayT','dist','gHits','gKills'],stats={deer:0,deaths:0,shots:0,money:0,axe:0,flash:0,boots:0,belt:0,sold:0,nightDeer:0,chopped:0,hides:0,mudT:0,grayT:0,dist:0,gHits:0,gKills:0,quests:[]};
+try{const s=JSON.parse(localStorage.getItem(SK)||'null');if(s&&typeof s==='object'){stats.deer=+s.deer||0;stats.deaths=+s.deaths||0;stats.shots=+s.shots||0;stats.money=+s.money||0;stats.axe=s.axe?1:0;stats.flash=s.flash?1:0;stats.boots=s.boots?1:0;stats.belt=s.belt?1:0;for(const k of QK)if(k!=='deer')stats[k]=+s[k]||0;if(Array.isArray(s.quests))stats.quests=s.quests.filter(q=>q&&QK.includes(q.k)&&q.n>0&&q.pay>0).slice(0,3).map(q=>({k:q.k,n:+q.n,b:+q.b||0,pay:+q.pay,nt:q.nt?1:0}))}}catch(e){}
 function saveStats(){try{localStorage.setItem(SK,JSON.stringify(stats))}catch(e){}}
 const statsLine=()=>'DEER '+stats.deer+'  \u00b7  SHOTS '+stats.shots+'  \u00b7  MURDERED BY THE GRAY ONE '+stats.deaths+'x';
 let clock=8,nf=0,popT=0;
@@ -537,6 +557,7 @@ mat.uniforms.fogf.value=80-28*nf;mat.uniforms.fogn.value=6-2*nf;mat.uniforms.tin
 let cheatAmmo=false,gameMode='regular',defenseLives=3,defenseHitCooldown=0,carry=[],sf=[16,50,50],sleepT=0,scoped=false,playing=false,G='menu',T=0,camY=1.7,bob=0,msgT=0,hb=0,ac;
 const keys={};
 const UPDATES=[
+{v:'1.2.0',t:'Big Map Update',n:['The map is 2.5x bigger, with longer roads and more deer to find','The gray biome moved to a new spot and is about 6x bigger in area, so there is much more to get lost in','New Quests tab in the shop: 3 random jobs for cash. Claim them at the shop, or swap one you do not like for $10','You can now carry the dead gray one (it needs both hands and slows you down like 2 deer) and sell it for $30']},
 {v:'1.1.3',t:'Gear & Night Update',n:['Actually fixed the mud freezing you in place','The gray one can now leave its biome at night, but it only runs at 0.9x your sprint speed out there','The shop moved to the road east of the cabin, and an arrow in the bottom left always points to it','New in the shop: Flashlight (F), Trail Boots and an Ammo Belt','Radar is in the shop as coming soon','The axe in your hands is now gore quality and points left']},
 {v:'1.1.2',t:'Shop, Axe & Mobile Update',n:['Mobile support: analog stick, shoot button and a carry / drop button (plus reload, swap, scope and pause)','New shop next to the cabin with a sigmund sign, and deer are now sold there for $10 each instead of being stored in the cabin','Added THE axe of your dreams','Chop down a tree with a deer on top and the deer falls with it, now unfortunately it does not survive, but you can carry it to the shop','Deer sitting in trees now stay put until you shoot them or chop the tree','The gray one now takes 5 shotgun hits to kill (it comes back after a while) and runs 1.1x faster than you','Fixed mud softlocking you and mud clipping through the floor','Added the What\'s New page and the version number']},
 {v:'1.1.1',t:'Menu Fixes',n:['Added a Back to Title button on the pause and death screens','The Multiplayer button now only shows on the title screen']},
@@ -563,7 +584,7 @@ function tbtn(id,fn){const el=$(id);el.addEventListener('pointerdown',e=>{e.prev
 const off=()=>{el.classList.remove('on');lastTouchT=performance.now()};el.addEventListener('pointerup',off);el.addEventListener('pointercancel',off);el.addEventListener('pointerleave',off)}
 function setTBtn(el,label,always){const show=!!(label||always);const d=show?'flex':'none';if(el.style.display!==d)el.style.display=d;if(show&&el.textContent!==label)el.textContent=label}
 function pauseGame(){if(!playing)return;playing=false;scoped=false;G='menu';joyReset();showScreen('pause')}
-function carryDrop(){if(P.hid)return;const dd=nearDead();if(dd&&carry.length<2){pickUp(dd);return}if(carry.length){dropDeer();return}if(dd){msg('HANDS FULL \u2014 MAX 2 DEER',2);return}msg('NO DEER NEARBY',1.5)}
+function carryDrop(){if(P.hid)return;const dd=nearDead();if(dd&&cw()+(dd.giant?2:1)<=2){pickUp(dd);return}if(carry.length){dropDeer();return}if(dd){msg(dd.giant?'THE GRAY ONE NEEDS BOTH HANDS':'HANDS FULL \u2014 MAX 2 DEER',2);return}msg('NO DEER NEARBY',1.5)}
 tbtn('tshoot',()=>shoot());tbtn('tcarry',carryDrop);tbtn('tact',()=>toggleHide());tbtn('treload',()=>reload());
 tbtn('tlight',toggleFlash);tbtn('tswap',()=>equip((cur+1)%(stats.axe?3:2)));tbtn('tscope',()=>{if(!P.hid&&cur<2)scoped=!scoped});tbtn('tpause',pauseGame);
 function equip(i){if(i===2&&!stats.axe){msg('BUY THE AXE AT THE SHOP ($70)',2.5);return}cur=i;guns.forEach((g,k)=>g.visible=k==cur);rel=0;if(i===2)scoped=false}
@@ -590,13 +611,40 @@ let flOn=false;
 function toggleFlash(){if(!stats.flash||!playing)return;flOn=!flOn;mat.uniforms.fl.value=flOn?1:0;msg(flOn?'FLASHLIGHT ON':'FLASHLIGHT OFF',1)}
 function applyGear(){WP[0].mag=cheatAmmo?100:(stats.belt?8:5);WP[1].mag=stats.belt?4:2;ammo[0]=WP[0].mag;ammo[1]=WP[1].mag}
 function releaseLock(){try{if(document.exitPointerLock&&document.pointerLockElement)document.exitPointerLock()}catch(_){}}
-function renderShop(){$('shm').textContent='$'+stats.money;let h='';const left=ITEMS.filter(i=>!stats[i.id]);
+const QT=[
+{k:'deer',t:n=>'Hunt '+n+' deer',r:[3,7],u:9},
+{k:'sold',t:n=>'Sell '+n+' deer at the shop',r:[2,5],u:8},
+{k:'nightDeer',t:n=>'Hunt '+n+' deer at night',r:[1,3],u:20},
+{k:'chopped',t:n=>'Chop down '+n+' trees',r:[3,8],u:6,need:'axe'},
+{k:'hides',t:n=>'Hide in a bush '+n+' times',r:[2,5],u:6},
+{k:'mudT',t:n=>'Wade through mud for '+n+' seconds',r:[10,25],u:3},
+{k:'grayT',t:n=>'Spend '+n+' seconds inside the gray biome',r:[30,90],u:1.4,s:10},
+{k:'dist',t:n=>'Walk '+n+' meters',r:[400,1200],u:.07,s:100},
+{k:'gHits',t:n=>'Hit the gray one with the shotgun '+n+' times',r:[2,5],u:18},
+{k:'gKills',t:()=>'Kill the gray one',r:[1,1],u:110}];
+let shopTab='shop',qTimer=0,qSv=0;
+function newQuest(avoid){let pool=QT.filter(q=>(!q.need||stats[q.need])&&!avoid.includes(q.k));if(!pool.length)pool=QT.filter(q=>!q.need||stats[q.need]);const d=pool[Math.floor(Math.random()*pool.length)],st=d.s||1;let n=d.r[0]+Math.floor(Math.random()*(d.r[1]-d.r[0]+1));if(st>1)n=Math.round(n/st)*st;const pay=Math.max(10,Math.round(n*d.u*(.85+Math.random()*.3)/5)*5);return{k:d.k,n,b:stats[d.k]||0,pay,nt:0}}
+function ensureQuests(){const qs=stats.quests;while(qs.length<3)qs.push(newQuest(qs.map(q=>q.k)))}
+const qProg=q=>Math.max(0,Math.min(q.n,Math.floor((stats[q.k]||0)-q.b)));
+function qCheck(){let chg=false;for(const q of stats.quests){if(!q.nt&&qProg(q)>=q.n){q.nt=1;chg=true;msg('QUEST DONE \u2014 CLAIM IT AT THE SHOP',4);snd(780,.2,'square',.22,1.6)}}if(chg||++qSv>=5){qSv=0;saveStats()}}
+function renderQuests(){let h='';stats.quests.forEach((q,i)=>{const d=QT.find(x=>x.k===q.k),p=qProg(q),ok=p>=q.n;h+='<div class="qc'+(ok?' ok':'')+'"><div class="qt">'+d.t(q.n)+'</div><div class="qb"><i style="width:'+(p/q.n*100)+'%"></i></div><div class="qr"><span>'+p+' / '+q.n+'</span><span class="ip">$'+q.pay+'</span></div>'+(ok?'<button data-q="claim" data-i="'+i+'">CLAIM $'+q.pay+'</button>':'<button class="sw" data-q="swap" data-i="'+i+'"'+(stats.money<10?' disabled':'')+'>SWAP QUEST \u2014 $10</button>')+'</div>'});$('qg').innerHTML=h}
+function renderShop(){const qt=shopTab==='quests';renderItems();renderQuests();
+$('shg').style.display=qt?'none':'';$('qg').style.display=qt?'flex':'none';if(qt)$('shbw').style.display='none';
+$('shn').textContent=qt?'Do stuff, get paid. Finished quests are claimed right here.':'If you bring deer to the counter, you get $10 for each one!1!111! The gray one is worth $30!!1!';
+document.querySelectorAll('#shtabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===shopTab));
+$('qdot').style.display=stats.quests.some(q=>qProg(q)>=q.n)?'inline':'none'}
+$('shtabs').onclick=e=>{const b=e.target.closest('button[data-t]');if(!b)return;shopTab=b.dataset.t;renderShop()};
+$('qg').onclick=e=>{const b=e.target.closest('button[data-q]');if(!b||b.disabled)return;const i=+b.dataset.i,q=stats.quests[i];if(!q)return;
+if(b.dataset.q==='claim'){if(qProg(q)<q.n)return;stats.money+=q.pay;snd(660,.12,'square',.2,1.5)}else{if(stats.money<10)return;stats.money-=10;snd(300,.1,'square',.2,.7)}
+stats.quests[i]=newQuest(stats.quests.map(x=>x.k));saveStats();renderShop()};
+ensureQuests();saveStats();
+function renderItems(){$('shm').textContent='$'+stats.money;let h='';const left=ITEMS.filter(i=>!stats[i.id]);
 for(const it of ITEMS){const own=!!stats[it.id],need=it.p-stats.money;
 h+='<div class="it">'+it.svg+'<b>'+it.n+'</b><span>'+it.d+'</span><div class="ip">$'+it.p+'</div><button data-id="'+it.id+'"'+(own||need>0?' disabled':'')+'>'+(own?'OWNED':need>0?'NEED $'+need+' MORE':'BUY')+'</button></div>'}
 for(const [n,d] of SOON)h+='<div class="it soon"><div class="qm">?</div><b>'+n+'</b><span>'+d+'</span><div class="ip">COMING SOON</div></div>';
 $('shg').innerHTML=h;const nx=left.length?Math.min(...left.map(i=>i.p)):0;$('shbw').style.display=nx?'block':'none';$('shbar').style.width=nx?Math.min(100,stats.money/nx*100)+'%':'0'}
 function buyItem(id){const it=ITEMS.find(i=>i.id===id);if(!it||stats[id]||stats.money<it.p)return;stats.money-=it.p;stats[id]=1;saveStats();applyGear();snd(520,.15,'square',.25,1.8);shopHint=id;renderShop()}
-function openShop(){if(G!=='play')return;playing=false;scoped=false;G='shop';joyReset();lookReset();releaseLock();renderShop();$('shop').style.display='flex'}
+function openShop(){if(G!=='play')return;playing=false;scoped=false;G='shop';shopTab='shop';joyReset();lookReset();releaseLock();renderShop();$('shop').style.display='flex'}
 function closeShop(){if(G!=='shop')return;$('shop').style.display='none';G='play';playing=true;if(!isTouch&&cv.requestPointerLock){try{cv.requestPointerLock()}catch(_){}}if(shopHint){const h=HINTS[shopHint];shopHint='';if(h)msg(isTouch?h[1]:h[0],4)}}
 $('shx').onclick=closeShop;
 $('shg').onclick=e=>{const b=e.target.closest('button[data-id]');if(b)buyItem(b.dataset.id)};
@@ -605,7 +653,7 @@ function msg(t,s){$('ms').textContent=t;msgT=s||3}
 function noise(dur,vol){if(!ac)return;const n=ac.sampleRate*dur,b=ac.createBuffer(1,n,ac.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*(1-i/n);const s=ac.createBufferSource(),g=ac.createGain();g.gain.value=vol;s.buffer=b;s.connect(g).connect(ac.destination);s.start()}
 function snd(f,dur,type,vol,sw){if(!ac)return;const o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime;o.type=type;o.frequency.setValueAtTime(f,t);o.frequency.exponentialRampToValueAtTime(Math.max(20,f*sw),t+dur);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(g).connect(ac.destination);o.start();o.stop(t+dur)}
 function respawn(){defenseLives=3;defenseHitCooldown=0;updateHearts();carry.forEach(d=>d.active=false);carry=[];scoped=false;P.stuck=0;P.x=0;P.z=9;P.yaw=0;P.pitch=0;P.hid=false;ammo=[WP[0].mag,WP[1].mag,0];rel=0;cd=0;resetGiant()}
-function resetGiant(){giant.x=GZ.x;giant.z=GZ.z;giant.st='stalk';giant.angry=0;giant.roadI=Math.floor(Math.random()*grayRoad.length);giant.alive=true;giant.active=true;giant.us=0;giant.hp=5;giant.dT=0;giant.g.rotation.set(0,0,0);giant.px=undefined;giant.g.position.set(giant.x,hgt(giant.x,giant.z),giant.z);giant.g.visible=true}
+function resetGiant(){giant.x=GZ.x;giant.z=GZ.z;giant.st='stalk';giant.angry=0;giant.roadI=Math.floor(Math.random()*grayRoad.length);giant.alive=true;giant.active=true;carry=carry.filter(x=>x!==giant);giant.carried=false;giant.done=false;giant.us=0;giant.hp=5;giant.dT=0;giant.g.rotation.set(0,0,0);giant.px=undefined;giant.g.position.set(giant.x,hgt(giant.x,giant.z),giant.z);giant.g.visible=true}
 function die(){if(G==='dead')return;stats.deaths++;saveStats();playing=false;scoped=false;G='dead';updateHearts();releaseLock();snd(70,.8,'sawtooth',.5,.3);noise(.6,.5);
 showScreen('dead')}
 function showScreen(m){const c={title:['DEER HUNTING SIMULATOR','Hey this game is like REALLY buggy, too much stuff softlocks you and it overall sucks. This is a JOKE game, not one to be taken SERIOUSLY.','PLAY'],pause:['PAUSED','Hey why we pause the game?','RESUME'],dead:[gameMode==='defense'&&defenseLives<=0?'YOU WERE OVERRUN':'THE GRAY ONE FOUND YOU',gameMode==='defense'&&defenseLives<=0?'Defense run over. Choose a mode and try again.':'Murdered by the gray one: '+stats.deaths+(stats.deaths==1?' time.':' times.'),'RESPAWN AT THE CABIN']}[m];
@@ -687,9 +735,10 @@ if(e.code==='Digit1'||e.code==='Digit2'||e.code==='Digit3')equip(+e.code.slice(5
 if(e.code==='KeyF')toggleFlash();
 if(P.stuck>0&&/^Key[WASD]$/.test(e.code))P.stuck-=.35;if(e.code==='KeyE')toggleHide();if(e.code==='KeyG')dropDeer()});
 addEventListener('keyup',e=>keys[e.code]=false);
-function nearDead(){let b=null,bd=3.6;for(const d of deers)if(d.active&&!d.alive&&!d.carried&&!d.done&&!d.falling){const k=Math.hypot(d.x-P.x,d.z-P.z);if(k<bd){bd=k;b=d}}return b}
-function pickUp(dd){if(carry.length>=2){msg('HANDS FULL \u2014 MAX 2 DEER',2);return}carry.push(dd);dd.carried=true;dd.g.visible=false;msg('CARRYING '+carry.length+'/2 \u2014 TAKE THEM TO THE SHOP',3)}
-function dropDeer(){const d=carry.pop();if(!d)return;d.g.visible=true;d.x=P.x-Math.sin(P.yaw)*1.5;d.z=P.z-Math.cos(P.yaw)*1.5;d.g.rotation.set(0,d.yaw,1.45);d.g.position.set(d.x,hgt(d.x,d.z)+.6,d.z);d.carried=false}
+function nearDead(){let b=null,bd=3.6;for(const d of deers)if(d.active&&!d.alive&&!d.carried&&!d.done&&!d.falling){const k=Math.hypot(d.x-P.x,d.z-P.z);if(k<bd){bd=k;b=d}}if(!giant.alive&&giant.active&&!giant.carried&&!giant.done){const k=Math.hypot(giant.x-P.x,giant.z-P.z);if(k<bd){bd=k;b=giant}}return b}
+const cw=()=>carry.reduce((a,d)=>a+(d.giant?2:1),0);
+function pickUp(dd){if(cw()+(dd.giant?2:1)>2){msg(dd.giant?'THE GRAY ONE NEEDS BOTH HANDS \u2014 DROP WHAT YOU HOLD':'HANDS FULL \u2014 MAX 2 DEER',2);return}carry.push(dd);dd.carried=true;dd.g.visible=false;msg(dd.giant?'CARRYING THE GRAY ONE \u2014 TAKE IT TO THE SHOP':'CARRYING '+cw()+'/2 \u2014 TAKE THEM TO THE SHOP',3)}
+function dropDeer(){const d=carry.pop();if(!d)return;d.g.visible=true;d.x=P.x-Math.sin(P.yaw)*1.5;d.z=P.z-Math.cos(P.yaw)*1.5;d.g.rotation.set(0,d.yaw,1.45);d.g.position.set(d.x,hgt(d.x,d.z)+(d.giant?.72:.6),d.z);d.carried=false}
 const bedD=()=>Math.abs(P.x)<4.4&&Math.abs(P.z)<3.5&&Math.hypot(P.x+3.5,P.z+2.2)<2.8;
 function sleep(){if(nf<.5){msg('NOT TIRED \u2014 YOU CAN ONLY SLEEP AT NIGHT',3);return}sleepT=2.2;$('bk').style.opacity=1}
 function nearBush(){let b=null,bd=3.4;for(const k of bushes){const d=Math.hypot(k.x-P.x,k.z-P.z);if(d<bd){bd=d;b=k}}return b}
@@ -700,7 +749,7 @@ const dd=nearDead();if(dd){pickUp(dd);return}
 if(nearShop()){openShop();return}
 const b=nearBush();if(!b)return;
 if(Math.hypot(giant.x-P.x,giant.z-P.z)<6){msg('TOO CLOSE TO HIDE!',2);return}
-P.hid=true;P.hx=b.x;P.hz=b.z;P.x=b.x;P.z=b.z}
+P.hid=true;stats.hides++;P.hx=b.x;P.hz=b.z;P.x=b.x;P.z=b.z}
 function reload(){if(rel>0||ammo[cur]==WP[cur].mag)return;rel=WP[cur].rel;snd(300,.1,'square',.2,.5)}
 const falls=[];let swing=0;
 function swingAxe(){cd=.7;swing=1;
@@ -709,7 +758,7 @@ for(const t of treeSpots){if(t.cut)continue;const dx=t.x-P.x,dz=t.z-P.z;if(dx>3.
 if(!best){snd(150,.12,'sawtooth',.15,.5);noise(.12,.15);return}
 best.hp--;noise(.15,.5);snd(120,.1,'square',.3,.5);
 if(best.hp>0)msg('CHOP '+(4-best.hp)+'/4',1);else fellTree(best)}
-function fellTree(t){t.cut=true;removeC(t.c);
+function fellTree(t){t.cut=true;stats.chopped++;removeC(t.c);
 const gy=hgt(t.x,t.z),n=t.v1-t.v0,pos=new Float32Array(n*3),col=new Float32Array(n*3),a=t.b.p,c=t.b.c;
 for(let i=0;i<n;i++){const q=(t.v0+i)*3,o=i*3;pos[o]=a[q]-t.x;pos[o+1]=a[q+1]-gy;pos[o+2]=a[q+2]-t.z;col[o]=c[q];col[o+1]=c[q+1];col[o+2]=c[q+2]}
 const pa=t.b.geo.attributes.position;for(let i=t.v0;i<t.v1;i++)pa.setXYZ(i,t.x,gy,t.z);pa.needsUpdate=true;
@@ -726,8 +775,8 @@ if(u>=1){const nx=Math.max(-W/2+3,Math.min(W/2-3,f.x+_v.x)),nz=Math.max(-W/2+3,M
 if(u>=1){f.done=true;noise(.4,.6);snd(60,.4,'sine',.5,.4);if(f.deers.length)msg('THE TREE FELL \u2014 AND THE DEER WITH IT',3)}}
 else{f.rm+=dt;if(f.rm>25){scene.remove(f.m);f.m.geometry.dispose();falls.splice(i,1)}}}}
 function hitGiant(){if(!giant.alive)return;if(cur!==1){msg('RIFLE ROUNDS DO NOTHING \u2014 USE THE SHOTGUN',2);return}
-giant.hp--;snd(90,.25,'sawtooth',.4,.5);if(giant.hp<=0){killGiant();return}msg('GRAY ONE HIT '+(5-giant.hp)+'/5',1.5)}
-function killGiant(){giant.alive=false;giant.st='dead';giant.dT=0;giant.g.rotation.set(0,giant.yaw,1.45);giant.g.position.y=hgt(giant.x,giant.z)+.72;snd(60,.9,'sawtooth',.5,.3);noise(.5,.4);msg('YOU KILLED THE GRAY ONE!',5);$('dg').style.opacity=0}
+giant.hp--;stats.gHits++;snd(90,.25,'sawtooth',.4,.5);if(giant.hp<=0){killGiant();return}msg('GRAY ONE HIT '+(5-giant.hp)+'/5',1.5)}
+function killGiant(){stats.gKills++;saveStats();giant.alive=false;giant.st='dead';giant.dT=0;giant.g.rotation.set(0,giant.yaw,1.45);giant.g.position.y=hgt(giant.x,giant.z)+.72;snd(60,.9,'sawtooth',.5,.3);noise(.5,.4);msg('YOU KILLED THE GRAY ONE!',5);$('dg').style.opacity=0}
 function rayS(o,d,c,r){const ox=c.x-o.x,oy=c.y-o.y,oz=c.z-o.z,tca=ox*d.x+oy*d.y+oz*d.z;if(tca<0)return 1e9;const d2=ox*ox+oy*oy+oz*oz-tca*tca;if(d2>r*r)return 1e9;return tca-Math.sqrt(r*r-d2)}
 function rayBlocked(o,d,t){for(let k=1;k<t;k+=1.2){const y=o.y+d.y*k,qx=o.x+d.x*k,qz=o.z+d.z*k,hh=hgt(qx,qz);if(y<hh)return true;if(y<hh+6&&hit(qx,qz,.05))return true}return false}
 function shoot(){
@@ -748,7 +797,7 @@ const H=hgt(d.x,d.z),s=d.s,t1=rayS(o,dir,{x:d.x,y:H+1.2*s,z:d.z},1.15*s),t2=rayS
 if(t<bt){bt=t;best=d}}
 if(best&&!rayBlocked(o,dir,bt)){
 if(best.giant){giant.st='chase';giant.angry=6;gHit=true}
-else if(best.alive){best.alive=false;best.g.rotation.z=1.45;best.g.position.y=.6;best.legs.forEach(l=>l.rotation.x=0);best.g.position.y=hgt(best.x,best.z)+.6;snd(200,.2,'sine',.3,.4);stats.deer++;saveStats();}}}
+else if(best.alive){best.alive=false;best.g.rotation.z=1.45;best.g.position.y=.6;best.legs.forEach(l=>l.rotation.x=0);best.g.position.y=hgt(best.x,best.z)+.6;snd(200,.2,'sine',.3,.4);stats.deer++;if(nf>.5)stats.nightDeer++;saveStats();}}}
 if(gHit)hitGiant();
 if(ammo[cur]==0)reload()}
 function updDeer(d,dt){
@@ -823,10 +872,11 @@ for(const t of traps)if(t.on&&!P.hid&&Math.hypot(P.x-t.x,P.z-t.z)<.8){t.on=false
 const dA=Math.hypot(P.x,P.z-4.6)<5.5?1.5:0;door.rotation.y+=(dA-door.rotation.y)*Math.min(1,dt*6);RC[5]=door.rotation.y>.9?[999,999,999,999]:[-.35,.35,3.7,3.9];
 const tjOn=tj.on&&Math.hypot(tj.x,tj.y)>.14,kbd=!!(keys.KeyA||keys.KeyD||keys.KeyW||keys.KeyS),kx=(keys.KeyD?1:0)-(keys.KeyA?1:0)+(tjOn?tj.x:0),kz=(keys.KeyW?1:0)-(keys.KeyS?1:0)+(tjOn?-tj.y:0),am=tjOn&&!kbd?Math.max(.4,Math.min(1,Math.hypot(tj.x,tj.y))):1;
 P.moving=!P.hid&&!(P.stuck>0)&&!!(kx||kz);P.run=P.moving&&!scoped&&!!(keys.ShiftLeft||keys.ShiftRight||(tjOn&&tj.run));
-if(P.moving){let inBog=false;for(let bi=0;bi<bogs.length;bi++){const b=bogs[bi];if(P.x>=b.minX&&P.x<=b.maxX&&P.z>=b.minZ&&P.z<=b.maxZ&&inMud(P.x,P.z,b)){inBog=true;break}}const bg=inBog?.6:1;if(bg<1&&!P.inBog)msg('STUCK IN THE MUD \u2014 YOU MOVE SLOWLY',2);P.inBog=bg<1;const sp=Math.max(inBog?1.6:0,(scoped?2.2:(P.run?RUN_SP:5))*(carry.length>1?.4:carry.length?.7:1)*bg*am*(stats.boots?1.08:1)),l=Math.hypot(kx,kz),s=Math.sin(P.yaw),c=Math.cos(P.yaw);
+if(P.moving){let inBog=false;for(let bi=0;bi<bogs.length;bi++){const b=bogs[bi];if(P.x>=b.minX&&P.x<=b.maxX&&P.z>=b.minZ&&P.z<=b.maxZ&&inMud(P.x,P.z,b)){inBog=true;break}}const bg=inBog?.6:1;if(inBog)stats.mudT+=dt;if(bg<1&&!P.inBog)msg('STUCK IN THE MUD \u2014 YOU MOVE SLOWLY',2);P.inBog=bg<1;const sp=Math.max(inBog?1.6:0,(scoped?2.2:(P.run?RUN_SP:5))*(cw()>1?.4:cw()?.7:1)*bg*am*(stats.boots?1.08:1)),l=Math.hypot(kx,kz),s=Math.sin(P.yaw),c=Math.cos(P.yaw);
 const ux=(-s*kz+c*kx)/l,uz=(-c*kz-s*kx)/l,gr=hgt(P.x+ux,P.z+uz)-hgt(P.x,P.z),sl=Math.max(inBog?.8:.4,Math.min(1.2,1-gr*.5));const dx=ux*sp*sl*dt,dz=uz*sp*sl*dt;
-if(!hit(P.x+dx,P.z,.45))P.x+=dx;if(!hit(P.x,P.z+dz,.45))P.z+=dz;
+const ox0=P.x,oz0=P.z;if(!hit(P.x+dx,P.z,.45))P.x+=dx;if(!hit(P.x,P.z+dz,.45))P.z+=dz;stats.dist+=Math.hypot(P.x-ox0,P.z-oz0);
 P.x=Math.max(-W/2+3,Math.min(W/2-3,P.x));P.z=Math.max(-W/2+3,Math.min(W/2-3,P.z));if(auraEnabled){auraStepDistance+=Math.hypot(P.x-auraLastX,P.z-auraLastZ);auraLastX=P.x;auraLastZ=P.z;if(auraStepDistance>=2.25){auraStepDistance=0;makeAuraCrater(P.x,P.z)}}bob+=dt*(P.run?12:8)}
+if(Math.hypot(P.x-GZ.x,P.z-GZ.z)<GZ.r-4)stats.grayT+=dt;
 camY=hgt(P.x,P.z)+(P.hid?.6:1.7+(P.moving?Math.sin(bob)*.06:0));
 cam.position.set(P.x,camY,P.z);cam.rotation.set(P.pitch,P.yaw,0,'YXZ');if(auraEnabled&&P.moving){const shake=T*24;cam.position.x+=Math.sin(shake)*.012;cam.position.y+=Math.sin(shake*1.7)*.009;cam.position.z+=Math.cos(shake*.8)*.012;cam.rotation.x+=Math.sin(shake*1.3)*.004;cam.rotation.z+=Math.cos(shake)*.0035;}
 cd-=dt;if(rel>0){rel-=dt;if(rel<=0)ammo[cur]=WP[cur].mag}
@@ -840,18 +890,19 @@ const o=parseFloat($('fl').style.opacity)||0;if(o>0)$('fl').style.opacity=Math.m
 if(gd<50){hb-=dt;if(hb<=0){snd(55,.18,'sine',.7,.6);hb=.3+gd/70}}
 $('dg').style.opacity=Math.max(0,Math.min(.8,1-(gd-6)/42));
 $('hd').style.opacity=P.hid?1:0;
-if(carry.length&&nearShop()){const n=carry.length;carry.forEach(d=>{d.done=true;d.carried=false;d.active=false});carry=[];stats.money+=n*10;saveStats();msg('SOLD '+n+' DEER \u2014 +$'+n*10,3);snd(660,.12,'square',.2,1.5)}
+if(carry.length&&nearShop()){let n=0,pay=0,gs=false;for(const d of carry){n++;d.done=true;d.carried=false;pay+=d.giant?30:10;if(d.giant)gs=true;else d.active=false}carry=[];stats.money+=pay;stats.sold+=n;saveStats();msg(gs?'SOLD THE GRAY ONE \u2014 +$'+pay:'SOLD '+n+' DEER \u2014 +$'+pay,3);snd(660,.12,'square',.2,1.5)}
+qTimer+=dt;if(qTimer>=1){qTimer=0;qCheck()}
 if(msgT>0){msgT-=dt;if(msgT<=0)$('ms').textContent=''}
-$('tl').textContent='DEER '+stats.deer+'   SHOTS '+stats.shots+'   MURDERED '+stats.deaths+(carry.length?'   CARRYING '+carry.length+'/2':'');
+$('tl').textContent='DEER '+stats.deer+'   SHOTS '+stats.shots+'   MURDERED '+stats.deaths+(carry.length?'   CARRYING '+cw()+'/2':'');
 {const hh=Math.floor(clock),mm=Math.floor((clock-hh)*60);$('clk').textContent='$'+stats.money+'   '+(hh<10?'0':'')+hh+':'+(mm<10?'0':'')+mm+'  '+(nf<.15?'DAY':nf>.85?'NIGHT':(clock<12?'DAWN':'DUSK'))}
 $('br').textContent=WP[cur].n+(cur<2?' '+ammo[cur]+'/'+WP[cur].mag:'')+(rel>0?'  RELOADING':'')+(scoped?'  ZOOM '+(72/sf[cur]).toFixed(1)+'x':'');
 const tx=Math.atan2(-P.x,-P.z),h=Math.atan2(-Math.sin(P.yaw),-Math.cos(P.yaw));
 $('ar').style.transform='rotate('+(-(tx-h))+'rad)';$('cd').textContent='CABIN '+Math.round(Math.hypot(P.x,P.z))+'m';
 {const sbx=Math.atan2(SH.x-P.x,SH.z+4-P.z);$('sha').style.transform='rotate('+(-(sbx-h))+'rad)';$('shd').textContent='SHOP '+Math.round(Math.hypot(SH.x-P.x,SH.z+4-P.z))+'m'}
 {const nd=nearDead(),bd=bedD(),ns=!P.hid&&!bd&&!nd&&nearShop(),nb=(!P.hid&&!bd&&!nd&&!ns)?nearBush():null;
-const pr=P.hid?'[E] LEAVE BUSH':(bd?(nf>.5?'[E] SLEEP':'[E] BED \u2014 SLEEP AT NIGHT'):(nd?(carry.length<2?'[E] PICK UP DEER':'HANDS FULL'):(ns?'[E] SHOP':(nb?'[E] HIDE':(carry.length?'[G] DROP DEER':'')))));
+const pr=P.hid?'[E] LEAVE BUSH':(bd?(nf>.5?'[E] SLEEP':'[E] BED \u2014 SLEEP AT NIGHT'):(nd?(cw()+(nd.giant?2:1)<=2?(nd.giant?'[E] PICK UP THE GRAY ONE':'[E] PICK UP DEER'):'HANDS FULL'):(ns?'[E] SHOP':(nb?'[E] HIDE':(carry.length?'[G] DROP DEER':'')))));
 $('pr').textContent=isTouch?pr.replace(/^\[[EG]\] /,''):pr;
-if(isTouch){setTBtn($('tlight'),stats.flash?(flOn?'LIGHT ON':'LIGHT'):'');setTBtn($('tact'),P.hid?'LEAVE':(bd&&nf>.5?'SLEEP':(ns?'SHOP':(nb?'HIDE':''))));setTBtn($('tcarry'),nd&&carry.length<2?'CARRY':(carry.length?'DROP':'CARRY'),true)}}}
+if(isTouch){setTBtn($('tlight'),stats.flash?(flOn?'LIGHT ON':'LIGHT'):'');setTBtn($('tact'),P.hid?'LEAVE':(bd&&nf>.5?'SLEEP':(ns?'SHOP':(nb?'HIDE':''))));setTBtn($('tcarry'),nd&&cw()+(nd.giant?2:1)<=2?'CARRY':(carry.length?'DROP':'CARRY'),true)}}}
 let last=performance.now();
 function checkOrient(){const por=isTouch&&innerHeight>innerWidth;if(document.body.classList.contains('portrait')!==por)document.body.classList.toggle('portrait',por);if(por&&playing)pauseGame()}
 addEventListener('resize',checkOrient);addEventListener('orientationchange',()=>setTimeout(checkOrient,150));
