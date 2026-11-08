@@ -135,10 +135,14 @@ body.touch.portrait #rot{display:flex}
 .qc button.sw{background:transparent;color:#e8d9a0;border-color:#6f6b55}
 .qc button:disabled{opacity:.45;cursor:default}
 @media (max-height:520px){#shtabs{margin-bottom:6px}#shtabs button{padding:5px;font-size:13px}.qg{gap:6px;margin-bottom:8px}.qc{padding:6px 8px;gap:4px}.qt{font-size:13px}.qc button{padding:6px}}
+#sall{position:absolute;left:18px;top:46px;line-height:1.3}
+.pa{display:inline-block}
+body.touch #sall{top:80px;font-size:12px}
 </style></head><body>
 <canvas id="c"></canvas><audio id="whatSong" src="WHAT.mp3" loop preload="auto"></audio>
 <div class="f" id="hd"></div><div class="f" id="dg"></div><div class="f" id="fl"></div><div class="f" id="sc"></div><div class="f" id="bk"></div><div class="f" id="scan"></div>
-<div id="hud"><div id="hearts" aria-label="Lives">♥ ♥ ♥</div><div id="ch"></div><div id="tl"></div><div id="clk"></div><div id="br"></div><div id="cp"><span id="ar">▲</span> <span id="cd"></span></div><div id="ms"></div><div id="pr"></div><div id="shp"><span id="sha">▲</span> <span id="shd"></span></div></div>
+<div id="hud"><div id="hearts" aria-label="Lives">♥ ♥ ♥</div><div id="ch"></div><div id="tl"></div><div id="clk"></div><div id="br"></div><div id="cp"><span id="ar">▲</span> <span id="cd"></span></div><div id="ms"></div><div id="pr"></div><div id="shp"><span id="sha">▲</span> <span id="shd"></span></div>
+<div id="sall" style="display:none"><div id="sr1"><span class="pa" id="sa1" style="color:#c4c4b8">▲</span> <span id="st1"></span></div><div id="sr2"><span class="pa" id="sa2" style="color:#e0a050">▲</span> <span id="st2"></span></div><div id="sr3"><span class="pa" id="sa3" style="color:#ff6a5a">▲</span> <span id="st3"></span></div></div></div>
 <div id="touch"><div id="tz"></div><div id="jb"><div id="jk"></div></div>
 <div class="tb" id="tpause">PAUSE</div><div class="tb sm" id="tlight">LIGHT</div><div class="tb sm" id="treload">RELOAD</div><div class="tb sm" id="tscope">SCOPE</div><div class="tb sm" id="tswap">SWAP</div>
 <div class="tb" id="tact"></div><div class="tb" id="tcarry">CARRY</div><div class="tb" id="tshoot">SHOOT</div></div>
@@ -369,7 +373,7 @@ else if(p.t==1){/* Removed lookout tower. */}
 else if(p.t==2){add(b,BOX,0x55585a,0,14,0,.7,28,.7);add(b,BOX,0x4a4a44,0,.5,0,6,1,6)}
 else{add(b,CON4,0x8a6a3a,-3,1.4,0,3.6,2.8,3.6,0,0,PI/4);add(b,CON4,0x3a5a7a,3,1.4,1,3.6,2.8,3.6,0,0,PI/4);add(b,BOX,0x2a2018,0,.2,-3,1.2,.4,1.2);add(b,BOX,0xff8020,0,.55,-3,.5,.5,.5)}
 if(p.t<3){const z=[4.5,2.4,3][p.t];RC.push([p.x-z,p.x+z,p.z-z,p.z+z])}
-scene.add(new THREE.Mesh(fin(b),mat))});HB=0;
+const pm=new THREE.Mesh(fin(b),mat);pm.position.set(p.x,0,p.z);scene.add(pm)});HB=0;
 const cb=mk(),WD=0x6b4a2c;cb.skip=1;
 {const h=mk(),LG=[0x6e4a2a,0x7a5532,0x65432a],ST=0x77746c,DK=0x3a2414;
 const logs=(x,z,w,d,r0,r1)=>{for(let i=r0;i<r1;i++)add(h,BOX,LG[i%3],x,.2+i*.4,z,w+(i%2?.1:0),.4,d+(i%2?.1:0))};
@@ -725,7 +729,8 @@ addEventListener('keydown',e=>{
  for(const code of secretCodes)if(secretBuffer.endsWith(code)){activateSecret(code);secretBuffer='';break}
 });
 addEventListener('keydown',e=>{if(!playing&&e.code==='Enter'&&$('ov').style.display!=='none'&&$('scr-main').style.display!=='none'&&$('wnp').style.display!=='flex')$('go').click()});
-let qStarted=false;
+let qStarted=false,saBuf='',showAll=false;
+addEventListener('keydown',e=>{if(e.repeat||!/^[a-z]$/i.test(e.key))return;saBuf=(saBuf+e.key.toLowerCase()).slice(-7);if(saBuf==='showall'){saBuf='';showAll=!showAll;$('sall').style.display=showAll?'block':'none';if(playing)msg(showAll?'SHOW ALL: ON':'SHOW ALL: OFF',2);else $('t2').textContent=showAll?'SHOW ALL ON: pointers to the gray biome, nearest deer and the gray one':'SHOW ALL OFF'}});
 document.addEventListener('pointerlockchange',()=>{if(document.pointerLockElement!==cv&&playing){playing=false;scoped=false;G='menu';showScreen('pause')}});
 addEventListener('mousemove',e=>{if(!playing||document.pointerLockElement!==cv)return;const k=cam.fov/72;P.yaw-=e.movementX*.0022*k;P.pitch=Math.max(-1.4,Math.min(1.4,P.pitch-e.movementY*.0022*k))});
 addEventListener('mousedown',e=>{if(!playing||performance.now()-lastTouchT<700)return;if(e.button==0)shoot();if(e.button==2&&!P.hid&&cur<2)scoped=true});addEventListener('mouseup',e=>{if(e.button==2)scoped=false});addEventListener('contextmenu',e=>e.preventDefault());addEventListener('wheel',e=>{if(!scoped)return;const r=cur?[38,62]:[5,30];sf[cur]=Math.max(r[0],Math.min(r[1],sf[cur]*(e.deltaY>0?1.12:.89)))},{passive:true});
@@ -899,6 +904,11 @@ $('br').textContent=WP[cur].n+(cur<2?' '+ammo[cur]+'/'+WP[cur].mag:'')+(rel>0?' 
 const tx=Math.atan2(-P.x,-P.z),h=Math.atan2(-Math.sin(P.yaw),-Math.cos(P.yaw));
 $('ar').style.transform='rotate('+(-(tx-h))+'rad)';$('cd').textContent='CABIN '+Math.round(Math.hypot(P.x,P.z))+'m';
 {const sbx=Math.atan2(SH.x-P.x,SH.z+4-P.z);$('sha').style.transform='rotate('+(-(sbx-h))+'rad)';$('shd').textContent='SHOP '+Math.round(Math.hypot(SH.x-P.x,SH.z+4-P.z))+'m'}
+if(showAll){const rot=(el,x,z)=>{el.style.transform='rotate('+(-(Math.atan2(x-P.x,z-P.z)-h))+'rad)'};
+rot($('sa1'),GZ.x,GZ.z);const ge=Math.max(0,Math.round(Math.hypot(GZ.x-P.x,GZ.z-P.z)-GZ.r));$('st1').textContent='GRAY BIOME '+(ge?ge+'m':'(INSIDE)');
+let nd2=null,nb2=1e9;for(const d of deers)if(d.active&&d.alive){const k=Math.hypot(d.x-P.x,d.z-P.z);if(k<nb2){nb2=k;nd2=d}}
+$('sr2').style.display=nd2?'':'none';if(nd2){rot($('sa2'),nd2.x,nd2.z);$('st2').textContent='NEAREST DEER '+Math.round(nb2)+'m'}
+$('sr3').style.display=giant.alive?'':'none';if(giant.alive){rot($('sa3'),giant.x,giant.z);$('st3').textContent='GRAY ONE '+Math.round(Math.hypot(giant.x-P.x,giant.z-P.z))+'m'}}
 {const nd=nearDead(),bd=bedD(),ns=!P.hid&&!bd&&!nd&&nearShop(),nb=(!P.hid&&!bd&&!nd&&!ns)?nearBush():null;
 const pr=P.hid?'[E] LEAVE BUSH':(bd?(nf>.5?'[E] SLEEP':'[E] BED \u2014 SLEEP AT NIGHT'):(nd?(cw()+(nd.giant?2:1)<=2?(nd.giant?'[E] PICK UP THE GRAY ONE':'[E] PICK UP DEER'):'HANDS FULL'):(ns?'[E] SHOP':(nb?'[E] HIDE':(carry.length?'[G] DROP DEER':'')))));
 $('pr').textContent=isTouch?pr.replace(/^\[[EG]\] /,''):pr;
