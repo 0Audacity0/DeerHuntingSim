@@ -108,6 +108,16 @@ body.touch.tplay #touch{display:block}
 #tscope{right:calc(74px + env(safe-area-inset-right,0px))}
 #treload{right:calc(134px + env(safe-area-inset-right,0px))}
 #tpause{left:50%;margin-left:-22px;top:calc(10px + env(safe-area-inset-top,0px));width:44px;height:44px;font-size:11px}
+#shop{-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y}
+@media (max-height:520px){#shop{padding:8px}.shp{padding:10px 12px}.shh{margin-bottom:6px}.shh h2{font-size:20px}#shm{font-size:18px}.shn{margin-bottom:6px;font-size:11px}.shg{grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:6px;margin-bottom:8px}.it{padding:6px;gap:3px}.it svg{width:36px;height:36px}.it .qm{font-size:28px;line-height:36px;height:36px}.it span{min-height:0;font-size:11px}.it button{padding:6px}}
+#rot{position:fixed;inset:0;z-index:1000;display:none;flex-direction:column;align-items:center;justify-content:center;gap:28px;background:#0b0d08;color:#e8d9a0;text-align:center;padding:24px;box-sizing:border-box;touch-action:none;-webkit-user-select:none;user-select:none}
+body.touch.portrait #rot{display:flex}
+#rot .ph{width:84px;height:140px;border:5px solid #e8d9a0;border-radius:14px;position:relative;box-sizing:border-box;animation:rotph 2.6s ease-in-out infinite;box-shadow:0 0 24px rgba(232,217,160,.25)}
+#rot .ph::before{content:"";position:absolute;left:50%;top:7px;width:22px;height:4px;margin-left:-11px;border-radius:2px;background:#e8d9a0}
+#rot .ph::after{content:"";position:absolute;left:50%;bottom:7px;width:10px;height:10px;margin-left:-5px;border-radius:50%;border:2px solid #e8d9a0;box-sizing:border-box}
+@keyframes rotph{0%,15%{transform:rotate(0)}55%,85%{transform:rotate(-90deg)}100%{transform:rotate(0)}}
+#rot b{font-size:22px;letter-spacing:4px}
+#rot span{font-size:14px;letter-spacing:1px;color:var(--dim)}
 </style></head><body>
 <canvas id="c"></canvas><audio id="whatSong" src="WHAT.mp3" loop preload="auto"></audio>
 <div class="f" id="hd"></div><div class="f" id="dg"></div><div class="f" id="fl"></div><div class="f" id="sc"></div><div class="f" id="bk"></div><div class="f" id="scan"></div>
@@ -154,6 +164,7 @@ body.touch.tplay #touch{display:block}
 <div id="wnp"><button class="wnar" id="wnl" aria-label="Newer update">&#9664;&#xFE0E;</button>
 <div class="wnc"><div class="wnh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" shape-rendering="crispEdges"><path d="M3 4h14v16H5a2 2 0 0 1-2-2z"/><path d="M17 8h4v10a2 2 0 0 1-2 2h-2"/><path d="M6 8h8M6 11h8M6 14h4M12 14h2M6 17h8"/></svg><h2>WHAT'S NEW</h2></div><div class="wnv" id="wnv"></div><ul id="wnu"></ul><button class="btn" id="wnx" style="width:100%">CLOSE</button></div>
 <button class="wnar" id="wnr" aria-label="Previous updates">&#9654;&#xFE0E;</button></div>
+<div id="rot"><div class="ph"></div><b>ROTATE YOUR PHONE</b><span>This game is played in landscape mode</span></div>
 <div id="ver">v1.1.3</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
@@ -578,14 +589,15 @@ const HINTS={axe:['AXE BOUGHT \u2014 PRESS 3 TO EQUIP IT','AXE BOUGHT \u2014 USE
 let flOn=false;
 function toggleFlash(){if(!stats.flash||!playing)return;flOn=!flOn;mat.uniforms.fl.value=flOn?1:0;msg(flOn?'FLASHLIGHT ON':'FLASHLIGHT OFF',1)}
 function applyGear(){WP[0].mag=cheatAmmo?100:(stats.belt?8:5);WP[1].mag=stats.belt?4:2;ammo[0]=WP[0].mag;ammo[1]=WP[1].mag}
+function releaseLock(){try{if(document.exitPointerLock&&document.pointerLockElement)document.exitPointerLock()}catch(_){}}
 function renderShop(){$('shm').textContent='$'+stats.money;let h='';const left=ITEMS.filter(i=>!stats[i.id]);
 for(const it of ITEMS){const own=!!stats[it.id],need=it.p-stats.money;
 h+='<div class="it">'+it.svg+'<b>'+it.n+'</b><span>'+it.d+'</span><div class="ip">$'+it.p+'</div><button data-id="'+it.id+'"'+(own||need>0?' disabled':'')+'>'+(own?'OWNED':need>0?'NEED $'+need+' MORE':'BUY')+'</button></div>'}
 for(const [n,d] of SOON)h+='<div class="it soon"><div class="qm">?</div><b>'+n+'</b><span>'+d+'</span><div class="ip">COMING SOON</div></div>';
 $('shg').innerHTML=h;const nx=left.length?Math.min(...left.map(i=>i.p)):0;$('shbw').style.display=nx?'block':'none';$('shbar').style.width=nx?Math.min(100,stats.money/nx*100)+'%':'0'}
 function buyItem(id){const it=ITEMS.find(i=>i.id===id);if(!it||stats[id]||stats.money<it.p)return;stats.money-=it.p;stats[id]=1;saveStats();applyGear();snd(520,.15,'square',.25,1.8);shopHint=id;renderShop()}
-function openShop(){if(G!=='play')return;playing=false;scoped=false;G='shop';joyReset();lookReset();document.exitPointerLock();renderShop();$('shop').style.display='flex'}
-function closeShop(){if(G!=='shop')return;$('shop').style.display='none';G='play';playing=true;if(!isTouch)cv.requestPointerLock();if(shopHint){const h=HINTS[shopHint];shopHint='';if(h)msg(isTouch?h[1]:h[0],4)}}
+function openShop(){if(G!=='play')return;playing=false;scoped=false;G='shop';joyReset();lookReset();releaseLock();renderShop();$('shop').style.display='flex'}
+function closeShop(){if(G!=='shop')return;$('shop').style.display='none';G='play';playing=true;if(!isTouch&&cv.requestPointerLock){try{cv.requestPointerLock()}catch(_){}}if(shopHint){const h=HINTS[shopHint];shopHint='';if(h)msg(isTouch?h[1]:h[0],4)}}
 $('shx').onclick=closeShop;
 $('shg').onclick=e=>{const b=e.target.closest('button[data-id]');if(b)buyItem(b.dataset.id)};
 addEventListener('keydown',e=>{if(e.code==='Escape'){if(G==='shop')closeShop();else if($('wnp').style.display==='flex')$('wnp').style.display='none'}});
@@ -594,7 +606,7 @@ function noise(dur,vol){if(!ac)return;const n=ac.sampleRate*dur,b=ac.createBuffe
 function snd(f,dur,type,vol,sw){if(!ac)return;const o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime;o.type=type;o.frequency.setValueAtTime(f,t);o.frequency.exponentialRampToValueAtTime(Math.max(20,f*sw),t+dur);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(g).connect(ac.destination);o.start();o.stop(t+dur)}
 function respawn(){defenseLives=3;defenseHitCooldown=0;updateHearts();carry.forEach(d=>d.active=false);carry=[];scoped=false;P.stuck=0;P.x=0;P.z=9;P.yaw=0;P.pitch=0;P.hid=false;ammo=[WP[0].mag,WP[1].mag,0];rel=0;cd=0;resetGiant()}
 function resetGiant(){giant.x=GZ.x;giant.z=GZ.z;giant.st='stalk';giant.angry=0;giant.roadI=Math.floor(Math.random()*grayRoad.length);giant.alive=true;giant.active=true;giant.us=0;giant.hp=5;giant.dT=0;giant.g.rotation.set(0,0,0);giant.px=undefined;giant.g.position.set(giant.x,hgt(giant.x,giant.z),giant.z);giant.g.visible=true}
-function die(){if(G==='dead')return;stats.deaths++;saveStats();playing=false;scoped=false;G='dead';updateHearts();document.exitPointerLock();snd(70,.8,'sawtooth',.5,.3);noise(.6,.5);
+function die(){if(G==='dead')return;stats.deaths++;saveStats();playing=false;scoped=false;G='dead';updateHearts();releaseLock();snd(70,.8,'sawtooth',.5,.3);noise(.6,.5);
 showScreen('dead')}
 function showScreen(m){const c={title:['DEER HUNTING SIMULATOR','Hey this game is like REALLY buggy, too much stuff softlocks you and it overall sucks. This is a JOKE game, not one to be taken SERIOUSLY.','PLAY'],pause:['PAUSED','Hey why we pause the game?','RESUME'],dead:[gameMode==='defense'&&defenseLives<=0?'YOU WERE OVERRUN':'THE GRAY ONE FOUND YOU',gameMode==='defense'&&defenseLives<=0?'Defense run over. Choose a mode and try again.':'Murdered by the gray one: '+stats.deaths+(stats.deaths==1?' time.':' times.'),'RESPAWN AT THE CABIN']}[m];
 $('t1').textContent=c[0];$('t2').textContent=c[1];$('go').textContent=c[2];$('kick').style.display=m==='title'?'block':'none';$('mode-overlay').style.display='none';
@@ -841,7 +853,9 @@ const pr=P.hid?'[E] LEAVE BUSH':(bd?(nf>.5?'[E] SLEEP':'[E] BED \u2014 SLEEP AT 
 $('pr').textContent=isTouch?pr.replace(/^\[[EG]\] /,''):pr;
 if(isTouch){setTBtn($('tlight'),stats.flash?(flOn?'LIGHT ON':'LIGHT'):'');setTBtn($('tact'),P.hid?'LEAVE':(bd&&nf>.5?'SLEEP':(ns?'SHOP':(nb?'HIDE':''))));setTBtn($('tcarry'),nd&&carry.length<2?'CARRY':(carry.length?'DROP':'CARRY'),true)}}}
 let last=performance.now();
-function loop(n){requestAnimationFrame(loop);const dt=Math.min(.05,(n-last)/1000);last=n;if(playing)upd(dt);else if($('hearts').style.display!=='none')$('hearts').style.display='none';document.body.classList.toggle('tplay',isTouch&&playing);if(!playing&&(tj.id!==null||lk.id!==null)){joyReset();lookReset()}
+function checkOrient(){const por=isTouch&&innerHeight>innerWidth;if(document.body.classList.contains('portrait')!==por)document.body.classList.toggle('portrait',por);if(por&&playing)pauseGame()}
+addEventListener('resize',checkOrient);addEventListener('orientationchange',()=>setTimeout(checkOrient,150));
+function loop(n){requestAnimationFrame(loop);checkOrient();const dt=Math.min(.05,(n-last)/1000);last=n;if(playing)upd(dt);else if($('hearts').style.display!=='none')$('hearts').style.display='none';document.body.classList.toggle('tplay',isTouch&&playing);if(!playing&&(tj.id!==null||lk.id!==null)){joyReset();lookReset()}
 const ft=scoped&&!P.hid?sf[cur]:72;if(Math.abs(cam.fov-ft)>.05){cam.fov+=(ft-cam.fov)*Math.min(1,dt*14);cam.updateProjectionMatrix()}
 const sv=scoped&&cur==0&&cam.fov<34;$('sc').style.opacity=sv?1:0;$('ch').style.display=scoped?'none':'block';
 renderer.clear();renderer.render(scene,cam);if(!P.hid&&!sv){renderer.clearDepth();renderer.render(gs,gcam)}}
