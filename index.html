@@ -30,7 +30,7 @@ body.touch #hearts{top:62px}
 body.touch .hs{width:34px;height:34px}body.touch .hs svg{width:22px;height:22px}body.touch #hotbar{bottom:8px}
 #rdr{position:absolute;right:18px;top:56px;width:120px;height:120px;border-radius:50%;display:none;background:rgba(5,25,10,.55);border:2px solid #4a4836;box-sizing:border-box}
 body.touch #rdr{right:auto;left:18px;top:100px;width:92px;height:92px}
-#theal{right:calc(14px + env(safe-area-inset-right,0px));top:calc(118px + env(safe-area-inset-top,0px));display:none}
+#theal{right:calc(134px + env(safe-area-inset-right,0px));top:calc(118px + env(safe-area-inset-top,0px));display:none}
 #trep{right:calc(74px + env(safe-area-inset-right,0px));top:calc(118px + env(safe-area-inset-top,0px));display:none}
 
 #br{position:absolute;right:18px;bottom:14px;text-align:right}
@@ -216,14 +216,15 @@ body.touch #sall{top:80px;font-size:12px}
 #mp-chat-hint{flex:0 0 auto;font-size:10px;letter-spacing:1px;color:#8f8a70;text-align:right}
 .mp-contributor-tag{display:inline-block;vertical-align:middle;margin-left:5px;padding:1px 5px;border:1px solid #e8d9a0;border-radius:3px;background:rgba(232,217,160,.14);color:#e8d9a0;font: bold 10px "Courier New",monospace;letter-spacing:.7px;white-space:nowrap}
 @media(max-width:560px),(pointer:coarse){
- #mp-chat-button{right:12px;top:calc(174px + env(safe-area-inset-top,0px));width:48px;height:48px;padding:9px}
+ #mp-chat-button{position:fixed;right:calc(14px + env(safe-area-inset-right,0px));top:calc(118px + env(safe-area-inset-top,0px));width:52px;height:52px;padding:10px;border-radius:50%;box-sizing:border-box}
  #mp-chat-button svg{width:28px;height:28px}
  #mp-chat-panel{left:10px;right:10px;top:auto;bottom:calc(10px + env(safe-area-inset-bottom,0px));width:auto;height:min(290px,42dvh);min-height:140px;max-height:calc(var(--mp-vh) - 20px);padding:10px;gap:8px}
  #mp-chat-head{font-size:13px}
  #mp-chat-messages{font-size:13px;padding:8px}
  #mp-chat-hint{font-size:9px}
 }
-@media(max-height:420px) and (pointer:coarse){#mp-chat-panel{height:min(220px,55dvh);min-height:120px}#mp-chat-button{top:calc(126px + env(safe-area-inset-top,0px))}}
+@media(max-height:420px) and (pointer:coarse){#mp-chat-panel{height:min(220px,55dvh);min-height:120px}#mp-chat-button{position:fixed;right:calc(14px + env(safe-area-inset-right,0px));top:calc(118px + env(safe-area-inset-top,0px))}}
+body.touch #mp-chat-button{position:fixed;right:calc(14px + env(safe-area-inset-right,0px));top:calc(118px + env(safe-area-inset-top,0px));width:52px;height:52px;border-radius:50%;box-sizing:border-box}
 
 
 /* Compact in-game keyboard for mobile multiplayer chat. */
@@ -260,9 +261,9 @@ body.touch #sall{top:80px;font-size:12px}
 }
 
 /* ADMINISTRATOR moderation and game-wide controls */
-#mp-admin-ui{top:194px}
+#mp-admin-ui{top:254px}
 #mp-admin-button{background:#080808;color:#ff3b3b;border:2px solid #ff2424;box-shadow:0 0 12px #ff202055;font-size:13px}
-#mp-admin-panel{top:244px;width:min(420px,calc(100vw - 28px));max-height:min(76vh,680px);background:#050505;border:2px solid #ff2424;box-shadow:0 0 18px #ff202055,0 12px 38px #000b}
+#mp-admin-panel{top:306px;width:min(420px,calc(100vw - 28px));max-height:min(76vh,680px);background:#050505;border:2px solid #ff2424;box-shadow:0 0 18px #ff202055,0 12px 38px #000b}
 #mp-admin-head{color:#ff4545}
 #mp-admin-tabs{display:flex;gap:6px;margin-bottom:10px}
 #mp-admin-tabs button,.mp-admin-action{font:inherit;font-size:11px;letter-spacing:1px;padding:8px 9px;color:#ff5555;background:#100707;border:1px solid #a51c1c;cursor:pointer}
@@ -278,7 +279,6 @@ body.touch #sall{top:80px;font-size:12px}
 .mp-admin-switch input{accent-color:#f33;width:17px;height:17px}
 .mp-admin-small{color:#9b8585;font-size:10px;line-height:1.4;margin:7px 0}
 #mp-admin-feedback{min-height:17px;margin-top:8px;color:#ffd35a;font-size:11px;white-space:pre-wrap}
-#mp-chat-button{position:relative}
 #mp-chat-unread{position:absolute;right:-8px;top:-8px;min-width:20px;height:20px;padding:0 4px;box-sizing:border-box;border-radius:12px;display:none;align-items:center;justify-content:center;background:#e52c2c;color:#fff;border:1px solid #ffb3b3;font:bold 11px Arial,sans-serif;text-shadow:none;box-shadow:0 1px 5px #000}
 #mp-access-overlay{position:fixed;inset:0;z-index:2000;display:none;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;background:rgba(0,0,0,.97);font-family:"Courier New",monospace;text-align:center}
 #mp-access-card{width:min(560px,100%);padding:26px 22px;box-sizing:border-box;background:#090909;border:2px solid #777;box-shadow:0 0 35px #000}
