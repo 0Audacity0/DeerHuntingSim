@@ -656,7 +656,7 @@ const fm=SET.fog;mat.uniforms.fogf.value=fm<=.02?4000:(80-28*nf)*(1-.38*wx.rain-
 let cheatAmmo=false,gameMode='regular',lives=3,hitCooldown=0,deathCause='gray',hf=0,carry=[],sf=[16,50,50],sleepT=0,scoped=false,playing=false,G='menu',T=0,camY=1.7,bob=0,msgT=0,hb=0,ac;
 const keys={};
 const UPDATES=[
-{v:'1.6.0',t:'Multiplayer Update',n:['Finally added Multiplayer','Not much its literally just multiplayer, nothing special']},
+{v:'1.6.0',t:'Multiplayer Update',n:['FINALLY released Multiplayer','Yeah thats... it ;-;']},
 {v:'1.5.0',t:'Survival Update',n:['Radar is now in the shop and shows nearby animals, bears are red','Bandages (H) heal a heart, bear repellent (V) keeps bears away for a while, and sleeping in the bed at night heals everything','Weather: rain, fog and thunderstorms that change how far you can see and how well animals notice you (Settings > Fun can force it)','Better looking rifle and shotgun, an item bar at the bottom of the screen and new bear sounds','Difficulty: Stupid (hardest), Ok fine sure (medium) and you\'re gonna fall asleep (easiest)']},
 {v:'1.4.0',t:'Wildlife Update',n:['New animals: rabbits (sell for $5) and bears (sell for $20)','Bears are pretty rare. They charge you when they spot you, and every hit costs 1 heart. It takes 8 rifle shots or 6 shotgun shots to kill one','You now always have 3 hearts, in every gamemode. The gray one still one shots you','The pause menu no longer asks you to choose a gamemode again']},
 {v:'1.3.0',t:'Variety & Settings Update',n:['New tree types: spruce, oak, birch, autumn and dead trees (the gray biome gets dead gray ones too)','New bush types: berry, fern, flowering and thorny dry ones','New deer: does, young bucks, fawns, dark bucks and a very rare albino. The dark bucks and albino sell for more','Deer are now mildly intelligent','Stand still for around 40 seconds and some deer will wander up and stare at you from 20 to 30 meters away','New settings button that includes: fog, brightness, contrast, saturation, field of view, pixel size, volume and look sensitivity','Fun tab in Settings, with a Drugs mode, a camcorder look, time of day, game speed and pointers','Devnote: this update dont really got much, sorry']},
@@ -1198,7 +1198,7 @@ if(isTouch){setTBtn($('theal'),stats.heal?'HEAL '+stats.heal:'');setTBtn($('trep
 let last=performance.now();
 function checkOrient(){const por=isTouch&&innerHeight>innerWidth;if(document.body.classList.contains('portrait')!==por)document.body.classList.toggle('portrait',por);if(por&&playing)pauseGame()}
 addEventListener('resize',checkOrient);addEventListener('orientationchange',()=>setTimeout(checkOrient,150));
-function loop(n){requestAnimationFrame(loop);checkOrient();const rdt=Math.min(.05,(n-last)/1000),dt=rdt*gameSpeed;last=n;if(playing){upd(dt);if($('hearts').style.display==='none')updateHearts()}else{wxMute();if($('hearts').style.display!=='none')$('hearts').style.display='none'}document.body.classList.toggle('tplay',isTouch&&playing);if(!playing&&(tj.id!==null||lk.id!==null)){joyReset();lookReset()}
+function loop(n){requestAnimationFrame(loop);checkOrient();const rdt=Math.min(.05,(n-last)/1000),dt=rdt*gameSpeed;last=n;if(playing){upd(dt);if($('hearts').style.display==='none')updateHearts()}else{wxMute();if($('hearts').style.display!=='none')$('hearts').style.display='none'}if(mpOnline)mpTickRemote(rdt);document.body.classList.toggle('tplay',isTouch&&playing);if(!playing&&(tj.id!==null||lk.id!==null)){joyReset();lookReset()}
 const ft=scoped&&!P.hid?sf[cur]:baseFov;if(Math.abs(cam.fov-ft)>.05){cam.fov+=(ft-cam.fov)*Math.min(1,dt*14);cam.updateProjectionMatrix()}
 const sv=scoped&&cur==0&&cam.fov<34;$('sc').style.opacity=sv?1:0;$('ch').style.display=scoped?'none':'block';
 const tt=n/1000;drunk+=((drugOn?.15+.85*drugLvl:0)-drunk)*Math.min(1,rdt*1.6);
@@ -1254,87 +1254,119 @@ function closeSet(){$('set').style.display='none'}
 $('cog').onclick=openSet;$('setx').onclick=closeSet;$('set').addEventListener('pointerdown',e=>{if(e.target===$('set'))closeSet()});
 addEventListener('keydown',e=>{if(e.code==='Escape'&&$('set').style.display==='flex')closeSet()});
 // --- Supabase multiplayer ---
-// Public project URL and publishable key. Never place a Supabase service-role key in a browser game.
+// Player motion uses Realtime Broadcast at 10 updates/second (100 ms).
+// The database stores join/leave state and persistent world changes; it is not polled for every movement packet.
 const MP_SUPABASE_URL='https://rfgurxkjchcjnavpsdxv.supabase.co';
 const MP_SUPABASE_KEY='sb_publishable_8xK9UY2VEOTEG_lxenBwqA_mtbwY3HF';
-let mpClient=null,mpChannel=null,mpOnline=false,mpStarting=false,mpLastWrite=0,mpLastEvent=0;
+let mpClient=null,mpChannel=null,mpOnline=false,mpStarting=false,mpLastPersist=0,mpBroadcastBusy=false,mpBroadcastQueued=false;
 const mpRemote=new Map(),mpEventSeen=new Set();
 const mpPlayerId=(()=>{let v=localStorage.getItem('hsm.playerId');if(!v){v=(crypto.randomUUID?crypto.randomUUID():('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:(r&3|8)).toString(16)})));localStorage.setItem('hsm.playerId',v)}return v})();
 let mpName=localStorage.getItem('hsm.playerName')||('Hunter'+Math.floor(100+Math.random()*900));
 const mpTasks=['Loading forest terrain','Loading trees and chopping state','Loading mud and terrain details','Loading wildlife','Loading shop inventory','Connecting to other hunters','Synchronizing player positions'];
 function mpAvatar(dead=false,item=0){
- const g=new THREE.Group(),skin=new THREE.MeshBasicMaterial({color:0xe0b98e}),shirt=new THREE.MeshBasicMaterial({color:0x536b42}),pants=new THREE.MeshBasicMaterial({color:0x343a2d}),dark=new THREE.MeshBasicMaterial({color:0x171713}),white=new THREE.MeshBasicMaterial({color:0xf0ead7}),black=new THREE.MeshBasicMaterial({color:0x171717});
- const ball=(r,m,x,y,z)=>{const o=new THREE.Mesh(new THREE.SphereGeometry(r,8,6),m);o.position.set(x,y,z);g.add(o);return o};
+ // Floating head + two detached spherical hands only. No torso, legs, or arms.
+ const g=new THREE.Group();
+ const skin=new THREE.MeshBasicMaterial({color:0xe0b98e}),dark=new THREE.MeshBasicMaterial({color:0x171713}),white=new THREE.MeshBasicMaterial({color:0xf0ead7}),black=new THREE.MeshBasicMaterial({color:0x171717});
+ const ball=(r,m,x,y,z)=>{const o=new THREE.Mesh(new THREE.SphereGeometry(r,12,8),m);o.position.set(x,y,z);g.add(o);return o};
  const box=(x,y,z,sx,sy,sz,m)=>{const o=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),m);o.position.set(x,y,z);g.add(o);return o};
- box(0,1.05,0,.58,.72,.3,shirt);box(-.17,.42,0,.19,.55,.2,pants);box(.17,.42,0,.19,.55,.2,pants);const head=ball(.29,skin,0,1.65,0);
- // Face faces local -Z
+ ball(.32,skin,0,1.58,0);
+ // Face looks toward local -Z.
  if(dead){
-  for(const x of [-.105,.105]){const a=box(x,1.72,-.253,.09,.035,.018,dark);a.rotation.z=.72;const b=box(x,1.72,-.254,.09,.035,.018,dark);b.rotation.z=-.72}
-  box(0,1.53,-.26,.19,.025,.018,dark);
+  for(const x of [-.115,.115]){const a=box(x,1.68,-.286,.105,.025,.018,dark);a.rotation.z=.72;const b=box(x,1.68,-.287,.105,.025,.018,dark);b.rotation.z=-.72}
+  box(0,1.45,-.307,.19,.025,.018,dark);
  }else{
-  ball(.035,black,-.1,1.7,-.255);ball(.035,black,.1,1.7,-.255);
-  const smile=new THREE.Mesh(new THREE.TorusGeometry(.105,.018,4,10,Math.PI),black);smile.position.set(0,1.59,-.25);smile.rotation.z=Math.PI;g.add(smile);
+  ball(.037,black,-.11,1.66,-.286);ball(.037,black,.11,1.66,-.286);
+  const smileCurve=new THREE.QuadraticBezierCurve3(new THREE.Vector3(-.115,1.48,-.282),new THREE.Vector3(0,1.405,-.315),new THREE.Vector3(.115,1.48,-.282));
+  const smile=new THREE.Mesh(new THREE.TubeGeometry(smileCurve,12,.014,5,false),black);g.add(smile);
  }
- // Arms and round hands
- const armL=box(-.39,1.1,-.01,.16,.55,.17,shirt),armR=box(.39,1.1,-.01,.16,.55,.17,shirt);armL.rotation.z=-.18;armR.rotation.z=.18;ball(.105,skin,-.4,.78,-.04);ball(.105,skin,.4,.78,-.04);
- // One-hand held tool: long gun for slots 0/1, axe for slot 2
- if(item===2){box(.43,.78,-.24,.08,.08,.65,dark);const blade=box(.43,.88,-.53,.32,.2,.06,white);blade.rotation.z=-.2}
- else{box(.43,.82,-.3,.1,.1,.75,dark);box(.43,.9,-.63,.14,.12,.22,dark)}
- // small flashlight on opposite hand
- box(-.42,.76,-.13,.09,.09,.25,dark);ball(.07,white,-.42,.76,-.27);
+ // Detached floating hands.
+ ball(.125,skin,-.49,1.16,-.015);ball(.125,skin,.49,1.16,-.015);
+ // Held item sits beside the right hand; flashlight stays in the left.
+ if(item===2){
+  box(.48,1.13,-.23,.09,.09,.58,dark);
+  const blade=box(.48,1.25,-.48,.34,.2,.07,white);blade.rotation.z=-.16;
+ }else{
+  box(.48,1.16,-.23,.105,.105,.78,dark);
+  box(.48,1.21,-.66,.16,.13,.24,dark);
+  box(.48,1.02,-.02,.07,.18,.12,dark);
+ }
+ box(-.49,1.16,-.15,.09,.09,.25,dark);ball(.075,white,-.49,1.16,-.29);
  g.userData={dead,item};return g;
 }
-function mpSetRemote(row){if(!row||row.id===mpPlayerId)return;let o=mpRemote.get(row.id);if(!o){const root=new THREE.Group();const avatar=mpAvatar(!row.alive,row.held_item||0);root.add(avatar);scene.add(root);o={root,avatar,row};mpRemote.set(row.id,o)}
- o.row=row;o.root.position.set(Number(row.x)||0,hgt(Number(row.x)||0,Number(row.z)||0),Number(row.z)||0);o.root.rotation.y=Number(row.yaw)||0;
- if((!row.alive)!==!!o.avatar.userData.dead||Number(row.held_item||0)!==Number(o.avatar.userData.item||0)){o.root.remove(o.avatar);o.avatar=mpAvatar(!row.alive,row.held_item||0);o.root.add(o.avatar)}
- o.root.visible=Date.now()-new Date(row.updated_at||Date.now()).getTime()<25000;
+function mpSetRemote(row){
+ if(!row||!row.id||row.id===mpPlayerId)return;
+ const x=Number(row.x),z=Number(row.z),yaw=Number(row.yaw)||0;if(!Number.isFinite(x)||!Number.isFinite(z))return;
+ const stamp=Date.parse(row.updated_at||'')||Date.now();let o=mpRemote.get(row.id);
+ if(o&&stamp<o.stamp)return;
+ if(!o){
+  const root=new THREE.Group(),avatar=mpAvatar(!row.alive,Number(row.held_item)||0);root.add(avatar);scene.add(root);
+  root.position.set(x,hgt(x,z),z);root.rotation.y=yaw;
+  o={root,avatar,row,target:{x,z,yaw},stamp,lastSeen:Date.now()};mpRemote.set(row.id,o);
+ }else{
+  o.target={x,z,yaw};o.row=row;o.stamp=stamp;o.lastSeen=Date.now();
+  if((!row.alive)!==!!o.avatar.userData.dead||Number(row.held_item||0)!==Number(o.avatar.userData.item||0)){
+   o.root.remove(o.avatar);o.avatar=mpAvatar(!row.alive,Number(row.held_item)||0);o.root.add(o.avatar);
+  }
+ }
+ o.lastSeen=Date.now();o.row=row;o.root.visible=true;
+}
+function mpTickRemote(dt){
+ const now=Date.now();
+ for(const [id,o] of mpRemote){
+  if(now-o.lastSeen>8000){mpRemoveRemote(id);continue}
+  const k=1-Math.exp(-Math.max(0,dt)*14),t=o.target;
+  o.root.position.x+=(t.x-o.root.position.x)*k;o.root.position.z+=(t.z-o.root.position.z)*k;
+  o.root.position.y=hgt(o.root.position.x,o.root.position.z);
+  let da=((t.yaw-o.root.rotation.y+Math.PI*3)%(Math.PI*2))-Math.PI;o.root.rotation.y+=da*k;
+  o.root.visible=true;
+ }
 }
 function mpRemoveRemote(id){const o=mpRemote.get(id);if(o){scene.remove(o.root);o.root.traverse(v=>{if(v.geometry)v.geometry.dispose();if(v.material){if(Array.isArray(v.material))v.material.forEach(m=>m.dispose());else v.material.dispose()}});mpRemote.delete(id)}}
-async function mpWritePosition(force=false){if(!mpClient||!mpOnline||!playing)return;const now=Date.now();if(!force&&now-mpLastWrite<250)return;mpLastWrite=now;
- const row={id:mpPlayerId,name:mpName,x:+P.x.toFixed(2),z:+P.z.toFixed(2),yaw:+P.yaw.toFixed(3),pitch:+P.pitch.toFixed(3),held_item:cur,alive:G!=='dead',money:Math.max(0,Math.floor(stats.money||0)),inventory:{rifle:!!stats.rifle,shotgun:!!stats.shotgun,axe:!!stats.axe,flash:!!stats.flash},updated_at:new Date().toISOString()};
- const {error}=await mpClient.from('hs_players').upsert(row,{onConflict:'id'});if(error)console.warn('Multiplayer position:',error.message);
-}
-async function mpEmit(type,payload={}){if(!mpClient||!mpOnline)return;try{await mpClient.from('hs_world_events').insert({player_id:mpPlayerId,player_name:mpName,event_type:type,payload})}catch(e){console.warn('Multiplayer event failed',e)}}
-async function mpStoreWorld(objectId,state){if(!mpClient||!mpOnline)return;try{await mpClient.from('hs_world_state').upsert({object_id:objectId,state,updated_by:mpPlayerId,updated_at:new Date().toISOString()},{onConflict:'object_id'})}catch(e){console.warn('World state sync:',e.message)}}
-function mpApplyWorld(row){if(!row)return;const id=row.object_id||'',v=row.state||{};if(id.startsWith('tree:')){const i=Number(id.slice(5)),t=treeSpots[i];if(t&&!t.cut){t.cut=true;removeC(t.c)}return}if(id.startsWith('animal:')){const [kind,raw]=id.slice(7).split(':');const i=Number(raw),arr=kind==='rabbit'?rabbits:kind==='bear'?bears:kind==='gray'?[giant]:deers,a=arr&&arr[i];if(a){a.alive=v.alive!==false;a.active=v.active!==false;if(v.alive===false){a.g.visible=false}}}}
-function mpApplyEvent(ev){if(!ev||ev.player_id===mpPlayerId||mpEventSeen.has(ev.id))return;mpEventSeen.add(ev.id);if(mpEventSeen.size>500){mpEventSeen.clear()}
- const p=ev.payload||{};
- if(ev.event_type==='tree_chopped'&&Number.isInteger(p.index)){const t=treeSpots[p.index];if(t&&!t.cut){t.cut=true;removeC(t.c)}}
- if(ev.event_type==='animal_killed'){const arr=p.kind==='rabbit'?rabbits:p.kind==='bear'?bears:deers;const a=arr&&arr[p.index];if(a){a.alive=false;a.active=false;a.g.visible=false}}
- if(ev.event_type==='purchase'&&p.item){msg(ev.player_name+' bought '+p.item,2)}
- if(ev.event_type==='shop_sale'){msg(ev.player_name+' sold animals at the shop',2)}
- if(ev.event_type==='shot'){/* gunfire is represented by the shared event; local wildlife remains locally simulated */}
-}
-async function mpConnectAndStart(){if(mpStarting)return;mpStarting=true;const url=MP_SUPABASE_URL,key=MP_SUPABASE_KEY,nm=$('mp-name').value.trim().slice(0,20)||mpName;
- localStorage.setItem('hsm.playerName',nm);mpName=nm;
- $('mp-config').style.display='none';$('mp-loading').style.display='block';$('mp-title').textContent='LOADING MULTIPLAYER';$('mp-task-list').innerHTML=mpTasks.map((t,i)=>'<div id="mpt'+i+'">○ '+t+'</div>').join('');$('mp-progress-bar').style.width='0%';
+function mpBuildRow(){return {id:mpPlayerId,name:mpName,x:+P.x.toFixed(2),z:+P.z.toFixed(2),yaw:+P.yaw.toFixed(3),pitch:+P.pitch.toFixed(3),held_item:cur,alive:G!=='dead',money:Math.max(0,Math.floor(stats.money||0)),inventory:{rifle:!!stats.rifle,shotgun:!!stats.shotgun,axe:!!stats.axe,flash:!!stats.flash},updated_at:new Date().toISOString()}}
+async function mpPersistPosition(force=false){if(!mpClient||!mpOnline)return;const now=Date.now();if(!force&&now-mpLastPersist<1000)return;mpLastPersist=now;try{const {error}=await mpClient.from('hs_players').upsert(mpBuildRow(),{onConflict:'id'});if(error)console.warn('Multiplayer player save:',error.message)}catch(e){console.warn('Multiplayer player save:',e.message)}}
+async function mpBroadcastPosition(){if(!mpOnline||!mpChannel)return;if(mpBroadcastBusy){mpBroadcastQueued=true;return}mpBroadcastBusy=true;try{const {error}=await mpChannel.send({type:'broadcast',event:'player_position',payload:mpBuildRow()});if(error)console.warn('Player broadcast:',error.message)}catch(e){console.warn('Player broadcast:',e.message)}finally{mpBroadcastBusy=false;if(mpBroadcastQueued){mpBroadcastQueued=false;mpBroadcastPosition()}}}
+async function mpEmit(type,payload={}){if(!mpClient||!mpOnline)return;try{const {error}=await mpClient.from('hs_world_events').insert({player_id:mpPlayerId,player_name:mpName,event_type:type,payload});if(error)console.warn('Multiplayer event failed:',error.message)}catch(e){console.warn('Multiplayer event failed:',e.message)}}
+async function mpStoreWorld(objectId,state){if(!mpClient||!mpOnline)return;try{const {error}=await mpClient.from('hs_world_state').upsert({object_id:objectId,state,updated_by:mpPlayerId,updated_at:new Date().toISOString()},{onConflict:'object_id'});if(error)console.warn('World state sync:',error.message)}catch(e){console.warn('World state sync:',e.message)}}
+function mpApplyWorld(row){if(!row)return;const id=row.object_id||'',v=row.state||{};if(id.startsWith('tree:')){const i=Number(id.slice(5)),t=treeSpots[i];if(t&&!t.cut){t.cut=true;removeC(t.c)}return}if(id.startsWith('animal:')){const [kind,raw]=id.slice(7).split(':');const i=Number(raw),arr=kind==='rabbit'?rabbits:kind==='bear'?bears:kind==='gray'?[giant]:deers,a=arr&&arr[i];if(a){a.alive=v.alive!==false;a.active=v.active!==false;if(v.alive===false&&a.g)a.g.visible=false}}}
+function mpApplyEvent(ev){if(!ev||ev.player_id===mpPlayerId||mpEventSeen.has(ev.id))return;mpEventSeen.add(ev.id);if(mpEventSeen.size>500)mpEventSeen.clear();const p=ev.payload||{};if(ev.event_type==='tree_chopped'&&Number.isInteger(p.index)){const t=treeSpots[p.index];if(t&&!t.cut){t.cut=true;removeC(t.c)}}if(ev.event_type==='animal_killed'){const arr=p.kind==='rabbit'?rabbits:p.kind==='bear'?bears:p.kind==='gray'?[giant]:deers;const a=arr&&arr[p.index];if(a){a.alive=false;a.active=false;if(a.g)a.g.visible=false}}if(ev.event_type==='purchase'&&p.item)msg(ev.player_name+' bought '+p.item,2);if(ev.event_type==='shop_sale')msg(ev.player_name+' sold animals at the shop',2)}
+async function mpConnectAndStart(){
+ if(mpStarting)return;mpStarting=true;const nm=$('mp-name').value.trim().slice(0,20)||mpName;localStorage.setItem('hsm.playerName',nm);mpName=nm;
+ $('mp-config').style.display='none';$('mp-loading').style.display='block';$('mp-title').textContent='LOADING MULTIPLAYER';$('mp-task-list').innerHTML=mpTasks.map((t,i)=>'<div id="mpt'+i+'">○ '+t+'</div>').join('');$('mp-progress-bar').style.width='0%';$('mp-status').textContent='';
  try{
   if(!window.supabase?.createClient)throw new Error('Supabase library did not load. Check your internet connection.');
-  mpClient=window.supabase.createClient(url,key,{realtime:{params:{eventsPerSecond:10}}});
+  if(mpChannel){try{await mpClient.removeChannel(mpChannel)}catch(e){}mpChannel=null}
+  mpClient=window.supabase.createClient(MP_SUPABASE_URL,MP_SUPABASE_KEY,{realtime:{params:{eventsPerSecond:20}}});
   const {error:checkError}=await mpClient.from('hs_players').select('id').limit(1);if(checkError)throw checkError;
-  for(let i=0;i<mpTasks.length;i++){await new Promise(r=>setTimeout(r,140));const el=$('mpt'+i);if(el){el.className='done';el.textContent='✓ '+mpTasks[i]}$('mp-progress-bar').style.width=((i+1)/mpTasks.length*100)+'%'}
+  for(let i=0;i<mpTasks.length;i++){await new Promise(r=>setTimeout(r,100));const el=$('mpt'+i);if(el){el.className='done';el.textContent='✓ '+mpTasks[i]}$('mp-progress-bar').style.width=((i+1)/mpTasks.length*100)+'%'}
   const {data:world,error:worldError}=await mpClient.from('hs_world_state').select('*');if(worldError)throw worldError;(world||[]).forEach(mpApplyWorld);
-  const {data:players,error}=await mpClient.from('hs_players').select('*').neq('id',mpPlayerId);if(error)throw error;(players||[]).forEach(mpSetRemote);
-  mpChannel=mpClient.channel('hunting-sim-world').on('postgres_changes',{event:'*',schema:'public',table:'hs_players'},p=>{if(p.eventType==='DELETE')mpRemoveRemote(p.old.id);else mpSetRemote(p.new)}).on('postgres_changes',{event:'INSERT',schema:'public',table:'hs_world_events'},p=>mpApplyEvent(p.new)).on('postgres_changes',{event:'*',schema:'public',table:'hs_world_state'},p=>{if(p.eventType!=='DELETE')mpApplyWorld(p.new)});
-  await new Promise((resolve,reject)=>{let settled=false;mpChannel.subscribe(status=>{if(status==='SUBSCRIBED'&&!settled){settled=true;resolve()}else if((status==='CHANNEL_ERROR'||status==='TIMED_OUT'||status==='CLOSED')&&!settled){settled=true;reject(new Error('Realtime subscription status: '+status))}});setTimeout(()=>{if(!settled){settled=true;reject(new Error('Realtime subscription timed out'))}},12000)});
-  mpOnline=true;mpStarting=false;mpLastWrite=0;mpApplyEvent({id:'',event_type:'',payload:{}});
-  if(G==='dead')respawn();qStarted=true;gameMode='regular';G='play';playing=true;scoped=false;updateHearts();$('mp-panel').style.display='none';$('ov').style.display='none';$('mp').style.display='';if(!isTouch&&cv.requestPointerLock)cv.requestPointerLock();mpWritePosition(true);msg('MULTIPLAYER CONNECTED',3);
- }catch(e){console.error(e);$('mp-status').textContent='Connection failed: '+(e.message||'Unknown error')+'. Check that the SQL setup was run.';mpStarting=false;mpOnline=false}
+  // Subscribe first, then fetch the initial snapshot so joins during startup are not missed.
+  mpChannel=mpClient.channel('hunting-sim-world',{config:{broadcast:{self:false}}})
+   .on('broadcast',{event:'player_position'},({payload})=>mpSetRemote(payload))
+   .on('broadcast',{event:'player_left'},({payload})=>{if(payload?.id)mpRemoveRemote(payload.id)})
+   .on('postgres_changes',{event:'*',schema:'public',table:'hs_players'},p=>{if(p.eventType==='DELETE')mpRemoveRemote(p.old.id);else mpSetRemote(p.new)})
+   .on('postgres_changes',{event:'INSERT',schema:'public',table:'hs_world_events'},p=>mpApplyEvent(p.new))
+   .on('postgres_changes',{event:'*',schema:'public',table:'hs_world_state'},p=>{if(p.eventType!=='DELETE')mpApplyWorld(p.new)});
+  await new Promise((resolve,reject)=>{let settled=false;const timer=setTimeout(()=>{if(!settled){settled=true;reject(new Error('Realtime subscription timed out. Check Supabase Realtime is enabled.'))}},12000);mpChannel.subscribe(status=>{if(status==='SUBSCRIBED'&&!settled){settled=true;clearTimeout(timer);resolve()}else if(['CHANNEL_ERROR','TIMED_OUT','CLOSED'].includes(status)&&!settled){settled=true;clearTimeout(timer);reject(new Error('Realtime subscription status: '+status))}})});
+  const {data:players,error}=await mpClient.from('hs_players').select('*').neq('id',mpPlayerId);if(error)throw error;(players||[]).forEach(row=>{if(Date.now()-(Date.parse(row.updated_at)||0)<10000)mpSetRemote(row)});
+  mpOnline=true;mpStarting=false;mpLastPersist=0;
+  if(G==='dead')respawn();qStarted=true;gameMode='regular';G='play';playing=true;scoped=false;updateHearts();$('mp-panel').style.display='none';$('ov').style.display='none';$('mp').style.display='';if(!isTouch&&cv.requestPointerLock)cv.requestPointerLock();await mpPersistPosition(true);mpBroadcastPosition();msg('MULTIPLAYER CONNECTED',3);
+ }catch(e){console.error(e);$('mp-status').textContent='Connection failed: '+(e.message||'Unknown error')+'. Check that the SQL setup was run and Realtime is enabled.';mpStarting=false;mpOnline=false;if(mpChannel&&mpClient){try{await mpClient.removeChannel(mpChannel)}catch(err){}mpChannel=null}}
 }
-function mpOpen(){ $('mp-panel').style.display='flex';$('mp-config').style.display='block';$('mp-loading').style.display='none';$('mp-title').textContent='MULTIPLAYER';$('mp-name').value=mpName;$('mp-status').textContent=''; }
-$('mp').onclick=mpOpen;$('mp-connect').onclick=mpConnectAndStart;$('mp-cancel').onclick=$('mp-load-cancel').onclick=()=>{$('mp-panel').style.display='none';mpStarting=false};
-// Position heartbeat and stale-player cleanup.
-setInterval(()=>{if(mpOnline&&playing)mpWritePosition();if(mpOnline){const now=Date.now();for(const [id,o] of mpRemote){if(now-new Date(o.row.updated_at||0).getTime()>30000)mpRemoveRemote(id)}}},250);
-addEventListener('beforeunload',()=>{if(mpClient&&mpOnline){mpClient.from('hs_players').delete().eq('id',mpPlayerId)}});
+function mpOpen(){$('mp-panel').style.display='flex';$('mp-config').style.display='block';$('mp-loading').style.display='none';$('mp-title').textContent='MULTIPLAYER';$('mp-name').value=mpName;$('mp-status').textContent=''}
+$('mp').onclick=mpOpen;$('mp-connect').onclick=mpConnectAndStart;$('mp-cancel').onclick=$('mp-load-cancel').onclick=()=>{$('mp-panel').style.display='none';if(mpStarting){mpStarting=false;if(mpChannel&&mpClient)mpClient.removeChannel(mpChannel);mpChannel=null}};
+// 100 ms Realtime movement broadcasts; database persistence is deliberately slower.
+setInterval(()=>{if(mpOnline&&playing)mpBroadcastPosition()},100);
+setInterval(()=>{if(mpOnline){mpPersistPosition();for(const [id,o] of mpRemote){if(Date.now()-o.lastSeen>8000)mpRemoveRemote(id)}}},1000);
+async function mpLeave(){if(!mpClient||!mpOnline)return;try{if(mpChannel)await mpChannel.send({type:'broadcast',event:'player_left',payload:{id:mpPlayerId}});await mpClient.from('hs_players').delete().eq('id',mpPlayerId)}catch(e){}}
+addEventListener('pagehide',()=>{mpLeave()});
 // Shared world/action events are deliberately small and append-only.
-const mpOriginalDie=die;die=function(){mpEmit('player_died',{x:P.x,z:P.z});mpOriginalDie();if(mpClient&&mpOnline)mpClient.from('hs_players').upsert({id:mpPlayerId,name:mpName,x:P.x,z:P.z,yaw:P.yaw,pitch:P.pitch,held_item:cur,alive:false,money:Math.max(0,Math.floor(stats.money||0)),inventory:{rifle:!!stats.rifle,shotgun:!!stats.shotgun,axe:!!stats.axe,flash:!!stats.flash},updated_at:new Date().toISOString()},{onConflict:'id'})};
+const mpOriginalDie=die;die=function(){mpEmit('player_died',{x:P.x,z:P.z});mpOriginalDie();if(mpOnline)mpPersistPosition(true)};
 const mpOriginalRespawn=respawn;respawn=function(){mpOriginalRespawn();if(mpOnline)mpEmit('player_respawned',{x:P.x,z:P.z})};
 const mpOriginalBuyItem=buyItem;buyItem=function(id){const before=stats.money;mpOriginalBuyItem(id);if(stats.money<before)mpEmit('purchase',{item:id,cost:before-stats.money})};
 const mpOriginalFellTree=fellTree;fellTree=function(t){const index=treeSpots.indexOf(t),fallen=deers.map((d,i)=>d.active&&d.alive&&d.perched&&Math.hypot(d.x-t.x,d.z-t.z)<1.8?i:-1).filter(i=>i>=0);mpOriginalFellTree(t);if(index>=0){mpEmit('tree_chopped',{index,deerIndexes:fallen});mpStoreWorld('tree:'+index,{cut:true});for(const i of fallen)mpStoreWorld('animal:deer:'+i,{alive:false,active:false})}};
 const mpOriginalShoot=shoot;shoot=function(){const before=[...deers,...rabbits,...bears,giant].map(a=>!!a.alive),old=stats.shots;mpOriginalShoot();if(stats.shots>old)mpEmit('shot',{x:P.x,z:P.z,weapon:cur});const all=[...deers,...rabbits,...bears,giant];all.forEach((a,i)=>{if(before[i]&&!a.alive){const kind=a===giant?'gray':a.kind||'deer',arr=kind==='rabbit'?rabbits:kind==='bear'?bears:kind==='gray'?[giant]:deers,index=arr.indexOf(a);mpEmit('animal_killed',{kind,index});mpStoreWorld('animal:'+kind+':'+index,{alive:false,active:false})}})};
-// Keep remote avatars current while the local game renders.
-const mpOriginalUpd=upd;let mpLastSold=0;upd=function(dt){mpOriginalUpd(dt);if(mpOnline){if(stats.sold>mpLastSold){mpEmit('shop_sale',{count:stats.sold-mpLastSold,money:stats.money});mpLastSold=stats.sold}for(const o of mpRemote.values())o.root.visible=Date.now()-new Date(o.row.updated_at||0).getTime()<25000;}};
-
+// Keep remote hunters moving smoothly between 100 ms packets.
+const mpOriginalUpd=upd;let mpLastSold=0;upd=function(dt){mpOriginalUpd(dt);if(mpOnline){if(stats.sold>mpLastSold){mpEmit('shop_sale',{count:stats.sold-mpLastSold,money:stats.money});mpLastSold=stats.sold}}};
 applySet();
 applyGear();skyUpdate();setDiff(diffKey);popTick(true);critFill();resetGiant();showScreen('title');cam.position.set(P.x,1.7,P.z);loop(last);
 </script></body></html>
