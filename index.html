@@ -180,6 +180,27 @@ body.touch #sall{top:80px;font-size:12px}
 .sn{font-size:12px;color:var(--dim);margin:-7px 0 13px;letter-spacing:1px}
 @media (max-height:520px){.setbox{padding:10px 12px}.seth{margin-bottom:6px}#settabs{margin-bottom:8px}.sr{margin-bottom:8px}.sbt{padding:6px 10px}}
 #mp-panel{position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;padding:18px;box-sizing:border-box;background:rgba(0,0,0,.94)}.mp-card{width:min(520px,100%);max-height:94%;overflow:auto;border:2px solid #6f6b55;background:#14160f;padding:20px;box-sizing:border-box;text-align:center}.mp-card h2{color:#e8d9a0;letter-spacing:4px;margin:0 0 12px}.mp-card p{color:var(--dim);font-size:13px;line-height:1.5}.mp-card input{width:100%;box-sizing:border-box;margin:6px 0;padding:11px;background:#080a07;border:1px solid #6f6b55;color:var(--fg);font:14px 'Courier New',monospace}.mp-progress{height:10px;border:1px solid #6f6b55;background:#000;margin:14px 0}.mp-progress i{display:block;height:100%;width:0;background:#9fd27a;transition:width .2s}.mp-task{text-align:left;color:var(--dim);font-size:13px;line-height:1.8}.mp-task .done{color:#9fd27a}.mp-actions{display:flex;gap:8px;margin-top:14px}.mp-actions button{flex:1;font:inherit;padding:10px 8px;letter-spacing:1px;cursor:pointer}.mp-status{font-size:12px;color:#e8d9a0;min-height:18px;margin-top:8px}
+
+/* Multiplayer-only chat */
+#mp-chat-ui{position:fixed;inset:0;z-index:74;display:none;pointer-events:none;font-family:"Courier New",monospace;text-shadow:none}
+#mp-chat-button{position:fixed;right:18px;top:194px;width:52px;height:52px;display:flex;align-items:center;justify-content:center;padding:10px;color:#e8d9a0;background:rgba(8,12,8,.9);border:2px solid #6f6b55;box-shadow:0 3px 14px #0008;cursor:pointer;pointer-events:auto}
+#mp-chat-button:hover,#mp-chat-button:focus-visible{border-color:#e8d9a0;background:#202418;outline:none}
+#mp-chat-button svg{width:29px;height:29px;display:block}
+#mp-chat-panel{position:fixed;right:18px;top:254px;width:min(360px,calc(100vw - 36px));height:min(360px,calc(100vh - 275px));min-height:190px;box-sizing:border-box;display:none;flex-direction:column;gap:9px;padding:12px;background:rgba(12,14,10,.97);border:2px solid #6f6b55;box-shadow:0 12px 38px #000b;pointer-events:auto}
+#mp-chat-head{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#e8d9a0;font-size:14px;letter-spacing:2px}
+#mp-chat-close{font:inherit;font-size:20px;line-height:1;color:#d8d2b0;background:transparent;border:1px solid #6f6b55;padding:2px 8px;cursor:pointer}
+#mp-chat-messages{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:7px;background:rgba(0,0,0,.42);border:1px solid #4a4836;color:#d8d2b0;font-size:13px;line-height:1.45;overflow-wrap:anywhere}
+.mp-chat-line{margin:0 0 7px}
+.mp-chat-line:last-child{margin-bottom:0}
+.mp-chat-author{color:#e8d9a0;font-weight:bold}
+.mp-chat-system{color:#9fd27a;font-style:italic}
+#mp-chat-form{display:flex;gap:7px}
+#mp-chat-input{flex:1;min-width:0;box-sizing:border-box;padding:9px 10px;color:#d8d2b0;background:#080a07;border:1px solid #6f6b55;font:13px "Courier New",monospace;outline:none}
+#mp-chat-input:focus{border-color:#e8d9a0}
+#mp-chat-send{padding:8px 11px;color:#14160f;background:#e8d9a0;border:1px solid #e8d9a0;font:13px "Courier New",monospace;letter-spacing:1px;cursor:pointer}
+#mp-chat-hint{font-size:10px;letter-spacing:1px;color:#8f8a70;text-align:right}
+@media(max-width:560px){#mp-chat-button{right:12px;top:184px;width:46px;height:46px}#mp-chat-panel{right:12px;top:238px;width:min(340px,calc(100vw - 24px));height:min(330px,calc(100vh - 252px))}}
+
 </style></head><body>
 <canvas id="c"></canvas><canvas id="gh"></canvas>
 <div id="vhs"><div class="vl"></div><span id="vrec">● REC</span><span id="vts"></span></div><audio id="whatSong" src="WHAT.mp3" loop preload="auto"></audio>
@@ -240,8 +261,19 @@ body.touch #sall{top:80px;font-size:12px}
 <button class="wnar" id="wnr" aria-label="Previous updates">&#9654;&#xFE0E;</button></div>
 <div id="set"><div class="setbox"><div class="seth"><b>SETTINGS</b><button id="setx">CLOSE</button></div><div id="settabs"><button data-t="vis" class="on">VISUAL</button><button data-t="game">GAME</button><button data-t="fun">FUN</button></div><div id="setb"></div></div></div>
 <div id="mp-panel"><div class="mp-card"><h2 id="mp-title">MULTIPLAYER</h2><div id="mp-config"><p>THIS IS STILL IN THE WORKS AND IS PRETTY UNSTABLE, MANY BUGS AND MORE <span style="color:red;text-decoration:underline;">WILL APPEAR.</span></p><input id="mp-name" maxlength="20" placeholder="Player name" autocomplete="nickname"><div class="mp-actions"><button class="btn" id="mp-connect">JOIN MULTIPLAYER</button><button class="btn sec" id="mp-cancel">CANCEL</button></div></div><div id="mp-loading" style="display:none"><p id="mp-load-caption">Connecting to Multiplayer...</p><div class="mp-progress"><i id="mp-progress-bar"></i></div><div class="mp-task" id="mp-task-list"></div><div class="mp-status" id="mp-status"></div><button class="btn sec" id="mp-load-cancel" style="width:100%;margin-top:12px">CANCEL</button></div></div></div>
+<div id="mp-chat-ui" aria-label="Multiplayer chat">
+<button id="mp-chat-button" type="button" aria-label="Open multiplayer chat" title="Multiplayer chat ( / )">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.2 11.4a7.8 7.8 0 0 1-8.2 7.5 8.9 8.9 0 0 1-3.4-.7L4 20l1.2-3.8A7.1 7.1 0 0 1 3.8 11.4 7.8 7.8 0 0 1 12 3.9a7.8 7.8 0 0 1 8.2 7.5Z"/><path d="M8 11.5h.01M12 11.5h.01M16 11.5h.01" stroke-width="2.6"/></svg>
+</button>
+<div id="mp-chat-panel" role="dialog" aria-label="Multiplayer chat" aria-hidden="true">
+<div id="mp-chat-head"><span>MULTIPLAYER CHAT</span><button id="mp-chat-close" type="button" aria-label="Close chat">×</button></div>
+<div id="mp-chat-messages" role="log" aria-live="polite" aria-relevant="additions"></div>
+<form id="mp-chat-form"><input id="mp-chat-input" maxlength="240" autocomplete="off" placeholder="Type a message..." aria-label="Chat message"><button id="mp-chat-send" type="submit">SEND</button></form>
+<div id="mp-chat-hint">PRESS / TO OPEN · ENTER TO SEND</div>
+</div>
+</div>
 <div id="rot"><div class="ph"></div><b>ROTATE YOUR PHONE</b><span>It is recommended that this game is played in landscape mode</span></div>
-<div id="ver">v1.6.0</div>
+<div id="ver">v1.6.5</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -656,6 +688,7 @@ const fm=SET.fog;mat.uniforms.fogf.value=fm<=.02?4000:(80-28*nf)*(1-.38*wx.rain-
 let cheatAmmo=false,gameMode='regular',lives=3,hitCooldown=0,deathCause='gray',hf=0,carry=[],sf=[16,50,50],sleepT=0,scoped=false,playing=false,G='menu',T=0,camY=1.7,bob=0,msgT=0,hb=0,ac;
 const keys={};
 const UPDATES=[
+{v:'1.6.5',t:'Chat and Models Update',n:['Added chat to Multiplayer','Fixed leaving Multiplayer','Made the playermodel a little better for Multiplayer, looked horrible','Multiplayer is STILL a little buggy, and <span style="color: yellow; text-decoration: underline;">WILL</span> be fixed eventually']},
 {v:'1.6.0',t:'Multiplayer Update',n:['FINALLY released Multiplayer','Yeah thats... it ;-;']},
 {v:'1.5.0',t:'Survival Update',n:['Radar is now in the shop and shows nearby animals, bears are red','Bandages (H) heal a heart, bear repellent (V) keeps bears away for a while, and sleeping in the bed at night heals everything','Weather: rain, fog and thunderstorms that change how far you can see and how well animals notice you (Settings > Fun can force it)','Better looking rifle and shotgun, an item bar at the bottom of the screen and new bear sounds','Difficulty: Stupid (hardest), Ok fine sure (medium) and you\'re gonna fall asleep (easiest)']},
 {v:'1.4.0',t:'Wildlife Update',n:['New animals: rabbits (sell for $5) and bears (sell for $20)','Bears are pretty rare. They charge you when they spot you, and every hit costs 1 heart. It takes 8 rifle shots or 6 shotgun shots to kill one','You now always have 3 hearts, in every gamemode. The gray one still one shots you','The pause menu no longer asks you to choose a gamemode again']},
@@ -776,8 +809,8 @@ function setGameMode(mode){gameMode=mode;$('mode-regular').classList.toggle('sel
 function launchSelectedMode(mode){
  setGameMode(mode);$('mode-overlay').style.display='none';
  if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();
- if(G==='dead')respawn();
- if(typeof mpStopSession==='function')mpStopSession();
+ if(mpExitedToTitle){respawn();mpExitedToTitle=false;}else if(G==='dead')respawn();
+ if(typeof mpStopSession==='function'&&mpOnline)mpStopSession();
  if(gameMode==='defense'){
   msg('Yo shoot the deer now bru',4);
   lives=3;hitCooldown=0;
@@ -795,7 +828,14 @@ function hurtDefense(){if(gameMode!=='defense')return;hurt('A DEER HIT YOU!','de
 function resumeGame(){if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();G='play';playing=true;updateHearts();$('ov').style.display='none';if(!isTouch)cv.requestPointerLock()}
 $('go').onclick=()=>{if($('ov').className==='pause'){resumeGame();return}$('mode-overlay').style.display='flex'};
 $('mode-overlay').addEventListener('click',e=>{if(e.target===$('mode-overlay'))$('mode-overlay').style.display='none'});
-$('tt').onclick=()=>{respawn();G='menu';qStarted=false;playing=false;showScreen('title')};
+$('tt').onclick=()=>{
+ if(mpOnline){
+  mpExitedToTitle=true;playing=false;scoped=false;G='menu';qStarted=false;joyReset();lookReset();releaseLock();
+  if(typeof mpCloseChat==='function')mpCloseChat();
+  mpStopSession();$('ms').textContent='';msgT=0;showScreen('title');return;
+ }
+ respawn();G='menu';qStarted=false;playing=false;showScreen('title')
+};
 $('mp').onclick=()=>{$('mpmsg').style.display='block'};
 $('htp').onclick=()=>{$('scr-main').style.display='none';$('scr-help').style.display='flex'};
 $('hback').onclick=()=>{$('scr-help').style.display='none';$('scr-main').style.display='flex'};
@@ -840,11 +880,11 @@ addEventListener('keydown',e=>{
 });
 addEventListener('keydown',e=>{if(!playing&&e.code==='Enter'&&$('ov').style.display!=='none'&&$('scr-main').style.display!=='none'&&$('wnp').style.display!=='flex'&&$('set').style.display!=='flex')$('go').click()});
 let qStarted=false,saBuf='',showAll=false;
-addEventListener('keydown',e=>{if(e.repeat||!/^[a-z]$/i.test(e.key))return;saBuf=(saBuf+e.key.toLowerCase()).slice(-7);if(saBuf==='showall'){saBuf='';setShowAll(!showAll);if(playing)msg(showAll?'SHOW ALL: ON':'SHOW ALL: OFF',2);else $('t2').textContent=showAll?'SHOW ALL ON: pointers to the gray biome, nearest deer and the gray one':'SHOW ALL OFF'}});
+addEventListener('keydown',e=>{if(e.repeat||mpTypingTarget(e)||!/^[a-z]$/i.test(e.key))return;saBuf=(saBuf+e.key.toLowerCase()).slice(-7);if(saBuf==='showall'){saBuf='';setShowAll(!showAll);if(playing)msg(showAll?'SHOW ALL: ON':'SHOW ALL: OFF',2);else $('t2').textContent=showAll?'SHOW ALL ON: pointers to the gray biome, nearest deer and the gray one':'SHOW ALL OFF'}});
 document.addEventListener('pointerlockchange',()=>{if(document.pointerLockElement!==cv&&playing){playing=false;scoped=false;G='menu';showScreen('pause')}});
 addEventListener('mousemove',e=>{if(!playing||document.pointerLockElement!==cv)return;const k=cam.fov/72;P.yaw-=e.movementX*.0022*k*SET.sens;P.pitch=Math.max(-1.4,Math.min(1.4,P.pitch-e.movementY*.0022*k*SET.sens))});
 addEventListener('mousedown',e=>{if(!playing||performance.now()-lastTouchT<700)return;if(e.button==0)shoot();if(e.button==2&&!P.hid&&cur<2)scoped=true});addEventListener('mouseup',e=>{if(e.button==2)scoped=false});addEventListener('contextmenu',e=>e.preventDefault());addEventListener('wheel',e=>{if(!scoped)return;const r=cur?[38,62]:[5,30];sf[cur]=Math.max(r[0],Math.min(r[1],sf[cur]*(e.deltaY>0?1.12:.89)))},{passive:true});
-addEventListener('keydown',e=>{keys[e.code]=true;if(!playing||e.repeat)return;
+addEventListener('keydown',e=>{if(mpTypingTarget(e))return;keys[e.code]=true;if(!playing||e.repeat)return;
 if(e.code==='KeyR')reload();if(e.code==='KeyH')useBandage();if(e.code==='KeyV')useRepellent();
 if(e.code==='Digit1'||e.code==='Digit2'||e.code==='Digit3')equip(+e.code.slice(5)-1);
 if(e.code==='KeyF')toggleFlash();
@@ -1263,46 +1303,136 @@ let mpClient=null,mpChannel=null,mpOnline=false,mpStarting=false,mpLastPersist=0
 const mpRemote=new Map(),mpEventSeen=new Set();
 const mpPlayerId=(()=>{let v=localStorage.getItem('hsm.playerId');if(!v){v=(crypto.randomUUID?crypto.randomUUID():('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:(r&3|8)).toString(16)})));localStorage.setItem('hsm.playerId',v)}return v})();
 let mpName=localStorage.getItem('hsm.playerName')||('Hunter'+Math.floor(100+Math.random()*900));
+let mpExitedToTitle=false;
+const mpChatLog=$('mp-chat-messages');
+function mpSetChatActive(active){
+ $('mp-chat-ui').style.display=active&&mpOnline?'block':'none';
+ if(!active||!mpOnline)mpCloseChat();
+}
+function mpTypingTarget(e){const t=e&&e.target;return !!(t&&(t.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)))}
+function mpOpenChat(){if(!mpOnline)return;$('mp-chat-panel').style.display='flex';$('mp-chat-panel').setAttribute('aria-hidden','false');$('mp-chat-input').focus();mpChatLog.scrollTop=mpChatLog.scrollHeight}
+function mpCloseChat(){
+ $('mp-chat-panel').style.display='none';$('mp-chat-panel').setAttribute('aria-hidden','true');
+ if(document.activeElement===$('mp-chat-input'))$('mp-chat-input').blur();
+}
+function mpAppendChat(name,message,system=false){
+ const line=document.createElement('div');line.className='mp-chat-line'+(system?' mp-chat-system':'');
+ if(!system){const author=document.createElement('span');author.className='mp-chat-author';author.textContent=String(name||'Hunter').slice(0,20)+': ';line.appendChild(author)}
+ const body=document.createElement('span');body.textContent=String(message||'').slice(0,240);line.appendChild(body);mpChatLog.appendChild(line);
+ while(mpChatLog.children.length>70)mpChatLog.removeChild(mpChatLog.firstChild);
+ mpChatLog.scrollTop=mpChatLog.scrollHeight;
+}
+function mpReceiveChat(payload){
+ if(!mpOnline||!payload||payload.player_id===mpPlayerId)return;
+ const text=String(payload.text||'').trim();if(!text)return;
+ mpAppendChat(payload.player_name,text,false);
+}
+async function mpSendChat(raw){
+ const text=String(raw||'').trim().slice(0,240);if(!text||!mpOnline||!mpChannel)return;
+ const payload={id:crypto.randomUUID?crypto.randomUUID():String(Date.now())+'-'+Math.random().toString(16).slice(2),player_id:mpPlayerId,player_name:mpName,text,sent_at:new Date().toISOString()};
+ mpAppendChat(mpName,text,false);
+ try{const result=await mpChannel.send({type:'broadcast',event:'chat_message',payload});if(result==='error'||result==='timed out')console.warn('Multiplayer chat message was not delivered:',result)}catch(e){console.warn('Multiplayer chat send failed:',e.message)}
+}
+$('mp-chat-button').addEventListener('click',()=>{if($('mp-chat-panel').style.display==='flex')mpCloseChat();else mpOpenChat()});
+$('mp-chat-close').addEventListener('click',mpCloseChat);
+$('mp-chat-form').addEventListener('submit',e=>{e.preventDefault();const input=$('mp-chat-input'),value=input.value;input.value='';mpSendChat(value);input.focus()});
+addEventListener('keydown',e=>{
+ if(!mpOnline)return;
+ const typing=mpTypingTarget(e);
+ if(e.key==='Escape'&&$('mp-chat-panel').style.display==='flex'){e.preventDefault();mpCloseChat();return}
+ if(e.key==='/'&&!typing&&!e.ctrlKey&&!e.altKey&&!e.metaKey){e.preventDefault();mpOpenChat()}
+});
 const mpTasks=['Loading forest terrain','Loading trees and chopping state','Loading mud and terrain details','Loading wildlife','Loading shop inventory','Connecting to other hunters','Synchronizing player positions'];
 function mpAvatar(dead=false,item=0){
- // Floating head + two detached spherical hands only. No torso, legs, or arms.
+ // Same character concept: one floating gray head and two detached hands, with cleaner shapes and facial detail.
  const g=new THREE.Group();
- const skin=new THREE.MeshBasicMaterial({color:0x858585}),dark=new THREE.MeshBasicMaterial({color:0x171713}),white=new THREE.MeshBasicMaterial({color:0xf0ead7}),black=new THREE.MeshBasicMaterial({color:0x171717});
- const ball=(r,m,x,y,z)=>{const o=new THREE.Mesh(new THREE.SphereGeometry(r,12,8),m);o.position.set(x,y,z);g.add(o);return o};
- const box=(x,y,z,sx,sy,sz,m)=>{const o=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),m);o.position.set(x,y,z);g.add(o);return o};
- ball(.32,skin,0,1.58,0);
+ const skin=new THREE.MeshBasicMaterial({color:0x929392});
+ const skinLight=new THREE.MeshBasicMaterial({color:0xb4b8b3});
+ const skinShade=new THREE.MeshBasicMaterial({color:0x666d69});
+ const dark=new THREE.MeshBasicMaterial({color:0x202522});
+ const hair=new THREE.MeshBasicMaterial({color:0x303936});
+ const white=new THREE.MeshBasicMaterial({color:0xf3f0df});
+ const black=new THREE.MeshBasicMaterial({color:0x121715});
+ const iris=new THREE.MeshBasicMaterial({color:0x596d63});
+ const cheek=new THREE.MeshBasicMaterial({color:0x9b7773,transparent:true,opacity:.34,depthWrite:false});
+ const metal=new THREE.MeshBasicMaterial({color:0x69716e});
+ const wood=new THREE.MeshBasicMaterial({color:0x76502f});
+ const sphere=(r,m,x,y,z,sx=1,sy=1,sz=1,detail=18)=>{
+  const o=new THREE.Mesh(new THREE.SphereGeometry(r,detail,Math.max(10,Math.round(detail*.7))),m);
+  o.position.set(x,y,z);o.scale.set(sx,sy,sz);g.add(o);return o;
+ };
+ const box=(x,y,z,sx,sy,sz,m,rz=0)=>{
+  const o=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),m);o.position.set(x,y,z);o.rotation.z=rz;g.add(o);return o;
+ };
+ const cylinder=(r1,r2,h,m,x,y,z,rz=0)=>{
+  const o=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,h,12),m);o.position.set(x,y,z);o.rotation.z=rz;g.add(o);return o;
+ };
+ // Smooth but still stylized, rounded gray head.
+ sphere(.32,skin,0,1.58,0,.98,1.045,.94,24);
+ sphere(.285,skinLight,0,1.61,-.035,.91,.98,.88,20).position.z=-.026;
+ // Rounded ears retain the familiar silhouette.
+ for(const side of [-1,1]){
+  sphere(.092,skin,side*.305,1.585,0,.82,1.12,.76,16);
+  sphere(.048,skinShade,side*.337,1.585,-.025,.48,.91,.45,14);
+ }
+ // Short dark hair cap and subtle side tufts.
+ const cap=new THREE.Mesh(new THREE.SphereGeometry(.333,24,12,0,Math.PI*2,0,.88),hair);
+ cap.position.set(0,1.585,.006);g.add(cap);
+ sphere(.105,hair,-.255,1.585,-.015,.55,1.25,.75,14);
+ sphere(.105,hair,.255,1.585,-.015,.55,1.25,.75,14);
  // Face looks toward local -Z.
  if(dead){
-  for(const x of [-.115,.115]){const a=box(x,1.68,-.286,.105,.025,.018,dark);a.rotation.z=.72;const b=box(x,1.68,-.287,.105,.025,.018,dark);b.rotation.z=-.72}
-  box(0,1.45,-.307,.19,.025,.018,dark);
+  for(const x of [-.112,.112]){
+   box(x,1.655,-.309,.112,.024,.018,dark,.72);
+   box(x,1.655,-.311,.112,.024,.018,dark,-.72);
+  }
+  box(0,1.455,-.312,.19,.026,.018,dark);
  }else{
-  ball(.037,black,-.11,1.66,-.286);ball(.037,black,.11,1.66,-.286);
-  const smileCurve=new THREE.QuadraticBezierCurve3(new THREE.Vector3(-.115,1.48,-.282),new THREE.Vector3(0,1.405,-.315),new THREE.Vector3(.115,1.48,-.282));
-  const smile=new THREE.Mesh(new THREE.TubeGeometry(smileCurve,12,.014,5,false),black);g.add(smile);
+  for(const x of [-.108,.108]){
+   sphere(.066,white,x,1.645,-.285,.9,1.04,.48,16);
+   sphere(.036,iris,x*.91,1.642,-.319,.9,1.02,.5,14);
+   sphere(.021,black,x*.91,1.642,-.337,.92,1.08,.48,12);
+   sphere(.009,white,x*.91-.009,1.657,-.347,.8,.8,.5,10);
+   box(x,1.731,-.292,.105,.022,.018,hair,x<0?.12:-.12);
+  }
+  sphere(.035,skinShade,0,1.565,-.318,.8,1.05,.65,12);
+  for(const x of [-.19,.19])sphere(.058,cheek,x,1.535,-.276,1.12,.55,.25,12);
+  const smileCurve=new THREE.QuadraticBezierCurve3(new THREE.Vector3(-.105,1.477,-.295),new THREE.Vector3(0,1.425,-.326),new THREE.Vector3(.105,1.477,-.295));
+  g.add(new THREE.Mesh(new THREE.TubeGeometry(smileCurve,16,.012,6,false),dark));
  }
- // Detached floating hands.
- ball(.125,skin,-.49,1.16,-.015);ball(.125,skin,.49,1.16,-.015);
- // Held item sits beside the right hand; flashlight stays in the left.
+ // Wrist cuffs, palms, thumbs and fingertips make the same detached hands read more clearly.
+ for(const side of [-1,1]){
+  const hx=side*.49;
+  cylinder(.092,.092,.055,dark,hx,1.16,.025,Math.PI/2);
+  cylinder(.092,.092,.018,metal,hx,1.16,-.008,Math.PI/2);
+  sphere(.12,skin,hx,1.16,-.045,.93,1.06,.77,16);
+  sphere(.095,skinLight,hx-.018*side,1.185,-.09,.72,.58,.35,12);
+  for(let f=0;f<4;f++)sphere(.031,skin,hx+(f-1.5)*.043,1.075,-.092,.83,1,.68,10);
+  sphere(.038,skin,hx+side*.092,1.125,-.055,.9,.86,.75,10);
+ }
+ // Held item remains beside the right hand; flashlight remains in the left.
  if(item===2){
   box(.48,1.13,-.23,.09,.09,.58,dark);
-  const blade=box(.48,1.25,-.48,.34,.2,.07,white);blade.rotation.z=-.16;
+  box(.48,1.25,-.48,.34,.2,.07,metal,-.16);
+  box(.48,1.08,-.03,.13,.08,.22,wood);
  }else if(item===1){
-  // Shotgun: thicker barrel, broad receiver and wooden stock.
-  const wood=new THREE.MeshBasicMaterial({color:0x76502d});
   box(.48,1.16,-.28,.145,.145,.9,dark);
-  box(.48,1.18,-.79,.19,.18,.22,dark);
+  box(.48,1.18,-.79,.19,.18,.22,metal);
   box(.48,1.03,.08,.13,.24,.29,wood);
-  box(.48,1.25,-.73,.055,.055,.36,dark);
+  box(.48,1.25,-.73,.055,.055,.36,metal);
+  cylinder(.043,.043,.48,metal,.48,1.16,-.87,Math.PI/2);
  }else{
-  // Rifle: long narrow barrel, scope, magazine and stock.
-  const wood=new THREE.MeshBasicMaterial({color:0x59432b});
   box(.48,1.16,-.28,.095,.105,.94,dark);
-  box(.48,1.19,-.82,.12,.12,.24,dark);
+  box(.48,1.19,-.82,.12,.12,.24,metal);
   box(.48,1.04,.12,.11,.19,.32,wood);
-  box(.48,1.29,-.35,.075,.075,.28,dark);
+  box(.48,1.29,-.35,.075,.075,.28,metal);
   box(.48,1.00,-.16,.065,.22,.13,dark);
+  cylinder(.026,.026,.38,metal,.48,1.16,-.91,Math.PI/2);
  }
- box(-.49,1.16,-.15,.09,.09,.25,dark);ball(.075,white,-.49,1.16,-.29);
+ // Small flashlight in the left hand.
+ box(-.49,1.16,-.15,.09,.09,.25,dark);
+ cylinder(.073,.073,.1,metal,-.49,1.16,-.3,Math.PI/2);
+ sphere(.055,white,-.49,1.16,-.36,.7,.7,.28,12);
  g.userData={dead,item};return g;
 }
 function mpMakeNameTag(name){
@@ -1367,19 +1497,20 @@ async function mpConnectAndStart(){
   mpChannel=mpClient.channel('hunting-sim-world',{config:{broadcast:{self:false}}})
    .on('broadcast',{event:'player_position'},({payload})=>mpSetRemote(payload))
    .on('broadcast',{event:'player_left'},({payload})=>{if(payload?.id)mpRemoveRemote(payload.id)})
+   .on('broadcast',{event:'chat_message'},({payload})=>mpReceiveChat(payload))
    .on('postgres_changes',{event:'*',schema:'public',table:'hs_players'},p=>{if(p.eventType==='DELETE')mpRemoveRemote(p.old.id);else mpSetRemote(p.new)})
    .on('postgres_changes',{event:'INSERT',schema:'public',table:'hs_world_events'},p=>mpApplyEvent(p.new))
    .on('postgres_changes',{event:'*',schema:'public',table:'hs_world_state'},p=>{if(p.eventType!=='DELETE')mpApplyWorld(p.new)});
   await new Promise((resolve,reject)=>{let settled=false;const timer=setTimeout(()=>{if(!settled){settled=true;reject(new Error('Realtime subscription timed out. Check Supabase Realtime is enabled.'))}},12000);mpChannel.subscribe(status=>{if(status==='SUBSCRIBED'&&!settled){settled=true;clearTimeout(timer);resolve()}else if(['CHANNEL_ERROR','TIMED_OUT','CLOSED'].includes(status)&&!settled){settled=true;clearTimeout(timer);reject(new Error('Realtime subscription status: '+status))}})});
   const {data:players,error}=await mpClient.from('hs_players').select('*').neq('id',mpPlayerId);if(error)throw error;(players||[]).forEach(row=>{if(Date.now()-(Date.parse(row.updated_at)||0)<10000)mpSetRemote(row)});
-  mpOnline=true;mpStarting=false;mpLastPersist=0;
+  mpOnline=true;mpStarting=false;mpLastPersist=0;mpSetChatActive(true);mpAppendChat('SYSTEM','Connected to multiplayer chat.',true);
   if(G==='dead')respawn();qStarted=true;gameMode='regular';G='play';playing=true;scoped=false;updateHearts();$('mp-panel').style.display='none';$('ov').style.display='none';$('mp').style.display='';if(!isTouch&&cv.requestPointerLock)cv.requestPointerLock();await mpPersistPosition(true);mpBroadcastPosition();msg('MULTIPLAYER CONNECTED',3);
- }catch(e){console.error(e);$('mp-status').textContent='Connection failed: '+(e.message||'Unknown error')+'. Check that the SQL setup was run and Realtime is enabled.';mpStarting=false;mpOnline=false;if(mpChannel&&mpClient){try{await mpClient.removeChannel(mpChannel)}catch(err){}mpChannel=null}}
+ }catch(e){console.error(e);$('mp-status').textContent='Connection failed: '+(e.message||'Unknown error')+'. Check that the SQL setup was run and Realtime is enabled.';mpStarting=false;mpOnline=false;mpSetChatActive(false);if(mpChannel&&mpClient){try{await mpClient.removeChannel(mpChannel)}catch(err){}mpChannel=null}}
 }
 async function mpStopSession(){
  if(!mpOnline&&!mpChannel)return;
  const client=mpClient,channel=mpChannel,wasOnline=mpOnline;
- mpOnline=false;mpChannel=null;mpStarting=false;
+ mpOnline=false;mpChannel=null;mpStarting=false;mpSetChatActive(false);
  try{if(channel)await channel.send({type:'broadcast',event:'player_left',payload:{id:mpPlayerId}})}catch(e){}
  try{if(client&&wasOnline)await client.from('hs_players').delete().eq('id',mpPlayerId)}catch(e){console.warn('Multiplayer leave:',e.message)}
  try{if(client&&channel)await client.removeChannel(channel)}catch(e){}
