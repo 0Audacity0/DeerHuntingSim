@@ -777,6 +777,7 @@ function launchSelectedMode(mode){
  setGameMode(mode);$('mode-overlay').style.display='none';
  if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();
  if(G==='dead')respawn();
+ if(typeof mpStopSession==='function')mpStopSession();
  if(gameMode==='defense'){
   msg('Yo shoot the deer now bru',4);
   lives=3;hitCooldown=0;
@@ -1266,7 +1267,7 @@ const mpTasks=['Loading forest terrain','Loading trees and chopping state','Load
 function mpAvatar(dead=false,item=0){
  // Floating head + two detached spherical hands only. No torso, legs, or arms.
  const g=new THREE.Group();
- const skin=new THREE.MeshBasicMaterial({color:0xe0b98e}),dark=new THREE.MeshBasicMaterial({color:0x171713}),white=new THREE.MeshBasicMaterial({color:0xf0ead7}),black=new THREE.MeshBasicMaterial({color:0x171717});
+ const skin=new THREE.MeshBasicMaterial({color:0x858585}),dark=new THREE.MeshBasicMaterial({color:0x171713}),white=new THREE.MeshBasicMaterial({color:0xf0ead7}),black=new THREE.MeshBasicMaterial({color:0x171717});
  const ball=(r,m,x,y,z)=>{const o=new THREE.Mesh(new THREE.SphereGeometry(r,12,8),m);o.position.set(x,y,z);g.add(o);return o};
  const box=(x,y,z,sx,sy,sz,m)=>{const o=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),m);o.position.set(x,y,z);g.add(o);return o};
  ball(.32,skin,0,1.58,0);
@@ -1285,14 +1286,37 @@ function mpAvatar(dead=false,item=0){
  if(item===2){
   box(.48,1.13,-.23,.09,.09,.58,dark);
   const blade=box(.48,1.25,-.48,.34,.2,.07,white);blade.rotation.z=-.16;
+ }else if(item===1){
+  // Shotgun: thicker barrel, broad receiver and wooden stock.
+  const wood=new THREE.MeshBasicMaterial({color:0x76502d});
+  box(.48,1.16,-.28,.145,.145,.9,dark);
+  box(.48,1.18,-.79,.19,.18,.22,dark);
+  box(.48,1.03,.08,.13,.24,.29,wood);
+  box(.48,1.25,-.73,.055,.055,.36,dark);
  }else{
-  box(.48,1.16,-.23,.105,.105,.78,dark);
-  box(.48,1.21,-.66,.16,.13,.24,dark);
-  box(.48,1.02,-.02,.07,.18,.12,dark);
+  // Rifle: long narrow barrel, scope, magazine and stock.
+  const wood=new THREE.MeshBasicMaterial({color:0x59432b});
+  box(.48,1.16,-.28,.095,.105,.94,dark);
+  box(.48,1.19,-.82,.12,.12,.24,dark);
+  box(.48,1.04,.12,.11,.19,.32,wood);
+  box(.48,1.29,-.35,.075,.075,.28,dark);
+  box(.48,1.00,-.16,.065,.22,.13,dark);
  }
  box(-.49,1.16,-.15,.09,.09,.25,dark);ball(.075,white,-.49,1.16,-.29);
  g.userData={dead,item};return g;
 }
+function mpMakeNameTag(name){
+ const canvas=document.createElement('canvas');canvas.width=512;canvas.height=128;
+ const ctx=canvas.getContext('2d');ctx.clearRect(0,0,512,128);
+ ctx.font='bold 48px Arial';ctx.textAlign='center';ctx.textBaseline='middle';
+ const label=String(name||'Hunter').slice(0,20);const w=Math.min(490,Math.max(120,ctx.measureText(label).width+42));
+ ctx.fillStyle='rgba(12,16,13,.78)';const x=(512-w)/2;ctx.beginPath();ctx.roundRect(x,18,w,92,22);ctx.fill();
+ ctx.fillStyle='#ffffff';ctx.shadowColor='#000000';ctx.shadowBlur=5;ctx.fillText(label,256,65,460);
+ const tex=new THREE.CanvasTexture(canvas);tex.minFilter=THREE.LinearFilter;
+ const mat=new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false});
+ const sprite=new THREE.Sprite(mat);sprite.position.set(0,2.35,0);sprite.scale.set(1.65,.42,1);sprite.renderOrder=10;return sprite;
+}
+function mpUpdateNameTag(o,name){const n=String(name||'Hunter').slice(0,20);if(o.name===n&&o.nameTag)return;o.name=n;if(o.nameTag){o.root.remove(o.nameTag);if(o.nameTag.material.map)o.nameTag.material.map.dispose();o.nameTag.material.dispose()}o.nameTag=mpMakeNameTag(n);o.root.add(o.nameTag)}
 function mpSetRemote(row){
  if(!row||!row.id||row.id===mpPlayerId)return;
  const x=Number(row.x),z=Number(row.z),yaw=Number(row.yaw)||0;if(!Number.isFinite(x)||!Number.isFinite(z))return;
@@ -1301,14 +1325,14 @@ function mpSetRemote(row){
  if(!o){
   const root=new THREE.Group(),avatar=mpAvatar(!row.alive,Number(row.held_item)||0);root.add(avatar);scene.add(root);
   root.position.set(x,hgt(x,z),z);root.rotation.y=yaw;
-  o={root,avatar,row,target:{x,z,yaw},stamp,lastSeen:Date.now()};mpRemote.set(row.id,o);
+  o={root,avatar,row,target:{x,z,yaw},stamp,lastSeen:Date.now(),name:'',nameTag:null};mpRemote.set(row.id,o);
  }else{
   o.target={x,z,yaw};o.row=row;o.stamp=stamp;o.lastSeen=Date.now();
   if((!row.alive)!==!!o.avatar.userData.dead||Number(row.held_item||0)!==Number(o.avatar.userData.item||0)){
    o.root.remove(o.avatar);o.avatar=mpAvatar(!row.alive,Number(row.held_item)||0);o.root.add(o.avatar);
   }
  }
- o.lastSeen=Date.now();o.row=row;o.root.visible=true;
+ mpUpdateNameTag(o,row.name);o.lastSeen=Date.now();o.row=row;o.root.visible=true;
 }
 function mpTickRemote(dt){
  const now=Date.now();
@@ -1351,6 +1375,15 @@ async function mpConnectAndStart(){
   mpOnline=true;mpStarting=false;mpLastPersist=0;
   if(G==='dead')respawn();qStarted=true;gameMode='regular';G='play';playing=true;scoped=false;updateHearts();$('mp-panel').style.display='none';$('ov').style.display='none';$('mp').style.display='';if(!isTouch&&cv.requestPointerLock)cv.requestPointerLock();await mpPersistPosition(true);mpBroadcastPosition();msg('MULTIPLAYER CONNECTED',3);
  }catch(e){console.error(e);$('mp-status').textContent='Connection failed: '+(e.message||'Unknown error')+'. Check that the SQL setup was run and Realtime is enabled.';mpStarting=false;mpOnline=false;if(mpChannel&&mpClient){try{await mpClient.removeChannel(mpChannel)}catch(err){}mpChannel=null}}
+}
+async function mpStopSession(){
+ if(!mpOnline&&!mpChannel)return;
+ const client=mpClient,channel=mpChannel,wasOnline=mpOnline;
+ mpOnline=false;mpChannel=null;mpStarting=false;
+ try{if(channel)await channel.send({type:'broadcast',event:'player_left',payload:{id:mpPlayerId}})}catch(e){}
+ try{if(client&&wasOnline)await client.from('hs_players').delete().eq('id',mpPlayerId)}catch(e){console.warn('Multiplayer leave:',e.message)}
+ try{if(client&&channel)await client.removeChannel(channel)}catch(e){}
+ for(const id of [...mpRemote.keys()])mpRemoveRemote(id);
 }
 function mpOpen(){$('mp-panel').style.display='flex';$('mp-config').style.display='block';$('mp-loading').style.display='none';$('mp-title').textContent='MULTIPLAYER';$('mp-name').value=mpName;$('mp-status').textContent=''}
 $('mp').onclick=mpOpen;$('mp-connect').onclick=mpConnectAndStart;$('mp-cancel').onclick=$('mp-load-cancel').onclick=()=>{$('mp-panel').style.display='none';if(mpStarting){mpStarting=false;if(mpChannel&&mpClient)mpClient.removeChannel(mpChannel);mpChannel=null}};
