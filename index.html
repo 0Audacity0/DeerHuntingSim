@@ -181,25 +181,49 @@ body.touch #sall{top:80px;font-size:12px}
 @media (max-height:520px){.setbox{padding:10px 12px}.seth{margin-bottom:6px}#settabs{margin-bottom:8px}.sr{margin-bottom:8px}.sbt{padding:6px 10px}}
 #mp-panel{position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;padding:18px;box-sizing:border-box;background:rgba(0,0,0,.94)}.mp-card{width:min(520px,100%);max-height:94%;overflow:auto;border:2px solid #6f6b55;background:#14160f;padding:20px;box-sizing:border-box;text-align:center}.mp-card h2{color:#e8d9a0;letter-spacing:4px;margin:0 0 12px}.mp-card p{color:var(--dim);font-size:13px;line-height:1.5}.mp-card input{width:100%;box-sizing:border-box;margin:6px 0;padding:11px;background:#080a07;border:1px solid #6f6b55;color:var(--fg);font:14px 'Courier New',monospace}.mp-progress{height:10px;border:1px solid #6f6b55;background:#000;margin:14px 0}.mp-progress i{display:block;height:100%;width:0;background:#9fd27a;transition:width .2s}.mp-task{text-align:left;color:var(--dim);font-size:13px;line-height:1.8}.mp-task .done{color:#9fd27a}.mp-actions{display:flex;gap:8px;margin-top:14px}.mp-actions button{flex:1;font:inherit;padding:10px 8px;letter-spacing:1px;cursor:pointer}.mp-status{font-size:12px;color:#e8d9a0;min-height:18px;margin-top:8px}
 
-/* Multiplayer-only chat */
-#mp-chat-ui{position:fixed;inset:0;z-index:74;display:none;pointer-events:none;font-family:"Courier New",monospace;text-shadow:none}
-#mp-chat-button{position:fixed;right:18px;top:194px;width:52px;height:52px;display:flex;align-items:center;justify-content:center;padding:10px;color:#e8d9a0;background:rgba(8,12,8,.9);border:2px solid #6f6b55;box-shadow:0 3px 14px #0008;cursor:pointer;pointer-events:auto}
+/* Administrator access and controls */
+.mp-admin-gate{display:none;text-align:left;margin-top:12px;padding:14px;border:1px solid #9b8a43;background:rgba(0,0,0,.35)}
+.mp-admin-gate h3{margin:0 0 8px;color:#e8d9a0;letter-spacing:2px;text-align:center}
+.mp-admin-gate p{margin:0 0 8px;text-align:center}
+#mp-admin-error{min-height:18px;margin-top:7px;color:#e87969;font-size:12px;text-align:center}
+#mp-admin-ui{position:fixed;right:18px;top:254px;z-index:73;display:none;pointer-events:none;font-family:"Courier New",monospace;text-shadow:none}
+#mp-admin-button{pointer-events:auto;padding:9px 12px;color:#17190f;background:#e8d9a0;border:2px solid #e8d9a0;font: bold 12px "Courier New",monospace;letter-spacing:1px;cursor:pointer;box-shadow:0 3px 14px #0008;touch-action:manipulation}
+#mp-admin-panel{display:none;position:fixed;right:18px;top:306px;width:min(330px,calc(100vw - 28px));max-height:min(62vh,520px);overflow:auto;box-sizing:border-box;padding:13px;background:rgba(12,14,10,.98);border:2px solid #9b8a43;box-shadow:0 12px 38px #000b;pointer-events:auto;color:#d8d2b0}
+#mp-admin-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;color:#e8d9a0;font-size:14px;letter-spacing:2px}
+#mp-admin-close{min-width:34px;min-height:32px;color:#d8d2b0;background:transparent;border:1px solid #6f6b55;font:20px "Courier New",monospace;cursor:pointer}
+.mp-admin-option{display:flex;align-items:center;gap:10px;padding:8px 4px;border-top:1px solid #37392c;font-size:12px;letter-spacing:1px;cursor:pointer}
+.mp-admin-option input{width:18px;height:18px;margin:0;accent-color:#e8d9a0}
+#mp-admin-note{margin-top:10px;color:#8f8a70;font-size:10px;line-height:1.4}
+@media(max-width:560px),(pointer:coarse){#mp-admin-ui{right:12px;top:230px}#mp-admin-panel{right:12px;top:282px;max-height:55dvh}}
+
+/* Multiplayer-only chat: touch-sized controls and visual-viewport-aware mobile layout. */
+#mp-chat-ui{position:fixed;inset:0;z-index:74;display:none;pointer-events:none;font-family:"Courier New",monospace;text-shadow:none;--mp-vh:100dvh}
+#mp-chat-button{position:fixed;right:18px;top:194px;width:52px;height:52px;display:flex;align-items:center;justify-content:center;padding:10px;color:#e8d9a0;background:rgba(8,12,8,.94);border:2px solid #6f6b55;box-shadow:0 3px 14px #0008;cursor:pointer;pointer-events:auto;touch-action:manipulation;z-index:2}
 #mp-chat-button:hover,#mp-chat-button:focus-visible{border-color:#e8d9a0;background:#202418;outline:none}
 #mp-chat-button svg{width:29px;height:29px;display:block}
-#mp-chat-panel{position:fixed;right:18px;top:254px;width:min(360px,calc(100vw - 36px));height:min(360px,calc(100vh - 275px));min-height:190px;box-sizing:border-box;display:none;flex-direction:column;gap:9px;padding:12px;background:rgba(12,14,10,.97);border:2px solid #6f6b55;box-shadow:0 12px 38px #000b;pointer-events:auto}
-#mp-chat-head{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#e8d9a0;font-size:14px;letter-spacing:2px}
-#mp-chat-close{font:inherit;font-size:20px;line-height:1;color:#d8d2b0;background:transparent;border:1px solid #6f6b55;padding:2px 8px;cursor:pointer}
-#mp-chat-messages{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:7px;background:rgba(0,0,0,.42);border:1px solid #4a4836;color:#d8d2b0;font-size:13px;line-height:1.45;overflow-wrap:anywhere}
-.mp-chat-line{margin:0 0 7px}
+#mp-chat-panel{position:fixed;right:18px;top:254px;width:min(360px,calc(100vw - 36px));height:min(360px,calc(var(--mp-vh) - 275px));min-height:190px;box-sizing:border-box;display:none;flex-direction:column;gap:9px;padding:12px;background:rgba(12,14,10,.98);border:2px solid #6f6b55;box-shadow:0 12px 38px #000b;pointer-events:auto;z-index:3;overflow:hidden}
+#mp-chat-head{display:flex;flex:0 0 auto;align-items:center;justify-content:space-between;gap:10px;color:#e8d9a0;font-size:14px;letter-spacing:2px}
+#mp-chat-close{min-width:38px;min-height:36px;font:inherit;font-size:20px;line-height:1;color:#d8d2b0;background:transparent;border:1px solid #6f6b55;padding:2px 8px;cursor:pointer;touch-action:manipulation}
+#mp-chat-messages{flex:1 1 auto;min-height:0;overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;padding:9px;background:rgba(0,0,0,.42);border:1px solid #4a4836;color:#d8d2b0;font-size:13px;line-height:1.5;overflow-wrap:anywhere}
+.mp-chat-line{margin:0 0 7px;overflow-wrap:anywhere;word-break:break-word}
 .mp-chat-line:last-child{margin-bottom:0}
 .mp-chat-author{color:#e8d9a0;font-weight:bold}
 .mp-chat-system{color:#9fd27a;font-style:italic}
-#mp-chat-form{display:flex;gap:7px}
-#mp-chat-input{flex:1;min-width:0;box-sizing:border-box;padding:9px 10px;color:#d8d2b0;background:#080a07;border:1px solid #6f6b55;font:13px "Courier New",monospace;outline:none}
+#mp-chat-form{display:flex;flex:0 0 auto;gap:7px;min-width:0}
+#mp-chat-input{flex:1 1 auto;width:0;min-width:0;min-height:42px;box-sizing:border-box;padding:9px 10px;color:#d8d2b0;background:#080a07;border:1px solid #6f6b55;border-radius:0;font:16px "Courier New",monospace;outline:none;touch-action:manipulation}
 #mp-chat-input:focus{border-color:#e8d9a0}
-#mp-chat-send{padding:8px 11px;color:#14160f;background:#e8d9a0;border:1px solid #e8d9a0;font:13px "Courier New",monospace;letter-spacing:1px;cursor:pointer}
-#mp-chat-hint{font-size:10px;letter-spacing:1px;color:#8f8a70;text-align:right}
-@media(max-width:560px){#mp-chat-button{right:12px;top:184px;width:46px;height:46px}#mp-chat-panel{right:12px;top:238px;width:min(340px,calc(100vw - 24px));height:min(330px,calc(100vh - 252px))}}
+#mp-chat-send{flex:0 0 auto;min-width:68px;min-height:42px;padding:8px 11px;color:#14160f;background:#e8d9a0;border:1px solid #e8d9a0;border-radius:0;font:13px "Courier New",monospace;letter-spacing:1px;cursor:pointer;touch-action:manipulation}
+#mp-chat-hint{flex:0 0 auto;font-size:10px;letter-spacing:1px;color:#8f8a70;text-align:right}
+.mp-contributor-tag{display:inline-block;vertical-align:middle;margin-left:5px;padding:1px 5px;border:1px solid #e8d9a0;border-radius:3px;background:rgba(232,217,160,.14);color:#e8d9a0;font: bold 10px "Courier New",monospace;letter-spacing:.7px;white-space:nowrap}
+@media(max-width:560px),(pointer:coarse){
+ #mp-chat-button{right:12px;top:calc(174px + env(safe-area-inset-top,0px));width:48px;height:48px;padding:9px}
+ #mp-chat-button svg{width:28px;height:28px}
+ #mp-chat-panel{left:10px;right:10px;top:auto;bottom:calc(10px + env(safe-area-inset-bottom,0px));width:auto;height:min(290px,42dvh);min-height:140px;max-height:calc(var(--mp-vh) - 20px);padding:10px;gap:8px}
+ #mp-chat-head{font-size:13px}
+ #mp-chat-messages{font-size:13px;padding:8px}
+ #mp-chat-hint{font-size:9px}
+}
+@media(max-height:420px) and (pointer:coarse){#mp-chat-panel{height:min(220px,55dvh);min-height:120px}#mp-chat-button{top:calc(126px + env(safe-area-inset-top,0px))}}
 
 </style></head><body>
 <canvas id="c"></canvas><canvas id="gh"></canvas>
@@ -260,7 +284,7 @@ body.touch #sall{top:80px;font-size:12px}
 <div class="wnc"><div class="wnh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" shape-rendering="crispEdges"><path d="M3 4h14v16H5a2 2 0 0 1-2-2z"/><path d="M17 8h4v10a2 2 0 0 1-2 2h-2"/><path d="M6 8h8M6 11h8M6 14h4M12 14h2M6 17h8"/></svg><h2>WHAT'S NEW</h2></div><div class="wnv" id="wnv"></div><ul id="wnu"></ul><button class="btn" id="wnx" style="width:100%">CLOSE</button></div>
 <button class="wnar" id="wnr" aria-label="Previous updates">&#9654;&#xFE0E;</button></div>
 <div id="set"><div class="setbox"><div class="seth"><b>SETTINGS</b><button id="setx">CLOSE</button></div><div id="settabs"><button data-t="vis" class="on">VISUAL</button><button data-t="game">GAME</button><button data-t="fun">FUN</button></div><div id="setb"></div></div></div>
-<div id="mp-panel"><div class="mp-card"><h2 id="mp-title">MULTIPLAYER</h2><div id="mp-config"><p>THIS IS STILL IN THE WORKS AND IS PRETTY UNSTABLE, MANY BUGS AND MORE <span style="color:red;text-decoration:underline;">WILL APPEAR.</span></p><input id="mp-name" maxlength="20" placeholder="Player name" autocomplete="nickname"><div class="mp-actions"><button class="btn" id="mp-connect">JOIN MULTIPLAYER</button><button class="btn sec" id="mp-cancel">CANCEL</button></div></div><div id="mp-loading" style="display:none"><p id="mp-load-caption">Connecting to Multiplayer...</p><div class="mp-progress"><i id="mp-progress-bar"></i></div><div class="mp-task" id="mp-task-list"></div><div class="mp-status" id="mp-status"></div><button class="btn sec" id="mp-load-cancel" style="width:100%;margin-top:12px">CANCEL</button></div></div></div>
+<div id="mp-panel"><div class="mp-card"><h2 id="mp-title">MULTIPLAYER</h2><div id="mp-config"><p>THIS IS STILL IN THE WORKS AND IS PRETTY UNSTABLE, MANY BUGS AND MORE <span style="color:red;text-decoration:underline;">WILL APPEAR.</span></p><input id="mp-name" placeholder="Player name" autocomplete="nickname"><div class="mp-actions"><button class="btn" id="mp-connect">JOIN MULTIPLAYER</button><button class="btn sec" id="mp-cancel">CANCEL</button></div></div><div id="mp-admin-gate" class="mp-admin-gate"><h3>ADMINISTRATOR ACCESS</h3><p>Enter the administrator password to continue.</p><input id="mp-admin-password" type="password" autocomplete="current-password" placeholder="Administrator password" aria-label="Administrator password"><div class="mp-actions"><button class="btn" id="mp-admin-verify" type="button">VERIFY &amp; JOIN</button><button class="btn sec" id="mp-admin-gate-cancel" type="button">CANCEL</button></div><div id="mp-admin-error" role="status" aria-live="polite"></div></div><div id="mp-loading" style="display:none"><p id="mp-load-caption">Connecting to Multiplayer...</p><div class="mp-progress"><i id="mp-progress-bar"></i></div><div class="mp-task" id="mp-task-list"></div><div class="mp-status" id="mp-status"></div><button class="btn sec" id="mp-load-cancel" style="width:100%;margin-top:12px">CANCEL</button></div></div></div>
 <div id="mp-chat-ui" aria-label="Multiplayer chat">
 <button id="mp-chat-button" type="button" aria-label="Open multiplayer chat" title="Multiplayer chat ( / )">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.2 11.4a7.8 7.8 0 0 1-8.2 7.5 8.9 8.9 0 0 1-3.4-.7L4 20l1.2-3.8A7.1 7.1 0 0 1 3.8 11.4 7.8 7.8 0 0 1 12 3.9a7.8 7.8 0 0 1 8.2 7.5Z"/><path d="M8 11.5h.01M12 11.5h.01M16 11.5h.01" stroke-width="2.6"/></svg>
@@ -271,6 +295,20 @@ body.touch #sall{top:80px;font-size:12px}
 <form id="mp-chat-form"><input id="mp-chat-input" maxlength="240" autocomplete="off" placeholder="Type a message..." aria-label="Chat message"><button id="mp-chat-send" type="submit">SEND</button></form>
 <div id="mp-chat-hint">PRESS / TO OPEN · ENTER TO SEND</div>
 </div>
+</div>
+<div id="mp-admin-ui" aria-label="Administrator controls">
+ <button id="mp-admin-button" type="button">★ ADMIN</button>
+ <div id="mp-admin-panel" role="dialog" aria-label="Administrator controls">
+  <div id="mp-admin-head"><span>ADMIN CONTROLS</span><button id="mp-admin-close" type="button" aria-label="Close admin controls">×</button></div>
+  <label class="mp-admin-option"><input type="checkbox" data-admin-perk="infiniteAmmo"> INFINITE AMMO</label>
+  <label class="mp-admin-option"><input type="checkbox" data-admin-perk="noCooldown"> NO WEAPON COOLDOWNS</label>
+  <label class="mp-admin-option"><input type="checkbox" data-admin-perk="instantReload"> INSTANT RELOAD</label>
+  <label class="mp-admin-option"><input type="checkbox" data-admin-perk="invulnerability"> INVULNERABILITY</label>
+  <label class="mp-admin-option"><input type="checkbox" data-admin-perk="superSpeed"> SUPER SPEED</label>
+  <label class="mp-admin-option"><input type="checkbox" data-admin-perk="infiniteSupplies"> INFINITE BANDAGES &amp; REPELLENT</label>
+  <label class="mp-admin-option"><input type="checkbox" data-admin-perk="extraCarry"> EXTRA ANIMAL CARRY CAPACITY</label>
+  <div id="mp-admin-note">These options affect only your Administrator game session.</div>
+ </div>
 </div>
 <div id="rot"><div class="ph"></div><b>ROTATE YOUR PHONE</b><span>It is recommended that this game is played in landscape mode</span></div>
 <div id="ver">v1.6.5</div>
@@ -686,6 +724,7 @@ function skyUpdate(){const sun=Math.cos((clock-12)/12*PI),dl=Math.max(0,Math.min
 _c.lerpColors(cDay,cNight,nf);{const k=Math.min(.7,wx.rain*.5+wx.fog*.7);if(k>0)_c.lerp(wxC.setRGB(.36-.33*nf,.39-.355*nf,.42-.375*nf),k)}mat.uniforms.fogc.value.copy(_c);renderer.setClearColor(_c);
 const fm=SET.fog;mat.uniforms.fogf.value=fm<=.02?4000:(80-28*nf)*(1-.38*wx.rain-.5*wx.fog)/fm;mat.uniforms.fogn.value=fm<=.02?3000:(6-2*nf)*(1-.5*wx.fog)/fm;mat.uniforms.tint.value.set(1-.5*nf,1-.45*nf,1-.22*nf)}
 let cheatAmmo=false,gameMode='regular',lives=3,hitCooldown=0,deathCause='gray',hf=0,carry=[],sf=[16,50,50],sleepT=0,scoped=false,playing=false,G='menu',T=0,camY=1.7,bob=0,msgT=0,hb=0,ac;
+let mpAdminAuthenticated=false;const mpAdminPerks={infiniteAmmo:false,noCooldown:false,instantReload:false,invulnerability:false,superSpeed:false,infiniteSupplies:false,extraCarry:false};
 const keys={};
 const UPDATES=[
 {v:'1.6.5',t:'Chat and Models Update',n:['Added chat to Multiplayer','Fixed leaving Multiplayer','Made the playermodel a little better for Multiplayer, looked horrible','Multiplayer is STILL a little buggy, and WILL be fixed eventually']},
@@ -823,7 +862,7 @@ function launchSelectedMode(mode){
 }
 $('mode-regular').onclick=()=>launchSelectedMode('regular');
 $('mode-defense').onclick=()=>launchSelectedMode('defense');
-function hurt(why,cause){if(hitCooldown>0||G!=='play')return;lives=Math.max(0,lives-1);hitCooldown=D.hitCd;regT=0;hf=.85;updateHearts();snd(80,.18,'sine',.5,.4);noise(.12,.35);msg(lives?why:'YOU WERE OVERRUN',2);if(lives<=0){deathCause=cause;die()}}
+function hurt(why,cause){if(mpAdminHas('invulnerability'))return;if(hitCooldown>0||G!=='play')return;lives=Math.max(0,lives-1);hitCooldown=D.hitCd;regT=0;hf=.85;updateHearts();snd(80,.18,'sine',.5,.4);noise(.12,.35);msg(lives?why:'YOU WERE OVERRUN',2);if(lives<=0){deathCause=cause;die()}}
 function hurtDefense(){if(gameMode!=='defense')return;hurt('A DEER HIT YOU!','deer')}
 function resumeGame(){if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();G='play';playing=true;updateHearts();$('ov').style.display='none';if(!isTouch)cv.requestPointerLock()}
 $('go').onclick=()=>{if($('ov').className==='pause'){resumeGame();return}$('mode-overlay').style.display='flex'};
@@ -892,7 +931,7 @@ if(P.stuck>0&&/^Key[WASD]$/.test(e.code))P.stuck-=.35;if(e.code==='KeyE')toggleH
 addEventListener('keyup',e=>keys[e.code]=false);
 function nearDead(){let b=null,bd=3.6;const chk=d=>{if(d.active&&!d.alive&&!d.carried&&!d.done&&!d.falling){const k=Math.hypot(d.x-P.x,d.z-P.z);if(k<bd){bd=k;b=d}}};for(const d of deers)chk(d);for(const d of rabbits)chk(d);for(const d of bears)chk(d);if(!giant.alive&&giant.active&&!giant.carried&&!giant.done){const k=Math.hypot(giant.x-P.x,giant.z-P.z);if(k<bd){bd=k;b=giant}}return b}
 const wOf=d=>d.wt||(d.giant?2:1),cw=()=>carry.reduce((a,d)=>a+wOf(d),0);
-function pickUp(dd){if(cw()+wOf(dd)>2){msg(dd.giant?'THE GRAY ONE NEEDS BOTH HANDS \u2014 DROP WHAT YOU HOLD':(dd.kind==='bear'?'THE BEAR NEEDS BOTH HANDS \u2014 DROP WHAT YOU HOLD':'HANDS FULL \u2014 MAX 2 DEER'),2);return}carry.push(dd);dd.carried=true;dd.g.visible=false;msg(dd.giant?'CARRYING THE GRAY ONE \u2014 TAKE IT TO THE SHOP':(dd.kind==='bear'?'CARRYING A BEAR \u2014 WORTH $20, TAKE IT TO THE SHOP':(dd.kind==='rabbit'?'CARRYING '+cw()+'/2 \u2014 A RABBIT IS WORTH $5':(dd.val>10?'A RARE '+dd.vn.toUpperCase()+'! WORTH $'+dd.val+' \u2014 TAKE IT TO THE SHOP':'CARRYING '+cw()+'/2 \u2014 TAKE THEM TO THE SHOP'))),3)}
+function pickUp(dd){if(cw()+wOf(dd)>(mpAdminHas('extraCarry')?99:2)){msg(dd.giant?'THE GRAY ONE NEEDS BOTH HANDS \u2014 DROP WHAT YOU HOLD':(dd.kind==='bear'?'THE BEAR NEEDS BOTH HANDS \u2014 DROP WHAT YOU HOLD':'HANDS FULL \u2014 MAX 2 DEER'),2);return}carry.push(dd);dd.carried=true;dd.g.visible=false;msg(dd.giant?'CARRYING THE GRAY ONE \u2014 TAKE IT TO THE SHOP':(dd.kind==='bear'?'CARRYING A BEAR \u2014 WORTH $20, TAKE IT TO THE SHOP':(dd.kind==='rabbit'?'CARRYING '+cw()+'/2 \u2014 A RABBIT IS WORTH $5':(dd.val>10?'A RARE '+dd.vn.toUpperCase()+'! WORTH $'+dd.val+' \u2014 TAKE IT TO THE SHOP':'CARRYING '+cw()+'/2 \u2014 TAKE THEM TO THE SHOP'))),3)}
 function dropDeer(){const d=carry.pop();if(!d)return;d.g.visible=true;d.x=P.x-Math.sin(P.yaw)*1.5;d.z=P.z-Math.cos(P.yaw)*1.5;d.g.rotation.set(0,d.yaw,1.45);d.g.position.set(d.x,hgt(d.x,d.z)+(d.ly||(d.giant?.72:.6)),d.z);d.carried=false}
 const bedD=()=>Math.abs(P.x)<4.4&&Math.abs(P.z)<3.5&&Math.hypot(P.x+3.5,P.z+2.2)<2.8;
 function sleep(){if(nf<.5){msg('NOT TIRED \u2014 YOU CAN ONLY SLEEP AT NIGHT',3);return}sleepT=2.2;$('bk').style.opacity=1}
@@ -905,9 +944,9 @@ if(nearShop()){openShop();return}
 const b=nearBush();if(!b)return;
 if(Math.hypot(giant.x-P.x,giant.z-P.z)<6){msg('TOO CLOSE TO HIDE!',2);return}
 P.hid=true;stats.hides++;P.hx=b.x;P.hz=b.z;P.x=b.x;P.z=b.z}
-function reload(){if(rel>0||ammo[cur]==WP[cur].mag)return;rel=WP[cur].rel;snd(300,.1,'square',.2,.5)}
+function reload(){if(mpAdminHas('instantReload')){rel=0;ammo[cur]=WP[cur].mag;return}if(rel>0||ammo[cur]==WP[cur].mag)return;rel=WP[cur].rel;snd(300,.1,'square',.2,.5)}
 const falls=[];let swing=0;
-function swingAxe(){cd=.7;swing=1;
+function swingAxe(){cd=mpAdminHas('noCooldown')?0:.7;swing=1;
 const fx=-Math.sin(P.yaw),fz=-Math.cos(P.yaw);let best=null,bd=3.4;
 for(const t of treeSpots){if(t.cut)continue;const dx=t.x-P.x,dz=t.z-P.z;if(dx>3.6||dx<-3.6||dz>3.6||dz<-3.6)continue;const d=Math.hypot(dx,dz);if(d>=bd)continue;if(d>1&&(dx*fx+dz*fz)/d<.6)continue;best=t;bd=d}
 if(!best){snd(150,.12,'sawtooth',.15,.5);noise(.12,.15);return}
@@ -935,10 +974,10 @@ function killGiant(){stats.gKills++;saveStats();giant.alive=false;giant.st='dead
 function rayS(o,d,c,r){const ox=c.x-o.x,oy=c.y-o.y,oz=c.z-o.z,tca=ox*d.x+oy*d.y+oz*d.z;if(tca<0)return 1e9;const d2=ox*ox+oy*oy+oz*oz-tca*tca;if(d2>r*r)return 1e9;return tca-Math.sqrt(r*r-d2)}
 function rayBlocked(o,d,t){for(let k=1;k<t;k+=1.2){const y=o.y+d.y*k,qx=o.x+d.x*k,qz=o.z+d.z*k,hh=hgt(qx,qz);if(y<hh)return true;if(y<hh+6&&hit(qx,qz,.05))return true}return false}
 function shoot(){
-const w=WP[cur];if(!playing||P.hid||rel>0||(!cheatAmmo&&cd>0))return;
+const w=WP[cur],adminInfinite=mpAdminHas('infiniteAmmo'),adminNoCooldown=mpAdminHas('noCooldown'),adminInstantReload=mpAdminHas('instantReload');if(!playing||P.hid||(rel>0&&!adminInstantReload)||(!(cheatAmmo||adminNoCooldown)&&cd>0))return;
 if(cur===2){swingAxe();return}
-if(ammo[cur]<=0){if(!cheatAmmo)reload();return}
-ammo[cur]--;stats.shots++;saveStats();if(stillT>=40)calmDeer();stillT=0;cd=cheatAmmo?0:w.cd;kick=1;flash=.06;noise(.4,.6);snd(110,.3,'square',.3,.3);$('fl').style.opacity=.3;
+if(ammo[cur]<=0&&!cheatAmmo&&!adminInfinite){reload();return}
+if(!(cheatAmmo||adminInfinite))ammo[cur]--;stats.shots++;saveStats();if(stillT>=40)calmDeer();stillT=0;cd=(cheatAmmo||adminNoCooldown)?0:w.cd;kick=1;flash=.06;noise(.4,.6);snd(110,.3,'square',.3,.3);$('fl').style.opacity=.3;
 const o={x:P.x,y:camY,z:P.z},cp=Math.cos(P.pitch);
 for(const d of deers)if(d.active&&d.alive&&Math.hypot(d.x-P.x,d.z-P.z)<75){d.st='flee';d.t=4}
 if(giant.alive&&giant.st!=='chase'&&!P.hid&&Math.hypot(giant.x-P.x,giant.z-P.z)<80){giant.st='chase';giant.angry=5}
@@ -1163,13 +1202,13 @@ function bearSound(kind,dist,src){if(!ac)return;const dd=dist==null?8:dist;if(dd
  else if(kind==='die')growlV(out,t,2.2,135,38,.9,.8);
  else if(kind==='huff'){burst(out,t,.16,900,500,.9,.9);burst(out,t+.22,.2,800,450,.9,.7)}
  else if(kind==='swipe'){burst(out,t,.22,3200,600,1.2,1);const o=ac.createOscillator(),e=ac.createGain();o.type='sine';o.frequency.setValueAtTime(85,t);o.frequency.exponentialRampToValueAtTime(38,t+.16);e.gain.setValueAtTime(.9,t);e.gain.exponentialRampToValueAtTime(.001,t+.18);o.connect(e);e.connect(out);o.start(t);o.stop(t+.2)}}
-function useBandage(){if(!playing)return;if(!(stats.heal>0)){msg('NO BANDAGES \u2014 BUY SOME AT THE SHOP',2);return}if(lives>=3){msg('YOU ARE ALREADY AT FULL HEALTH',2);return}
- stats.heal--;saveStats();lives++;updateHearts();msg('PATCHED UP \u2014 +1 HEART',2.5);if(ac){const t=ac.currentTime,o=sfxOut(.7);burst(o,t,.25,2600,1400,.6,.5);burst(o,t+.3,.35,2000,900,.5,.4)}}
-function useRepellent(){if(!playing)return;if(!(stats.rep>0)){msg('NO REPELLENT \u2014 BUY SOME AT THE SHOP',2);return}
- stats.rep--;saveStats();spray();msg('SPRAYED \u2014 BEARS WILL STAY AWAY FOR A WHILE',3);if(ac){const t=ac.currentTime,o=sfxOut(.6);burst(o,t,1.1,5200,3000,.8,.45,'highpass');burst(o,t,.1,900,500,1,.3)}}
+function useBandage(){if(!playing)return;const infinite=mpAdminHas('infiniteSupplies');if(!(stats.heal>0)&&!infinite){msg('NO BANDAGES \u2014 BUY SOME AT THE SHOP',2);return}if(lives>=3){msg('YOU ARE ALREADY AT FULL HEALTH',2);return}
+ if(!infinite){stats.heal--;saveStats()}lives++;updateHearts();msg('PATCHED UP \u2014 +1 HEART',2.5);if(ac){const t=ac.currentTime,o=sfxOut(.7);burst(o,t,.25,2600,1400,.6,.5);burst(o,t+.3,.35,2000,900,.5,.4)}}
+function useRepellent(){if(!playing)return;const infinite=mpAdminHas('infiniteSupplies');if(!(stats.rep>0)&&!infinite){msg('NO REPELLENT \u2014 BUY SOME AT THE SHOP',2);return}
+ if(!infinite){stats.rep--;saveStats()}spray();msg('SPRAYED \u2014 BEARS WILL STAY AWAY FOR A WHILE',3);if(ac){const t=ac.currentTime,o=sfxOut(.6);burst(o,t,1.1,5200,3000,.8,.45,'highpass');burst(o,t,.1,900,500,1,.3)}}
 const HS=[
- {k:'1',svg:SVG_RIFLE,has:()=>1,cnt:()=>ammo[0],sel:()=>cur===0},
- {k:'2',svg:SVG_SHOT,has:()=>1,cnt:()=>ammo[1],sel:()=>cur===1},
+ {k:'1',svg:SVG_RIFLE,has:()=>1,cnt:()=>mpAdminHas('infiniteAmmo')?'∞':ammo[0],sel:()=>cur===0},
+ {k:'2',svg:SVG_SHOT,has:()=>1,cnt:()=>mpAdminHas('infiniteAmmo')?'∞':ammo[1],sel:()=>cur===1},
  {k:'3',svg:SVG_AXE,has:()=>stats.axe,sel:()=>cur===2},
  {k:'H',svg:SVG_BAND,has:()=>stats.heal,cnt:()=>stats.heal},
  {k:'V',svg:SVG_REP,has:()=>stats.rep,cnt:()=>stats.rep},
@@ -1199,7 +1238,7 @@ const dA=Math.hypot(P.x,P.z-4.6)<5.5?1.5:0;door.rotation.y+=(dA-door.rotation.y)
 const tjOn=tj.on&&Math.hypot(tj.x,tj.y)>.14,kbd=!!(keys.KeyA||keys.KeyD||keys.KeyW||keys.KeyS),kx=(keys.KeyD?1:0)-(keys.KeyA?1:0)+(tjOn?tj.x:0),kz=(keys.KeyW?1:0)-(keys.KeyS?1:0)+(tjOn?-tj.y:0),am=tjOn&&!kbd?Math.max(.4,Math.min(1,Math.hypot(tj.x,tj.y))):1;
 P.moving=!P.hid&&!(P.stuck>0)&&!!(kx||kz);P.run=P.moving&&!scoped&&!!(keys.ShiftLeft||keys.ShiftRight||(tjOn&&tj.run));
 if(P.moving){if(stillT>=40)calmDeer();stillT=0}else{const was=stillT;stillT+=dt;if(was<40&&stillT>=40)for(const d of deers)d.cq=Math.random()<.75}
-if(P.moving){let inBog=false;for(let bi=0;bi<bogs.length;bi++){const b=bogs[bi];if(P.x>=b.minX&&P.x<=b.maxX&&P.z>=b.minZ&&P.z<=b.maxZ&&inMud(P.x,P.z,b)){inBog=true;break}}const bg=inBog?.6:1;if(inBog)stats.mudT+=dt;if(bg<1&&!P.inBog)msg('STUCK IN THE MUD \u2014 YOU MOVE SLOWLY',2);P.inBog=bg<1;const sp=Math.max(inBog?1.6:0,(scoped?2.2:(P.run?RUN_SP:5))*(cw()>1?.4:cw()?.7:1)*bg*am*(stats.boots?1.08:1)),l=Math.hypot(kx,kz),s=Math.sin(P.yaw),c=Math.cos(P.yaw);
+if(P.moving){let inBog=false;for(let bi=0;bi<bogs.length;bi++){const b=bogs[bi];if(P.x>=b.minX&&P.x<=b.maxX&&P.z>=b.minZ&&P.z<=b.maxZ&&inMud(P.x,P.z,b)){inBog=true;break}}const bg=inBog?.6:1;if(inBog)stats.mudT+=dt;if(bg<1&&!P.inBog)msg('STUCK IN THE MUD \u2014 YOU MOVE SLOWLY',2);P.inBog=bg<1;const sp=Math.max(inBog?1.6:0,(scoped?2.2:(P.run?RUN_SP:5))*(cw()>1?.4:cw()?.7:1)*bg*am*(stats.boots?1.08:1)*(mpAdminHas('superSpeed')?2.5:1)),l=Math.hypot(kx,kz),s=Math.sin(P.yaw),c=Math.cos(P.yaw);
 const ux=(-s*kz+c*kx)/l,uz=(-c*kz-s*kx)/l,gr=hgt(P.x+ux,P.z+uz)-hgt(P.x,P.z),sl=Math.max(inBog?.8:.4,Math.min(1.2,1-gr*.5));const dx=ux*sp*sl*dt,dz=uz*sp*sl*dt;
 const ox0=P.x,oz0=P.z;if(!hit(P.x+dx,P.z,.45))P.x+=dx;if(!hit(P.x,P.z+dz,.45))P.z+=dz;stats.dist+=Math.hypot(P.x-ox0,P.z-oz0);
 P.x=Math.max(-W/2+3,Math.min(W/2-3,P.x));P.z=Math.max(-W/2+3,Math.min(W/2-3,P.z));if(auraEnabled){auraStepDistance+=Math.hypot(P.x-auraLastX,P.z-auraLastZ);auraLastX=P.x;auraLastZ=P.z;if(auraStepDistance>=2.25){auraStepDistance=0;makeAuraCrater(P.x,P.z)}}bob+=dt*(P.run?12:8)}
@@ -1223,7 +1262,7 @@ qTimer+=dt;if(qTimer>=1){qTimer=0;qCheck()}
 if(msgT>0){msgT-=dt;if(msgT<=0)$('ms').textContent=''}
 renderHotbar();drawRadar(dt);$('tl').textContent='DEER '+stats.deer+'   SHOTS '+stats.shots+'   MURDERED '+stats.deaths+(carry.length?'   CARRYING '+cw()+'/2':'');
 {const hh=Math.floor(clock),mm=Math.floor((clock-hh)*60);$('clk').textContent='$'+stats.money+'   '+(hh<10?'0':'')+hh+':'+(mm<10?'0':'')+mm+'  '+(nf<.15?'DAY':nf>.85?'NIGHT':(clock<12?'DAWN':'DUSK'))+(wx.rain>.8?(wx.storm?'  STORM':'  HEAVY RAIN'):wx.rain>.2?'  RAIN':wx.fog>.4?'  FOG':'')}
-$('br').textContent=WP[cur].n+(cur<2?' '+ammo[cur]+'/'+WP[cur].mag:'')+(rel>0?'  RELOADING':'')+(scoped?'  ZOOM '+(72/sf[cur]).toFixed(1)+'x':'');
+$('br').textContent=WP[cur].n+(cur<2?' '+(mpAdminHas('infiniteAmmo')?'∞':ammo[cur]+'/'+WP[cur].mag):'')+(rel>0&&!mpAdminHas('instantReload')?'  RELOADING':'')+(scoped?'  ZOOM '+(72/sf[cur]).toFixed(1)+'x':'');
 const tx=Math.atan2(-P.x,-P.z),h=Math.atan2(-Math.sin(P.yaw),-Math.cos(P.yaw));
 $('ar').style.transform='rotate('+(-(tx-h))+'rad)';$('cd').textContent='CABIN '+Math.round(Math.hypot(P.x,P.z))+'m';
 {const sbx=Math.atan2(SH.x-P.x,SH.z+4-P.z);$('sha').style.transform='rotate('+(-(sbx-h))+'rad)';$('shd').textContent='SHOP '+Math.round(Math.hypot(SH.x-P.x,SH.z+4-P.z))+'m'}
@@ -1304,20 +1343,71 @@ const mpRemote=new Map(),mpEventSeen=new Set();
 const mpPlayerId=(()=>{let v=localStorage.getItem('hsm.playerId');if(!v){v=(crypto.randomUUID?crypto.randomUUID():('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:(r&3|8)).toString(16)})));localStorage.setItem('hsm.playerId',v)}return v})();
 let mpName=localStorage.getItem('hsm.playerName')||('Hunter'+Math.floor(100+Math.random()*900));
 let mpExitedToTitle=false;
+const MP_ADMIN_PASSWORD='iamalongsecretcode';
 const mpChatLog=$('mp-chat-messages');
+function mpIsAdminSession(){return mpOnline&&mpAdminAuthenticated&&/^ADMINISTRATOR$/i.test(String(mpName||'').trim())}
+function mpAdminHas(key){return mpIsAdminSession()&&!!mpAdminPerks[key]}
+function mpRenderAdminUI(){
+ const ui=$('mp-admin-ui'),panel=$('mp-admin-panel');if(!ui||!panel)return;
+ const allowed=mpIsAdminSession();ui.style.display=allowed?'block':'none';
+ if(!allowed)panel.style.display='none';
+ panel.querySelectorAll('[data-admin-perk]').forEach(input=>{input.checked=!!mpAdminPerks[input.dataset.adminPerk]});
+}
+function mpShowAdminGate(){
+ $('mp-config').style.display='none';$('mp-loading').style.display='none';$('mp-admin-gate').style.display='block';
+ $('mp-admin-password').value='';$('mp-admin-error').textContent='';
+ setTimeout(()=>$('mp-admin-password').focus(),40);
+}
+function mpHideAdminGate(){ $('mp-admin-gate').style.display='none';$('mp-config').style.display='block';$('mp-admin-password').value='';$('mp-admin-error').textContent=''; }
+function mpAttemptJoin(){
+ const requested=($('mp-name').value.trim()||mpName).trim();
+ if(/^ADMINISTRATOR$/i.test(requested)&&!mpAdminAuthenticated){mpShowAdminGate();return}
+ if(!/^ADMINISTRATOR$/i.test(requested))mpAdminAuthenticated=false;
+ mpConnectAndStart();
+}
+$('mp-admin-button').addEventListener('click',()=>{$('mp-admin-panel').style.display=$('mp-admin-panel').style.display==='block'?'none':'block'});
+$('mp-admin-close').addEventListener('click',()=>$('mp-admin-panel').style.display='none');
+$('mp-admin-panel').addEventListener('change',e=>{
+ const input=e.target.closest('[data-admin-perk]');if(!input||!mpIsAdminSession())return;
+ const key=input.dataset.adminPerk;mpAdminPerks[key]=input.checked;
+ if(key==='instantReload'&&input.checked){rel=0;ammo[cur]=WP[cur].mag}
+ if(key==='noCooldown'&&input.checked)cd=0;
+ if(key==='infiniteAmmo'&&input.checked){ammo[0]=WP[0].mag;ammo[1]=WP[1].mag}
+ renderHotbar();mpBroadcastPosition();
+});
+$('mp-admin-verify').addEventListener('click',()=>{
+ const requested=($('mp-name').value.trim()||mpName).trim();
+ if(!/^ADMINISTRATOR$/i.test(requested)){$('mp-admin-error').textContent='Set your player name to ADMINISTRATOR first.';return}
+ if($('mp-admin-password').value!==MP_ADMIN_PASSWORD){$('mp-admin-error').textContent='Incorrect password.';$('mp-admin-password').select();return}
+ mpAdminAuthenticated=true;mpHideAdminGate();mpConnectAndStart();
+});
+$('mp-admin-gate-cancel').addEventListener('click',()=>{mpAdminAuthenticated=false;mpHideAdminGate()});
+$('mp-admin-password').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('mp-admin-verify').click()}});
+
 function mpSetChatActive(active){
  $('mp-chat-ui').style.display=active&&mpOnline?'block':'none';
  if(!active||!mpOnline)mpCloseChat();
 }
 function mpTypingTarget(e){const t=e&&e.target;return !!(t&&(t.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)))}
-function mpOpenChat(){if(!mpOnline)return;$('mp-chat-panel').style.display='flex';$('mp-chat-panel').setAttribute('aria-hidden','false');$('mp-chat-input').focus();mpChatLog.scrollTop=mpChatLog.scrollHeight}
+function mpTagForName(name){const n=String(name||'').trim();if(/^ADMINISTRATOR$/i.test(n))return 'Contributor';if(/^TESTER.*[0-9]+$/i.test(n))return 'TESTER';return ''}
+function mpMobileChatLayout(){
+ const panel=$('mp-chat-panel'),ui=$('mp-chat-ui');if(!panel||panel.style.display!=='flex')return;
+ const vv=window.visualViewport,small=matchMedia('(max-width:560px), (pointer:coarse)').matches;
+ if(!small){panel.style.top='';panel.style.bottom='';panel.style.maxHeight='';return}
+ const vh=vv?vv.height:innerHeight,offset=vv?vv.offsetTop:0;
+ ui.style.setProperty('--mp-vh',Math.max(160,vh)+'px');
+ panel.style.maxHeight=Math.max(120,vh-20)+'px';
+ const h=Math.min(panel.offsetHeight||290,Math.max(120,vh-20));
+ panel.style.top=Math.max(offset+5,offset+vh-h-10)+'px';panel.style.bottom='auto';
+}
+function mpOpenChat(){if(!mpOnline)return;$('mp-chat-panel').style.display='flex';$('mp-chat-panel').setAttribute('aria-hidden','false');mpMobileChatLayout();$('mp-chat-input').focus({preventScroll:true});mpChatLog.scrollTop=mpChatLog.scrollHeight;setTimeout(mpMobileChatLayout,80)}
 function mpCloseChat(){
- $('mp-chat-panel').style.display='none';$('mp-chat-panel').setAttribute('aria-hidden','true');
+ $('mp-chat-panel').style.display='none';$('mp-chat-panel').setAttribute('aria-hidden','true');$('mp-chat-panel').style.top='';$('mp-chat-panel').style.bottom='';$('mp-chat-panel').style.maxHeight='';
  if(document.activeElement===$('mp-chat-input'))$('mp-chat-input').blur();
 }
 function mpAppendChat(name,message,system=false){
  const line=document.createElement('div');line.className='mp-chat-line'+(system?' mp-chat-system':'');
- if(!system){const author=document.createElement('span');author.className='mp-chat-author';author.textContent=String(name||'Hunter').slice(0,20)+': ';line.appendChild(author)}
+ if(!system){const cleanName=String(name||'Hunter');const author=document.createElement('span');author.className='mp-chat-author';author.textContent=cleanName+':';line.appendChild(author);const badge=mpTagForName(cleanName);if(badge){const tag=document.createElement('span');tag.className='mp-contributor-tag';tag.textContent=badge;line.appendChild(tag)}line.appendChild(document.createTextNode(' '))}
  const body=document.createElement('span');body.textContent=String(message||'').slice(0,240);line.appendChild(body);mpChatLog.appendChild(line);
  while(mpChatLog.children.length>70)mpChatLog.removeChild(mpChatLog.firstChild);
  mpChatLog.scrollTop=mpChatLog.scrollHeight;
@@ -1342,111 +1432,84 @@ addEventListener('keydown',e=>{
  if(e.key==='Escape'&&$('mp-chat-panel').style.display==='flex'){e.preventDefault();mpCloseChat();return}
  if(e.key==='/'&&!typing&&!e.ctrlKey&&!e.altKey&&!e.metaKey){e.preventDefault();mpOpenChat()}
 });
+if(window.visualViewport){window.visualViewport.addEventListener('resize',mpMobileChatLayout);window.visualViewport.addEventListener('scroll',mpMobileChatLayout)}
+addEventListener('resize',mpMobileChatLayout);
 const mpTasks=['Loading forest terrain','Loading trees and chopping state','Loading mud and terrain details','Loading wildlife','Loading shop inventory','Connecting to other hunters','Synchronizing player positions'];
 function mpAvatar(dead=false,item=0){
- // Same character concept: one floating gray head and two detached hands, with cleaner shapes and facial detail.
+ // Minimal floating avatar: a black round head, yellow smiley face, and a weapon floating nearby.
  const g=new THREE.Group();
- const skin=new THREE.MeshBasicMaterial({color:0x929392});
- const skinLight=new THREE.MeshBasicMaterial({color:0xb4b8b3});
- const skinShade=new THREE.MeshBasicMaterial({color:0x666d69});
- const dark=new THREE.MeshBasicMaterial({color:0x202522});
- const hair=new THREE.MeshBasicMaterial({color:0x303936});
- const white=new THREE.MeshBasicMaterial({color:0xf3f0df});
- const black=new THREE.MeshBasicMaterial({color:0x121715});
- const iris=new THREE.MeshBasicMaterial({color:0x596d63});
- const cheek=new THREE.MeshBasicMaterial({color:0x9b7773,transparent:true,opacity:.34,depthWrite:false});
- const metal=new THREE.MeshBasicMaterial({color:0x69716e});
+ const black=new THREE.MeshBasicMaterial({color:0x080909});
+ const yellow=new THREE.MeshBasicMaterial({color:0xffd52a});
+ const faceInk=new THREE.MeshBasicMaterial({color:0x111111});
+ const gunDark=new THREE.MeshBasicMaterial({color:0x202321});
+ const metal=new THREE.MeshBasicMaterial({color:0x777d78});
  const wood=new THREE.MeshBasicMaterial({color:0x76502f});
- const sphere=(r,m,x,y,z,sx=1,sy=1,sz=1,detail=18)=>{
-  const o=new THREE.Mesh(new THREE.SphereGeometry(r,detail,Math.max(10,Math.round(detail*.7))),m);
+ const sphere=(r,m,x,y,z,sx=1,sy=1,sz=1,detail=24)=>{
+  const o=new THREE.Mesh(new THREE.SphereGeometry(r,detail,Math.max(12,Math.round(detail*.7))),m);
   o.position.set(x,y,z);o.scale.set(sx,sy,sz);g.add(o);return o;
  };
  const box=(x,y,z,sx,sy,sz,m,rz=0)=>{
   const o=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),m);o.position.set(x,y,z);o.rotation.z=rz;g.add(o);return o;
  };
  const cylinder=(r1,r2,h,m,x,y,z,rz=0)=>{
-  const o=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,h,12),m);o.position.set(x,y,z);o.rotation.z=rz;g.add(o);return o;
+  const o=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,h,14),m);o.position.set(x,y,z);o.rotation.z=rz;g.add(o);return o;
  };
- // Smooth but still stylized, rounded gray head.
- sphere(.32,skin,0,1.58,0,.98,1.045,.94,24);
- sphere(.285,skinLight,0,1.61,-.035,.91,.98,.88,20).position.z=-.026;
- // Rounded ears retain the familiar silhouette.
- for(const side of [-1,1]){
-  sphere(.092,skin,side*.305,1.585,0,.82,1.12,.76,16);
-  sphere(.048,skinShade,side*.337,1.585,-.025,.48,.91,.45,14);
- }
- // Short dark hair cap and subtle side tufts.
- const cap=new THREE.Mesh(new THREE.SphereGeometry(.333,24,12,0,Math.PI*2,0,.88),hair);
- cap.position.set(0,1.585,.006);g.add(cap);
- sphere(.105,hair,-.255,1.585,-.015,.55,1.25,.75,14);
- sphere(.105,hair,.255,1.585,-.015,.55,1.25,.75,14);
- // Face looks toward local -Z.
- if(dead){
-  for(const x of [-.112,.112]){
-   box(x,1.655,-.309,.112,.024,.018,dark,.72);
-   box(x,1.655,-.311,.112,.024,.018,dark,-.72);
-  }
-  box(0,1.455,-.312,.19,.026,.018,dark);
- }else{
-  for(const x of [-.108,.108]){
-   sphere(.066,white,x,1.645,-.285,.9,1.04,.48,16);
-   sphere(.036,iris,x*.91,1.642,-.319,.9,1.02,.5,14);
-   sphere(.021,black,x*.91,1.642,-.337,.92,1.08,.48,12);
-   sphere(.009,white,x*.91-.009,1.657,-.347,.8,.8,.5,10);
-   box(x,1.731,-.292,.105,.022,.018,hair,x<0?.12:-.12);
-  }
-  sphere(.035,skinShade,0,1.565,-.318,.8,1.05,.65,12);
-  for(const x of [-.19,.19])sphere(.058,cheek,x,1.535,-.276,1.12,.55,.25,12);
-  const smileCurve=new THREE.QuadraticBezierCurve3(new THREE.Vector3(-.105,1.477,-.295),new THREE.Vector3(0,1.425,-.326),new THREE.Vector3(.105,1.477,-.295));
-  g.add(new THREE.Mesh(new THREE.TubeGeometry(smileCurve,16,.012,6,false),dark));
- }
- // Wrist cuffs, palms, thumbs and fingertips make the same detached hands read more clearly.
- for(const side of [-1,1]){
-  const hx=side*.49;
-  cylinder(.092,.092,.055,dark,hx,1.16,.025,Math.PI/2);
-  cylinder(.092,.092,.018,metal,hx,1.16,-.008,Math.PI/2);
-  sphere(.12,skin,hx,1.16,-.045,.93,1.06,.77,16);
-  sphere(.095,skinLight,hx-.018*side,1.185,-.09,.72,.58,.35,12);
-  for(let f=0;f<4;f++)sphere(.031,skin,hx+(f-1.5)*.043,1.075,-.092,.83,1,.68,10);
-  sphere(.038,skin,hx+side*.092,1.125,-.055,.9,.86,.75,10);
- }
- // Held item remains beside the right hand; flashlight remains in the left.
+ // A clean black circular head. The yellow oval is a flat face plate on the front (-Z).
+ sphere(.355,black,0,1.58,0,1,1,1,28);
+ sphere(.292,yellow,0,1.58,-.306,.93,.93,.20,28);
+ // Simple, readable smiley face.
+ for(const x of [-.092,.092])sphere(.025,faceInk,x,1.655,-.355,.92,1,.5,14);
+ const smileCurve=new THREE.QuadraticBezierCurve3(
+  new THREE.Vector3(-.105,1.535,-.354),
+  new THREE.Vector3(0,1.465,-.365),
+  new THREE.Vector3(.105,1.535,-.354)
+ );
+ g.add(new THREE.Mesh(new THREE.TubeGeometry(smileCurve,18,.012,6,false),faceInk));
+ // The weapon floats at the avatar's side; there are deliberately no hands, arms, ears, or hair.
  if(item===2){
-  box(.48,1.13,-.23,.09,.09,.58,dark);
-  box(.48,1.25,-.48,.34,.2,.07,metal,-.16);
-  box(.48,1.08,-.03,.13,.08,.22,wood);
+  // Axe
+  box(.43,1.09,-.17,.085,.085,.62,wood);
+  box(.43,1.30,-.46,.085,.42,.12,metal);
+  box(.43,1.39,-.49,.32,.20,.075,metal);
  }else if(item===1){
-  box(.48,1.16,-.28,.145,.145,.9,dark);
-  box(.48,1.18,-.79,.19,.18,.22,metal);
-  box(.48,1.03,.08,.13,.24,.29,wood);
-  box(.48,1.25,-.73,.055,.055,.36,metal);
-  cylinder(.043,.043,.48,metal,.48,1.16,-.87,Math.PI/2);
+  // Shotgun
+  box(.43,1.10,-.28,.15,.14,.91,gunDark);
+  box(.43,1.13,-.78,.20,.17,.22,metal);
+  box(.43,1.00,.10,.13,.23,.30,wood);
+  box(.43,1.24,-.73,.055,.055,.34,metal);
+  cylinder(.045,.045,.50,metal,.43,1.10,-.88,Math.PI/2);
  }else{
-  box(.48,1.16,-.28,.095,.105,.94,dark);
-  box(.48,1.19,-.82,.12,.12,.24,metal);
-  box(.48,1.04,.12,.11,.19,.32,wood);
-  box(.48,1.29,-.35,.075,.075,.28,metal);
-  box(.48,1.00,-.16,.065,.22,.13,dark);
-  cylinder(.026,.026,.38,metal,.48,1.16,-.91,Math.PI/2);
+  // Rifle
+  box(.43,1.10,-.28,.105,.105,.96,gunDark);
+  box(.43,1.14,-.80,.14,.13,.24,metal);
+  box(.43,1.00,.13,.12,.20,.32,wood);
+  box(.43,1.27,-.36,.075,.075,.29,metal);
+  box(.43,.96,-.16,.065,.22,.14,gunDark);
+  cylinder(.027,.027,.42,metal,.43,1.10,-.92,Math.PI/2);
  }
- // Small flashlight in the left hand.
- box(-.49,1.16,-.15,.09,.09,.25,dark);
- cylinder(.073,.073,.1,metal,-.49,1.16,-.3,Math.PI/2);
- sphere(.055,white,-.49,1.16,-.36,.7,.7,.28,12);
  g.userData={dead,item};return g;
 }
 function mpMakeNameTag(name){
- const canvas=document.createElement('canvas');canvas.width=512;canvas.height=128;
- const ctx=canvas.getContext('2d');ctx.clearRect(0,0,512,128);
- ctx.font='bold 48px Arial';ctx.textAlign='center';ctx.textBaseline='middle';
- const label=String(name||'Hunter').slice(0,20);const w=Math.min(490,Math.max(120,ctx.measureText(label).width+42));
- ctx.fillStyle='rgba(12,16,13,.78)';const x=(512-w)/2;ctx.beginPath();ctx.roundRect(x,18,w,92,22);ctx.fill();
- ctx.fillStyle='#ffffff';ctx.shadowColor='#000000';ctx.shadowBlur=5;ctx.fillText(label,256,65,460);
+ const label=String(name||'Hunter'),badge=mpTagForName(label),hasBadge=!!badge;
+ const canvas=document.createElement('canvas');canvas.width=768;canvas.height=160;
+ const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);
+ ctx.font='bold 43px Arial';ctx.textBaseline='middle';ctx.textAlign='left';
+ const nameWidth=Math.min(475,Math.max(110,ctx.measureText(label).width));
+ const tagWidth=hasBadge?Math.max(128,ctx.measureText(badge).width+28):0,gap=hasBadge?15:0;
+ const total=Math.min(740,Math.max(150,32+nameWidth+gap+tagWidth));
+ const left=(canvas.width-total)/2,top=22,height=116;
+ ctx.fillStyle='rgba(8,12,9,.88)';ctx.beginPath();ctx.roundRect(left,top,total,height,22);ctx.fill();
+ ctx.fillStyle='#ffffff';ctx.shadowColor='#000000';ctx.shadowBlur=5;ctx.fillText(label,left+18,top+height/2,Math.min(nameWidth,460));
+ if(hasBadge){
+  const bx=left+total-tagWidth-12,by=top+31,bh=54;
+  ctx.shadowBlur=0;ctx.fillStyle='#e8d9a0';ctx.beginPath();ctx.roundRect(bx,by,tagWidth,bh,12);ctx.fill();
+  ctx.fillStyle='#17190f';ctx.font='bold 23px Arial';ctx.textAlign='center';ctx.fillText(badge.toUpperCase(),bx+tagWidth/2,by+bh/2+1,tagWidth-14);
+ }
  const tex=new THREE.CanvasTexture(canvas);tex.minFilter=THREE.LinearFilter;
- const mat=new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false});
- const sprite=new THREE.Sprite(mat);sprite.position.set(0,2.35,0);sprite.scale.set(1.65,.42,1);sprite.renderOrder=10;return sprite;
+ const material=new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false});
+ const sprite=new THREE.Sprite(material);sprite.position.set(0,2.35,0);sprite.scale.set(hasBadge?2.25:1.75,.5,1);sprite.renderOrder=10;return sprite;
 }
-function mpUpdateNameTag(o,name){const n=String(name||'Hunter').slice(0,20);if(o.name===n&&o.nameTag)return;o.name=n;if(o.nameTag){o.root.remove(o.nameTag);if(o.nameTag.material.map)o.nameTag.material.map.dispose();o.nameTag.material.dispose()}o.nameTag=mpMakeNameTag(n);o.root.add(o.nameTag)}
+function mpUpdateNameTag(o,name){const n=String(name||'Hunter');if(o.name===n&&o.nameTag)return;o.name=n;if(o.nameTag){o.root.remove(o.nameTag);if(o.nameTag.material.map)o.nameTag.material.map.dispose();o.nameTag.material.dispose()}o.nameTag=mpMakeNameTag(n);o.root.add(o.nameTag)}
 function mpSetRemote(row){
  if(!row||!row.id||row.id===mpPlayerId)return;
  const x=Number(row.x),z=Number(row.z),yaw=Number(row.yaw)||0;if(!Number.isFinite(x)||!Number.isFinite(z))return;
@@ -1484,7 +1547,7 @@ async function mpStoreWorld(objectId,state){if(!mpClient||!mpOnline)return;try{c
 function mpApplyWorld(row){if(!row)return;const id=row.object_id||'',v=row.state||{};if(id.startsWith('tree:')){const i=Number(id.slice(5)),t=treeSpots[i];if(t&&!t.cut){t.cut=true;removeC(t.c)}return}if(id.startsWith('animal:')){const [kind,raw]=id.slice(7).split(':');const i=Number(raw),arr=kind==='rabbit'?rabbits:kind==='bear'?bears:kind==='gray'?[giant]:deers,a=arr&&arr[i];if(a){a.alive=v.alive!==false;a.active=v.active!==false;if(v.alive===false&&a.g)a.g.visible=false}}}
 function mpApplyEvent(ev){if(!ev||ev.player_id===mpPlayerId||mpEventSeen.has(ev.id))return;mpEventSeen.add(ev.id);if(mpEventSeen.size>500)mpEventSeen.clear();const p=ev.payload||{};if(ev.event_type==='tree_chopped'&&Number.isInteger(p.index)){const t=treeSpots[p.index];if(t&&!t.cut){t.cut=true;removeC(t.c)}}if(ev.event_type==='animal_killed'){const arr=p.kind==='rabbit'?rabbits:p.kind==='bear'?bears:p.kind==='gray'?[giant]:deers;const a=arr&&arr[p.index];if(a){a.alive=false;a.active=false;if(a.g)a.g.visible=false}}if(ev.event_type==='purchase'&&p.item)msg(ev.player_name+' bought '+p.item,2);if(ev.event_type==='shop_sale')msg(ev.player_name+' sold animals at the shop',2)}
 async function mpConnectAndStart(){
- if(mpStarting)return;mpStarting=true;const nm=$('mp-name').value.trim().slice(0,20)||mpName;localStorage.setItem('hsm.playerName',nm);mpName=nm;
+ if(mpStarting)return;const nm=$('mp-name').value.trim()||mpName;if(/^ADMINISTRATOR$/i.test(nm)&&!mpAdminAuthenticated){mpShowAdminGate();return}if(!/^ADMINISTRATOR$/i.test(nm))mpAdminAuthenticated=false;mpStarting=true;localStorage.setItem('hsm.playerName',nm);mpName=nm;
  $('mp-config').style.display='none';$('mp-loading').style.display='block';$('mp-title').textContent='LOADING MULTIPLAYER';$('mp-task-list').innerHTML=mpTasks.map((t,i)=>'<div id="mpt'+i+'">○ '+t+'</div>').join('');$('mp-progress-bar').style.width='0%';$('mp-status').textContent='';
  try{
   if(!window.supabase?.createClient)throw new Error('Supabase library did not load. Check your internet connection.');
@@ -1503,21 +1566,21 @@ async function mpConnectAndStart(){
    .on('postgres_changes',{event:'*',schema:'public',table:'hs_world_state'},p=>{if(p.eventType!=='DELETE')mpApplyWorld(p.new)});
   await new Promise((resolve,reject)=>{let settled=false;const timer=setTimeout(()=>{if(!settled){settled=true;reject(new Error('Realtime subscription timed out. Check Supabase Realtime is enabled.'))}},12000);mpChannel.subscribe(status=>{if(status==='SUBSCRIBED'&&!settled){settled=true;clearTimeout(timer);resolve()}else if(['CHANNEL_ERROR','TIMED_OUT','CLOSED'].includes(status)&&!settled){settled=true;clearTimeout(timer);reject(new Error('Realtime subscription status: '+status))}})});
   const {data:players,error}=await mpClient.from('hs_players').select('*').neq('id',mpPlayerId);if(error)throw error;(players||[]).forEach(row=>{if(Date.now()-(Date.parse(row.updated_at)||0)<10000)mpSetRemote(row)});
-  mpOnline=true;mpStarting=false;mpLastPersist=0;mpSetChatActive(true);mpAppendChat('SYSTEM','Connected to multiplayer chat.',true);
+  mpOnline=true;mpStarting=false;mpLastPersist=0;mpSetChatActive(true);mpRenderAdminUI();mpAppendChat('SYSTEM','Connected to multiplayer chat.',true);
   if(G==='dead')respawn();qStarted=true;gameMode='regular';G='play';playing=true;scoped=false;updateHearts();$('mp-panel').style.display='none';$('ov').style.display='none';$('mp').style.display='';if(!isTouch&&cv.requestPointerLock)cv.requestPointerLock();await mpPersistPosition(true);mpBroadcastPosition();msg('MULTIPLAYER CONNECTED',3);
- }catch(e){console.error(e);$('mp-status').textContent='Connection failed: '+(e.message||'Unknown error')+'. Check that the SQL setup was run and Realtime is enabled.';mpStarting=false;mpOnline=false;mpSetChatActive(false);if(mpChannel&&mpClient){try{await mpClient.removeChannel(mpChannel)}catch(err){}mpChannel=null}}
+ }catch(e){console.error(e);$('mp-status').textContent='Connection failed: '+(e.message||'Unknown error')+'. Check that the SQL setup was run and Realtime is enabled.';mpStarting=false;mpOnline=false;mpAdminAuthenticated=false;mpSetChatActive(false);mpRenderAdminUI();if(mpChannel&&mpClient){try{await mpClient.removeChannel(mpChannel)}catch(err){}mpChannel=null}}
 }
 async function mpStopSession(){
  if(!mpOnline&&!mpChannel)return;
  const client=mpClient,channel=mpChannel,wasOnline=mpOnline;
- mpOnline=false;mpChannel=null;mpStarting=false;mpSetChatActive(false);
+ mpOnline=false;mpChannel=null;mpStarting=false;mpAdminAuthenticated=false;Object.keys(mpAdminPerks).forEach(k=>mpAdminPerks[k]=false);mpSetChatActive(false);mpRenderAdminUI();
  try{if(channel)await channel.send({type:'broadcast',event:'player_left',payload:{id:mpPlayerId}})}catch(e){}
  try{if(client&&wasOnline)await client.from('hs_players').delete().eq('id',mpPlayerId)}catch(e){console.warn('Multiplayer leave:',e.message)}
  try{if(client&&channel)await client.removeChannel(channel)}catch(e){}
  for(const id of [...mpRemote.keys()])mpRemoveRemote(id);
 }
 function mpOpen(){$('mp-panel').style.display='flex';$('mp-config').style.display='block';$('mp-loading').style.display='none';$('mp-title').textContent='MULTIPLAYER';$('mp-name').value=mpName;$('mp-status').textContent=''}
-$('mp').onclick=mpOpen;$('mp-connect').onclick=mpConnectAndStart;$('mp-cancel').onclick=$('mp-load-cancel').onclick=()=>{$('mp-panel').style.display='none';if(mpStarting){mpStarting=false;if(mpChannel&&mpClient)mpClient.removeChannel(mpChannel);mpChannel=null}};
+$('mp').onclick=mpOpen;$('mp-connect').onclick=mpAttemptJoin;$('mp-cancel').onclick=$('mp-load-cancel').onclick=()=>{$('mp-panel').style.display='none';mpAdminAuthenticated=false;mpHideAdminGate();if(mpStarting){mpStarting=false;if(mpChannel&&mpClient)mpClient.removeChannel(mpChannel);mpChannel=null}};
 // 100 ms Realtime movement broadcasts; database persistence is deliberately slower.
 setInterval(()=>{if(mpOnline&&playing)mpBroadcastPosition()},100);
 setInterval(()=>{if(mpOnline){mpPersistPosition();for(const [id,o] of mpRemote){if(Date.now()-o.lastSeen>8000)mpRemoveRemote(id)}}},1000);
