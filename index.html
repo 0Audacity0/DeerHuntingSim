@@ -811,14 +811,14 @@ const SKIN_ROLE=new Map();
 const _sl=c=>.3*c.r+.59*c.g+.11*c.b;
 const SKIN_REF={};for(const r of ['wood','dark','light','accent','lens']){let t=0,n=0;SKIN_ROLE.forEach((role,c)=>{if(role===r){t+=_sl(new THREE.Color(c));n++}});SKIN_REF[r]=t/n}
 const SKIN_LIST=[
-{id:'classic',n:'CLASSIC',p:0,d:'The gun you already know. Wood stock, dark steel',pal:null},
-{id:'orange',n:'HUNTER ORANGE',p:35,d:'Safety orange so nobody mistakes you for a deer',pal:{wood:0xe8741a,dark:0x2b2b2b,light:0x9a9a9a,accent:0xf2e6a0,lens:0x6fa0c8}},
-{id:'camo',n:'WOODLAND CAMO',p:60,d:'Greens and browns, patched together. Mud approved',pal:{wood:0x4a5a30,dark:0x3a4626,light:0x7a8068,accent:0x8a7a3a,lens:0x8fbf6a},camo:[0x4a5a30,0x3a4626,0x6b6a3a,0x2f3a22,0x5b4a2a]},
-{id:'arctic',n:'ARCTIC',p:90,d:'Snow white with an icy blue frame',pal:{wood:0xdfe8f0,dark:0x5c7a96,light:0xeaf4ff,accent:0x9fd8ff,lens:0xbfefff}},
-{id:'crimson',n:'CRIMSON',p:140,d:'Deep red wood and blackened steel',pal:{wood:0x7a1010,dark:0x1a0a0a,light:0xa03030,accent:0xff4040,lens:0xff8080}},
-{id:'gold',n:'24K GOLD',p:250,d:'Solid gold. Completely impractical, absolutely worth it',pal:{wood:0xd9a82a,dark:0xb88a1e,light:0xffe27a,accent:0xfff4b0,lens:0xffffff}},
-{id:'void',n:'VOID WALKER',p:450,d:'Dark purple metal with glowing cyan trim',pal:{wood:0x2a1250,dark:0x0e0a1c,light:0x5a3a9a,accent:0x39f0ff,lens:0xff4bff}},
-{id:'prism',n:'PRISMATIC',p:800,d:'Colors that never stop shifting. The coolest gun in the forest',pal:{wood:0xff2a6a,dark:0x2a6aff,light:0xffffff,accent:0xffe030,lens:0xffffff},anim:1}];
+{id:'classic',n:'CLASSIC',p:0,d:'Hey its the starting gun!!',pal:null},
+{id:'orange',n:'ORANGE',p:35,d:'Yo bru make sure nobody mistakes you for a deer',pal:{wood:0xe8741a,dark:0x2b2b2b,light:0x9a9a9a,accent:0xf2e6a0,lens:0x6fa0c8}},
+{id:'camo',n:'WOODLAND CAMO',p:60,d:'This thing is mud approved 🥶🥶',pal:{wood:0x4a5a30,dark:0x3a4626,light:0x7a8068,accent:0x8a7a3a,lens:0x8fbf6a},camo:[0x4a5a30,0x3a4626,0x6b6a3a,0x2f3a22,0x5b4a2a]},
+{id:'arctic',n:'ARCTIC',p:90,d:'Yoooo this is peak dawg',pal:{wood:0xdfe8f0,dark:0x5c7a96,light:0xeaf4ff,accent:0x9fd8ff,lens:0xbfefff}},
+{id:'crimson',n:'CRIMSON',p:140,d:'Think of that one biome from Minecraft',pal:{wood:0x7a1010,dark:0x1a0a0a,light:0xa03030,accent:0xff4040,lens:0xff8080}},
+{id:'gold',n:'24K GOLD',p:250,d:'Completely impractical, DEFINITELY worth it',pal:{wood:0xd9a82a,dark:0xb88a1e,light:0xffe27a,accent:0xfff4b0,lens:0xffffff}},
+{id:'void',n:'VOID THING',p:450,d:'uhhhhhhhhhhh',pal:{wood:0x2a1250,dark:0x0e0a1c,light:0x5a3a9a,accent:0x39f0ff,lens:0xff4bff}},
+{id:'prism',n:'PRISMATIC',p:800,d:'Yo brah gl tryna get this',pal:{wood:0xff2a6a,dark:0x2a6aff,light:0xffffff,accent:0xffe030,lens:0xffffff},anim:1}];
 const SKINS={};SKIN_LIST.forEach(k=>SKINS[k.id]=k);
 const skinOk=id=>typeof id==='string'&&Object.prototype.hasOwnProperty.call(SKINS,id);
 function skinTint(b,col){const role=SKIN_ROLE.get(col);if(!role)return col;const k=b.skin;let base=k.pal[role];
