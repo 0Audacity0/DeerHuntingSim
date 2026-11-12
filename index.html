@@ -289,11 +289,32 @@ body.touch #mp-chat-button{position:fixed;right:calc(14px + env(safe-area-inset-
 body.mp-ui-unlocked,body.mp-ui-unlocked canvas{cursor:default}
 @media(max-width:560px),(pointer:coarse){#mp-admin-ui{right:12px;top:220px}#mp-admin-panel{right:8px;top:270px;max-height:65dvh;padding:10px}.mp-admin-grid{grid-template-columns:1fr 1fr}}
 
+.it.eq{border-color:#e8d9a0}
+.prism{animation:prismhue 3s linear infinite}@keyframes prismhue{to{filter:hue-rotate(360deg)}}
+@media(max-width:520px){#shtabs button{letter-spacing:1px;font-size:12px}}
+/* ADMINISTRATOR panel now opens from the title screen */
+#admin-open{color:#ff4b4b;border-color:#a51c1c}
+#mp-admin-ui{position:fixed;inset:0;z-index:90;display:none;align-items:center;justify-content:center;padding:14px;box-sizing:border-box;background:rgba(0,0,0,.8);pointer-events:auto}
+#mp-admin-ui.open{display:flex}
+#mp-admin-panel{position:relative;inset:auto;width:min(440px,100%);max-height:min(90dvh,740px)}
+#mp-admin-lock{display:block}
+#mp-admin-body{display:none}
+#mp-admin-lock-error{min-height:17px;margin-top:8px;color:#ff7777;font-size:11px}
+#mp-test-preview{min-height:22px;margin:8px 0;padding:7px;text-align:center;font-size:15px;letter-spacing:1px;color:#f0e6a8;background:#000;border:1px solid #492020;text-shadow:2px 2px #000}
+#mp-locator{position:absolute;left:18px;top:46px;display:none;width:270px;max-height:42vh;overflow:hidden;padding:7px 9px;box-sizing:border-box;background:rgba(5,5,5,.55);border:1px solid #a51c1c;font:12px "Courier New",monospace;letter-spacing:.5px;line-height:1.4;text-shadow:1px 1px #000;color:#eee}
+.ml-head{color:#ff5b5b;font-size:11px;letter-spacing:2px;margin-bottom:4px}
+.ml-row{display:flex;align-items:center;gap:6px;white-space:nowrap}
+.ml-arrow{display:inline-block;width:14px;text-align:center;color:#ff5b5b}
+.ml-name{max-width:100px;overflow:hidden;text-overflow:ellipsis;color:#4fd3ff}
+.ml-info{color:#d8d2b0;font-size:11px}
+.ml-row.dead .ml-name{color:#8a9aa0;text-decoration:line-through}
+body.touch #mp-locator{left:auto;right:12px;top:252px;width:210px;font-size:10px}
+
 </style></head><body>
 <canvas id="c"></canvas><canvas id="gh"></canvas>
 <div id="vhs"><div class="vl"></div><span id="vrec">● REC</span><span id="vts"></span></div><audio id="whatSong" src="WHAT.mp3" loop preload="auto"></audio>
 <div class="f" id="hd"></div><div class="f" id="dg"></div><div class="f" id="fl"></div><div class="f" id="sc"></div><div class="f" id="bk"></div><div class="f" id="scan"></div>
-<div id="hud"><div id="hearts" aria-label="Lives">♥ ♥ ♥</div><div id="ch"></div><div id="tl"></div><div id="clk"></div><div id="br"></div><div id="cp"><span id="ar">▲</span> <span id="cd"></span></div><div id="hotbar"></div><canvas id="rdr" width="120" height="120"></canvas><div id="ms"></div><div id="pr"></div><div id="shp"><span id="sha">▲</span> <span id="shd"></span></div>
+<div id="hud"><div id="hearts" aria-label="Lives">♥ ♥ ♥</div><div id="ch"></div><div id="tl"></div><div id="clk"></div><div id="br"></div><div id="cp"><span id="ar">▲</span> <span id="cd"></span></div><div id="hotbar"></div><canvas id="rdr" width="120" height="120"></canvas><div id="mp-locator"></div><div id="ms"></div><div id="pr"></div><div id="shp"><span id="sha">▲</span> <span id="shd"></span></div>
 <div id="fps" style="display:none"></div>
 <div id="sall" style="display:none"><div id="sr1"><span class="pa" id="sa1" style="color:#c4c4b8">▲</span> <span id="st1"></span></div><div id="sr2"><span class="pa" id="sa2" style="color:#e0a050">▲</span> <span id="st2"></span></div><div id="sr3"><span class="pa" id="sa3" style="color:#ff6a5a">▲</span> <span id="st3"></span></div></div></div>
 <div id="touch"><div id="tz"></div><div id="jb"><div id="jk"></div></div>
@@ -308,7 +329,7 @@ body.mp-ui-unlocked,body.mp-ui-unlocked canvas{cursor:default}
 <h1 id="t1">DEER HUNTING SIMULATOR</h1>
 <p id="t2"></p>
 <div id="mode-overlay" style="display:none;position:fixed;inset:0;z-index:30;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;background:rgba(0,0,0,.86);backdrop-filter:blur(4px)"><div class="modebox" id="modebox" style="width:min(440px,94%);margin:0;padding:22px;background:rgba(12,14,10,.98);box-shadow:0 12px 60px #000"><div class="mt">DIFFICULTY</div><div class="modechoices" id="diffchoices" style="flex-direction:column"><button type="button" data-d="hard">Stupid (hardest)</button><button type="button" data-d="med">Ok fine sure (medium)</button><button type="button" data-d="easy">you're gonna fall asleep (easiest)</button></div><div class="modedesc" id="diffdesc"></div><div class="mt" style="margin-top:14px">CHOOSE YOUR GAMEMODE</div><div class="modechoices" style="flex-direction:column"><button type="button" id="mode-regular" class="selected">REGULAR</button><button type="button" id="mode-defense">DEFENSE</button></div></div></div>
-<div class="btns"><button class="btn" id="go">PLAY</button><button class="btn sec" id="change-user">CHANGE USER</button><button class="btn sec" id="mp">MULTIPLAYER</button><button class="btn sec" id="tt">BACK TO TITLE</button></div>
+<div class="btns"><button class="btn" id="go">PLAY</button><button class="btn sec" id="change-user">CHANGE USER</button><button class="btn sec" id="mp">MULTIPLAYER</button><button class="btn sec" id="admin-open" style="display:none">ADMIN PANEL</button><button class="btn sec" id="tt">BACK TO TITLE</button></div>
 <div id="mpmsg" style="display:none;margin-top:14px;font-size:15px;letter-spacing:1px;color:#f0e6a8">My bad yo this isn't released yet so like uhh play singleplayer</div>
 <div id="stats"><div class="st"><b id="sv-deer">0</b><span>DEER HUNTED</span></div><div class="st"><b id="sv-shots">0</b><span>SHOTS FIRED</span></div><div class="st"><b id="sv-dead">0</b><span>TIMES MURDERED</span></div></div>
 <div id="foot">(STATS SAVE IN THIS BROWSER)</div>
@@ -329,7 +350,7 @@ body.mp-ui-unlocked,body.mp-ui-unlocked canvas{cursor:default}
 <li>You always have <b>3 hearts</b>. <b>Bears</b> are rare and charge you when they spot you. Every swipe costs 1 heart. A bear takes <b>8 rifle shots</b> or <b>6 shotgun shots</b>, takes both hands to carry and sells for <b>$20</b>.</li>
 <li><b>Rabbits</b> are small, fast and jumpy. They sell for <b>$5</b> each.</li>
 <li>You can even carry the dead <b>gray one</b> (both hands, so you move like you carry 2 deer) and sell it for <b>$30</b>. Check the <b>Quests</b> tab in the shop for extra cash.</li>
-<li>The <b>radar</b> ($60) shows animals around you: orange is deer, pale is rabbits and red is bears. <b>Bandages</b> ($15, key <b>H</b>) heal 1 heart, and sleeping in the bed heals all of them.</li>
+<li>The <b>radar</b> ($60) shows animals around you: orange is deer, pale is rabbits and red is bears. In multiplayer, other players show up in blue, and ones that are far away stick to the edge of the radar as an arrow. <b>Bandages</b> ($15, key <b>H</b>) heal 1 heart, and sleeping in the bed heals all of them.</li>
 <li><b>Bear repellent</b> ($25, key <b>V</b>) makes a cloud that scares bears away for about 35 seconds. Rain and fog make animals notice you less, but you can see less too.</li>
 <li>The bar at the bottom shows your items. Pick the difficulty when starting a new run.</li>
 <li>On mobile, the left stick moves (push past the ring to sprint) and dragging anywhere else looks around.</li>
@@ -338,11 +359,12 @@ body.mp-ui-unlocked,body.mp-ui-unlocked canvas{cursor:default}
 </div>
 </div>
 <div id="shop"><div class="shp"><div class="shh"><h2>SHOP :)</h2><div id="shm">$0</div></div>
-<div id="shtabs"><button data-t="shop" class="on">SHOP</button><button data-t="quests">QUESTS<span id="qdot"> !</span></button></div>
+<div id="shtabs"><button data-t="shop" class="on">SHOP</button><button data-t="quests">QUESTS<span id="qdot"> !</span></button><button data-t="skins">GUN SKINS</button></div>
 <div class="shn" id="shn">If you bring deer to the counter, you get $10 for each one!1!111! Rabbits are $5 and bears are $20.</div>
 <div class="shb" id="shbw"><i id="shbar"></i></div>
 <div class="shg" id="shg"></div>
 <div class="qg" id="qg" style="display:none"></div>
+<div class="shg" id="sg" style="display:none"></div>
 <button class="btn" id="shx" style="width:100%">EXIT</button></div></div>
 <div id="wnp"><button class="wnar" id="wnl" aria-label="Newer update">&#9664;&#xFE0E;</button>
 <div class="wnc"><div class="wnh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" shape-rendering="crispEdges"><path d="M3 4h14v16H5a2 2 0 0 1-2-2z"/><path d="M17 8h4v10a2 2 0 0 1-2 2h-2"/><path d="M6 8h8M6 11h8M6 14h4M12 14h2M6 17h8"/></svg><h2>WHAT'S NEW</h2></div><div class="wnv" id="wnv"></div><ul id="wnu"></ul><button class="btn" id="wnx" style="width:100%">CLOSE</button></div>
@@ -363,10 +385,11 @@ body.mp-ui-unlocked,body.mp-ui-unlocked canvas{cursor:default}
 </div>
 </div>
 <div id="mp-admin-ui" aria-label="Administrator controls">
- <button id="mp-admin-button" type="button">★ PANEL</button>
  <div id="mp-admin-panel" role="dialog" aria-label="Administrator panel">
   <div id="mp-admin-head"><span>PANEL</span><button id="mp-admin-close" type="button" aria-label="Close administrator panel">×</button></div>
-  <div id="mp-admin-tabs"><button type="button" class="active" data-admin-tab="bans">BANS</button><button type="button" data-admin-tab="game">GAME OPTIONS</button><button type="button" data-admin-tab="testing">TESTING</button></div>
+  <div id="mp-admin-lock"><p class="mp-admin-small">Enter the administrator password to unlock the panel.</p><label class="mp-admin-field">PASSWORD<input id="mp-admin-lock-pass" type="password" autocomplete="current-password" placeholder="Administrator password"></label><button class="mp-admin-action" id="mp-admin-lock-go" type="button">UNLOCK</button><div id="mp-admin-lock-error" role="status" aria-live="polite"></div></div>
+  <div id="mp-admin-body">
+  <div id="mp-admin-tabs"><button type="button" class="active" data-admin-tab="bans">BANS</button><button type="button" data-admin-tab="game">GAME OPTIONS</button><button type="button" data-admin-tab="testing">TESTING</button><button type="button" data-admin-tab="multiplayer">MULTIPLAYER</button></div>
   <section class="mp-admin-section active" data-admin-section="bans">
    <div class="mp-admin-small">Enter the exact username of someone who has joined recently. IP bans affect everyone sharing that public IP. Device bans use a browser-profile ID and can be bypassed by clearing browser data.</div>
    <label class="mp-admin-field">PLAYER USERNAME<input id="mp-ban-user" maxlength="20" placeholder="Username to ban"></label>
@@ -411,10 +434,18 @@ body.mp-ui-unlocked,body.mp-ui-unlocked canvas{cursor:default}
    <p class="mp-admin-small">Click each sound to preview it. Your browser may require one click before audio can play.</p>
    <div class="mp-test-row"><button class="mp-admin-action" type="button" data-admin-test="sound-ding">CHAT DING</button><button class="mp-admin-action" type="button" data-admin-test="sound-warning">WARNING</button><button class="mp-admin-action" type="button" data-admin-test="sound-damage">DAMAGE</button></div>
    <div class="mp-test-row"><button class="mp-admin-action" type="button" data-admin-test="sound-purchase">PURCHASE</button><button class="mp-admin-action" type="button" data-admin-test="sound-reload">RELOAD</button><button class="mp-admin-action" type="button" data-admin-test="sound-death">DEATH STING</button></div>
-   <div class="mp-test-status" id="mp-test-status" role="status" aria-live="polite">Ready. Choose a test above.</div>
+   <div id="mp-test-preview" aria-hidden="true"></div><div class="mp-test-status" id="mp-test-status" role="status" aria-live="polite">Ready. Choose a test above.</div>
+  </section>
+  <section class="mp-admin-section" data-admin-section="multiplayer">
+   <b style="color:#ff5b5b;font-size:12px;letter-spacing:1px">PLAYER LOCATOR</b>
+   <p class="mp-admin-small">These work while you are in a multiplayer game as ADMINISTRATOR. Switch them on here, then join multiplayer. They stay on until you switch them off. Only you can see them.</p>
+   <label class="mp-admin-switch"><input type="checkbox" data-admin-perk="playerList"> PLAYER LIST (NAME, DISTANCE, DIRECTION, COORDINATES)</label>
+   <label class="mp-admin-switch"><input type="checkbox" data-admin-perk="playerBeacons"> RED BEAMS THROUGH WALLS ON EVERY PLAYER</label>
+   <p class="mp-admin-small">The radar already shows other players for anyone who owns one, with far-away players pinned to its edge.</p>
   </section>
   <div id="mp-admin-feedback" role="status" aria-live="polite"></div>
   <div id="mp-admin-note" class="mp-admin-small">Server-side controls require the supplied Supabase Edge Function and SQL setup.</div>
+  </div>
  </div>
 </div>
 <div id="rot"><div class="ph"></div><b>ROTATE YOUR PHONE</b><span>It is recommended that this game is played in landscape mode</span></div>
@@ -455,7 +486,7 @@ const ni=g=>g.index?g.toNonIndexed():g;
 const BOX=ni(new THREE.BoxGeometry(1,1,1)),CONE=ni(new THREE.ConeGeometry(1,1,5)),ICO=ni(new THREE.IcosahedronGeometry(1,0)),PL=ni(new THREE.PlaneGeometry(1,1)),CON4=ni(new THREE.ConeGeometry(1,1,4));
 const mk=()=>({p:[],c:[]});
 const _m=new THREE.Matrix4(),_v=new THREE.Vector3(),_q=new THREE.Quaternion(),_e=new THREE.Euler(),_s=new THREE.Vector3(),_p=new THREE.Vector3();
-function add(b,g,col,x,y,z,sx,sy,sz,rx,rz,ry){if(b.skip)return;
+function add(b,g,col,x,y,z,sx,sy,sz,rx,rz,ry){if(b.skip)return;if(b.skin)col=skinTint(b,col);
 _m.compose(_p.set(x,y+HB,z),_q.setFromEuler(_e.set(rx||0,ry||0,rz||0)),_s.set(sx||1,sy||1,sz||1));
 const a=g.attributes.position,c=new THREE.Color(col);let j=1;
 for(let i=0;i<a.count;i++){if(i%3==0)j=.85+rnd()*.3;_v.fromBufferAttribute(a,i).applyMatrix4(_m);b.p.push(_v.x,_v.y,_v.z);b.c.push(c.r*j,c.g*j,c.b*j)}}
@@ -773,7 +804,37 @@ function popTick(fill){const target=Math.round(DEER_DAY*(1+.4*nf));let n=aliveCo
 if(fill){while(n<target&&g++<80)n+=spawnHerd(target-n,60)}
 else if(n<target)spawnHerd(target-n,92);
 else if(n>target){let r=2;for(const d of deers){if(r<=0)break;if(d.active&&d.alive&&Math.hypot(P.x-d.x,P.z-d.z)>95){d.active=false;d.g.visible=false;r--}}}}
-function gunMesh(kind){const b=mk(),g=new THREE.Group();
+const SKIN_ROLE=new Map();
+[[0x68472c,'wood'],[0x785538,'wood'],[0x4d3524,'wood'],[0x765034,'wood'],[0x7a4a25,'wood'],[0x8a5a3a,'wood'],[0x2a2218,'wood'],
+ [0x30343a,'dark'],[0x1b2025,'dark'],[0x252a30,'dark'],[0x14171b,'dark'],[0x2a2c30,'dark'],[0x3a3c40,'dark'],
+ [0x8a8e92,'light'],[0xb08a3a,'accent'],[0x6fa0c8,'lens']].forEach(([c,r])=>SKIN_ROLE.set(c,r));
+const _sl=c=>.3*c.r+.59*c.g+.11*c.b;
+const SKIN_REF={};for(const r of ['wood','dark','light','accent','lens']){let t=0,n=0;SKIN_ROLE.forEach((role,c)=>{if(role===r){t+=_sl(new THREE.Color(c));n++}});SKIN_REF[r]=t/n}
+const SKIN_LIST=[
+{id:'classic',n:'CLASSIC',p:0,d:'The gun you already know. Wood stock, dark steel',pal:null},
+{id:'orange',n:'HUNTER ORANGE',p:35,d:'Safety orange so nobody mistakes you for a deer',pal:{wood:0xe8741a,dark:0x2b2b2b,light:0x9a9a9a,accent:0xf2e6a0,lens:0x6fa0c8}},
+{id:'camo',n:'WOODLAND CAMO',p:60,d:'Greens and browns, patched together. Mud approved',pal:{wood:0x4a5a30,dark:0x3a4626,light:0x7a8068,accent:0x8a7a3a,lens:0x8fbf6a},camo:[0x4a5a30,0x3a4626,0x6b6a3a,0x2f3a22,0x5b4a2a]},
+{id:'arctic',n:'ARCTIC',p:90,d:'Snow white with an icy blue frame',pal:{wood:0xdfe8f0,dark:0x5c7a96,light:0xeaf4ff,accent:0x9fd8ff,lens:0xbfefff}},
+{id:'crimson',n:'CRIMSON',p:140,d:'Deep red wood and blackened steel',pal:{wood:0x7a1010,dark:0x1a0a0a,light:0xa03030,accent:0xff4040,lens:0xff8080}},
+{id:'gold',n:'24K GOLD',p:250,d:'Solid gold. Completely impractical, absolutely worth it',pal:{wood:0xd9a82a,dark:0xb88a1e,light:0xffe27a,accent:0xfff4b0,lens:0xffffff}},
+{id:'void',n:'VOID WALKER',p:450,d:'Dark purple metal with glowing cyan trim',pal:{wood:0x2a1250,dark:0x0e0a1c,light:0x5a3a9a,accent:0x39f0ff,lens:0xff4bff}},
+{id:'prism',n:'PRISMATIC',p:800,d:'Colors that never stop shifting. The coolest gun in the forest',pal:{wood:0xff2a6a,dark:0x2a6aff,light:0xffffff,accent:0xffe030,lens:0xffffff},anim:1}];
+const SKINS={};SKIN_LIST.forEach(k=>SKINS[k.id]=k);
+const skinOk=id=>typeof id==='string'&&Object.prototype.hasOwnProperty.call(SKINS,id);
+function skinTint(b,col){const role=SKIN_ROLE.get(col);if(!role)return col;const k=b.skin;let base=k.pal[role];
+if(k.camo&&(role==='wood'||role==='dark')){b.n=(b.n||0)+1;base=k.camo[b.n%k.camo.length]}
+const sh=Math.max(.45,Math.min(1.7,_sl(new THREE.Color(col))/SKIN_REF[role])),c=new THREE.Color(base);c.r=Math.min(1,c.r*sh);c.g=Math.min(1,c.g*sh);c.b=Math.min(1,c.b*sh);return c}
+const prismMat=new THREE.ShaderMaterial({uniforms:Object.assign({tm:{value:0}},mat.uniforms),
+vertexShader:`attribute vec3 color;varying vec3 vc;varying vec3 vl;varying float fd;uniform vec2 res;uniform vec3 tint;uniform float tm;
+vec3 hs(vec3 c,float a){const vec3 k=vec3(.57735027);float ca=cos(a),sa=sin(a);return max(c*ca+cross(k,c)*sa+k*dot(k,c)*(1.-ca),0.);}
+void main(){vec4 mv=modelViewMatrix*vec4(position,1.);vec3 n=normalize(normalMatrix*normal);
+float l=.55+.45*max(dot(n,normalize(vec3(.4,.8,.3))),0.);vec3 col=hs(color,tm*1.6+position.z*3.+position.y*2.);vc=col*l*mix(tint,vec3(1.),.65);vl=col*l;fd=-mv.z;
+vec4 p=projectionMatrix*mv;vec2 g=res*.25;p.xy=floor(p.xy/p.w*g+.5)/g*p.w;gl_Position=p;}`,
+fragmentShader:mat.fragmentShader});
+const skinMat=id=>(skinOk(id)&&SKINS[id].anim)?prismMat:mat;
+const gunGeoCache={};let gunInit=false;
+function gunGeo(kind,id){const key=kind+':'+id;if(gunGeoCache[key])return gunGeoCache[key];
+const keepSeed=gunInit?seed:null,keepHB=HB;HB=0;const b=mk();b.skin=(skinOk(id)&&SKINS[id].pal)?SKINS[id]:null;
 if(kind==0){
  add(b,BOX,0x68472c,0,-.06,.4,.09,.17,.3,-.1);
  add(b,BOX,0x785538,0,-.01,.25,.1,.11,.36);
@@ -802,7 +863,10 @@ else{
  add(b,BOX,0x7a4a25,0,-.05,-.38,.09,.06,.36);add(b,BOX,0x8a5a3a,0,-.05,-.58,.095,.05,.06);
  add(b,BOX,0x7a4a25,0,-.06,.3,.08,.13,.42,-.08);add(b,BOX,0x2a2218,0,-.075,.52,.085,.15,.03,-.08);
  add(b,BOX,0x4d3524,0,-.085,.07,.07,.13,.09,.3);add(b,BOX,0x1b2025,0,-.07,-.02,.025,.035,.14)}
-g.add(new THREE.Mesh(fin(b),mat));
+
+HB=keepHB;if(keepSeed!==null)seed=keepSeed;return gunGeoCache[key]=fin(b)}
+function gunMesh(kind){const g=new THREE.Group();
+g.add(new THREE.Mesh(gunGeo(kind,'classic'),mat));
 const fb=mk();add(fb,BOX,0xffe080,0,0,0,.12,.12,.08);const fm=new THREE.Mesh(fin(fb),mat);fm.position.set(0,0,kind?-1:-1.08);fm.visible=false;g.add(fm);g.userData.fm=fm;
 g.position.set(.24,-.25,-.55);g.visible=kind==0;gs.add(g);return g}
 const axeMat=new THREE.ShaderMaterial({uniforms:{res:mat.uniforms.res,tint:mat.uniforms.tint},
@@ -815,14 +879,18 @@ function axeMesh(){const b=mk(),g=new THREE.Group();
 add(b,BOX,0x7a4a25,0,0,0,.09,.8,.09);add(b,BOX,0x4d3524,0,-.38,0,.11,.1,.11);
 add(b,BOX,0x6a7076,-.1,.3,0,.14,.2,.08);add(b,BOX,0x9aa0a6,-.25,.3,0,.2,.26,.06);add(b,BOX,0xc6ccd2,-.37,.3,0,.06,.36,.05);
 g.add(new THREE.Mesh(fin(b),axeMat));g.userData.fm=new THREE.Object3D();g.position.set(.3,-.42,-.6);g.rotation.z=.25;g.visible=false;gs.add(g);return g}
-const guns=[gunMesh(0),gunMesh(1),axeMesh()];
+const guns=[gunMesh(0),gunMesh(1),axeMesh()];gunInit=true;
 const WP=[{n:'RIFLE',mag:5,pel:1,spr:.012,rng:160,cd:.9,rel:1.8},{n:'SHOTGUN',mag:2,pel:7,spr:.055,rng:45,cd:.6,rel:2.2},{n:'AXE',mag:0,pel:0,spr:0,rng:0,cd:.7,rel:0}];
 let ammo=[5,2,0],cur=0,cd=0,rel=0,kick=0,flash=0;
 const P={x:0,z:9,yaw:0,pitch:0,hid:false,hx:0,hz:0,moving:false,run:false};let stillT=0;function calmDeer(){for(const d of deers){d.cq=false;d.cd=0}}
 const DAY_LEN=480,DEER_DAY=40,RUN_SP=8.5,GSP=RUN_SP*1.1;
-const SK='deerHunter98.stats',QK=['deer','sold','nightDeer','chopped','hides','mudT','grayT','dist','gHits','gKills'],stats={deer:0,deaths:0,shots:0,money:0,axe:0,flash:0,boots:0,belt:0,radar:0,heal:0,rep:0,sold:0,nightDeer:0,chopped:0,hides:0,mudT:0,grayT:0,dist:0,gHits:0,gKills:0,quests:[]};
-try{const s=JSON.parse(localStorage.getItem(SK)||'null');if(s&&typeof s==='object'){stats.deer=+s.deer||0;stats.deaths=+s.deaths||0;stats.shots=+s.shots||0;stats.money=+s.money||0;stats.axe=s.axe?1:0;stats.flash=s.flash?1:0;stats.boots=s.boots?1:0;stats.belt=s.belt?1:0;stats.radar=s.radar?1:0;stats.heal=Math.max(0,Math.min(5,+s.heal||0));stats.rep=Math.max(0,Math.min(3,+s.rep||0));for(const k of QK)if(k!=='deer')stats[k]=+s[k]||0;if(Array.isArray(s.quests))stats.quests=s.quests.filter(q=>q&&QK.includes(q.k)&&q.n>0&&q.pay>0).slice(0,3).map(q=>({k:q.k,n:+q.n,b:+q.b||0,pay:+q.pay,nt:q.nt?1:0}))}}catch(e){}
+const SK='deerHunter98.stats',QK=['deer','sold','nightDeer','chopped','hides','mudT','grayT','dist','gHits','gKills'],stats={deer:0,deaths:0,shots:0,money:0,axe:0,flash:0,boots:0,belt:0,radar:0,heal:0,rep:0,sold:0,nightDeer:0,chopped:0,hides:0,mudT:0,grayT:0,dist:0,gHits:0,gKills:0,quests:[],skins:[],skin:'classic'};
+try{const s=JSON.parse(localStorage.getItem(SK)||'null');if(s&&typeof s==='object'){stats.deer=+s.deer||0;stats.deaths=+s.deaths||0;stats.shots=+s.shots||0;stats.money=+s.money||0;stats.axe=s.axe?1:0;stats.flash=s.flash?1:0;stats.boots=s.boots?1:0;stats.belt=s.belt?1:0;stats.radar=s.radar?1:0;stats.heal=Math.max(0,Math.min(5,+s.heal||0));stats.rep=Math.max(0,Math.min(3,+s.rep||0));for(const k of QK)if(k!=='deer')stats[k]=+s[k]||0;if(Array.isArray(s.skins))stats.skins=s.skins.filter(k=>typeof k==='string').slice(0,30);if(typeof s.skin==='string')stats.skin=s.skin;if(Array.isArray(s.quests))stats.quests=s.quests.filter(q=>q&&QK.includes(q.k)&&q.n>0&&q.pay>0).slice(0,3).map(q=>({k:q.k,n:+q.n,b:+q.b||0,pay:+q.pay,nt:q.nt?1:0}))}}catch(e){}
 function saveStats(){try{localStorage.setItem(SK,JSON.stringify(stats))}catch(e){}}
+const ownsSkin=id=>id==='classic'||stats.skins.includes(id);
+const curSkinId=()=>(skinOk(stats.skin)&&ownsSkin(stats.skin))?stats.skin:'classic';
+function applyGunSkin(){const id=curSkinId();for(const kind of [0,1]){const m=guns[kind].children[0];m.geometry=gunGeo(kind,id);m.material=skinMat(id)}}
+applyGunSkin();
 const statsLine=()=>'DEER '+stats.deer+'  \u00b7  SHOTS '+stats.shots+'  \u00b7  MURDERED BY THE GRAY ONE '+stats.deaths+'x';
 let clock=8,nf=0,popT=0;
 const cDay=new THREE.Color(0x7b8473),cNight=new THREE.Color(0x070a14),_c=new THREE.Color();
@@ -831,7 +899,7 @@ function skyUpdate(){const sun=Math.cos((clock-12)/12*PI),dl=Math.max(0,Math.min
 _c.lerpColors(cDay,cNight,nf);{const k=Math.min(.7,wx.rain*.5+wx.fog*.7);if(k>0)_c.lerp(wxC.setRGB(.36-.33*nf,.39-.355*nf,.42-.375*nf),k)}mat.uniforms.fogc.value.copy(_c);renderer.setClearColor(_c);
 const fm=SET.fog;mat.uniforms.fogf.value=fm<=.02?4000:(80-28*nf)*(1-.38*wx.rain-.5*wx.fog)/fm;mat.uniforms.fogn.value=fm<=.02?3000:(6-2*nf)*(1-.5*wx.fog)/fm;mat.uniforms.tint.value.set(1-.5*nf,1-.45*nf,1-.22*nf)}
 let cheatAmmo=false,gameMode='regular',lives=3,hitCooldown=0,deathCause='gray',hf=0,carry=[],sf=[16,50,50],sleepT=0,scoped=false,playing=false,G='menu',T=0,camY=1.7,bob=0,msgT=0,hb=0,ac;
-let mpAdminAuthenticated=false,mpAdminSecret='',mpGrantedPermissions={};const mpAdminPerks={infiniteAmmo:false,noCooldown:false,instantReload:false,invulnerability:false,superSpeed:false,infiniteSupplies:false,extraCarry:false};
+let mpAdminAuthenticated=false,mpAdminSecret='',mpGrantedPermissions={};const mpAdminPerks={infiniteAmmo:false,noCooldown:false,instantReload:false,invulnerability:false,superSpeed:false,infiniteSupplies:false,extraCarry:false,playerList:false,playerBeacons:false};
 const keys={};
 const UPDATES=[
 {v:'1.7.0',t:'Administrator & Chat Update',n:['Administrators are able to ban you','Singleplayer and Multiplayer can be shut down now','Added chat message dings and an unread message counter','PC mouse cursor now unlocks over in game interfaces and locks again during gameplay']},
@@ -893,7 +961,7 @@ const ITEMS=[
 {id:'flash',n:'FLASHLIGHT',p:30,svg:SVG_FLASH,d:'Light up the night \uD83E\uDD2F\uD83E\uDD2F\uD83E\uDD2F'},
 {id:'boots',n:'TRAIL BOOTS',p:45,svg:SVG_BOOTS,d:'Walk a LITTLE faster'},
 {id:'belt',n:'AMMO BELT',p:55,svg:SVG_BELT,d:'Carry more ammunition duhhhh'},
-{id:'radar',n:'RADAR',p:60,svg:SVG_RADAR,d:'Shows animals around you. Bears are red. The gray one is not an animal so it does not show up'},
+{id:'radar',n:'RADAR',p:60,svg:SVG_RADAR,d:'Shows animals around you. Bears are red. The gray one is not an animal so it does not show up. In multiplayer other players show up in blue, and far away ones stick to the edge as an arrow'},
 {id:'heal',n:'BANDAGE',p:15,cons:5,svg:SVG_BAND,d:'Heals 1 heart (H). Sleeping in your bed heals all of them'},
 {id:'rep',n:'BEAR REPELLENT',p:25,cons:3,svg:SVG_REP,d:'Press V to spray a cloud that scares bears away for a while'}];
 const SOON=[];
@@ -919,9 +987,18 @@ function ensureQuests(){const qs=stats.quests;while(qs.length<3)qs.push(newQuest
 const qProg=q=>Math.max(0,Math.min(q.n,Math.floor((stats[q.k]||0)-q.b)));
 function qCheck(){let chg=false;for(const q of stats.quests){if(!q.nt&&qProg(q)>=q.n){q.nt=1;chg=true;msg('QUEST DONE \u2014 CLAIM IT AT THE SHOP',4);snd(780,.2,'square',.22,1.6)}}if(chg||++qSv>=5){qSv=0;saveStats()}}
 function renderQuests(){let h='';stats.quests.forEach((q,i)=>{const d=QT.find(x=>x.k===q.k),p=qProg(q),ok=p>=q.n;h+='<div class="qc'+(ok?' ok':'')+'"><div class="qt">'+d.t(q.n)+'</div><div class="qb"><i style="width:'+(p/q.n*100)+'%"></i></div><div class="qr"><span>'+p+' / '+q.n+'</span><span class="ip">$'+q.pay+'</span></div>'+(ok?'<button data-q="claim" data-i="'+i+'">CLAIM $'+q.pay+'</button>':'<button class="sw" data-q="swap" data-i="'+i+'"'+(stats.money<10?' disabled':'')+'>SWAP QUEST \u2014 $10</button>')+'</div>'});$('qg').innerHTML=h}
+const skinCss=n=>'#'+n.toString(16).padStart(6,'0');
+function skinSvg(k){const pl=k.pal||{wood:0x785538,dark:0x30343a,light:0x8a8e92,accent:0xb08a3a,lens:0x6fa0c8},w=skinCss(k.camo?k.camo[0]:pl.wood),w2=skinCss(k.camo?k.camo[2]:pl.wood),d=skinCss(k.camo?k.camo[1]:pl.dark),l=skinCss(pl.light),a=skinCss(pl.accent),n=skinCss(pl.lens);
+return '<svg viewBox="0 0 32 32" shape-rendering="crispEdges"'+(k.anim?' class="prism"':'')+'><rect x="2" y="15" width="9" height="5" fill="'+w+'"/><rect x="7" y="19" width="3" height="5" fill="'+w2+'"/><rect x="10" y="14" width="11" height="4" fill="'+d+'"/><rect x="20" y="15" width="11" height="2" fill="'+l+'"/><rect x="13" y="12" width="7" height="2" fill="'+d+'"/><rect x="19" y="12" width="1" height="2" fill="'+n+'"/><rect x="13" y="13" width="3" height="1" fill="'+a+'"/><rect x="12" y="18" width="4" height="2" fill="'+a+'"/></svg>'}
+function renderSkins(){let h='';const cur=curSkinId();for(const k of SKIN_LIST){const own=ownsSkin(k.id),eq=k.id===cur,need=k.p-stats.money;
+h+='<div class="it'+(eq?' eq':'')+'">'+skinSvg(k)+'<b>'+k.n+'</b><span>'+k.d+'</span><div class="ip">'+(k.p?'$'+k.p:'FREE')+'</div><button data-sk="'+k.id+'"'+((eq||(!own&&need>0))?' disabled':'')+'>'+(eq?'EQUIPPED':own?'EQUIP':need>0?'NEED $'+need+' MORE':'BUY')+'</button></div>'}
+$('sg').innerHTML=h;$('shm').textContent='$'+stats.money}
+$('sg').onclick=e=>{const b=e.target.closest('button[data-sk]');if(!b||b.disabled)return;const k=SKINS[b.dataset.sk];if(!k||!skinOk(k.id))return;
+if(!ownsSkin(k.id)){if(stats.money<k.p)return;stats.money-=k.p;stats.skins.push(k.id);snd(520,.15,'square',.25,1.8)}else snd(380,.08,'square',.18,1.2);
+stats.skin=k.id;saveStats();applyGunSkin();renderShop();if(mpOnline){mpBroadcastPosition();mpPersistPosition(true)}};
 function renderShop(){const qt=shopTab==='quests';renderItems();renderQuests();
-$('shg').style.display=qt?'none':'';$('qg').style.display=qt?'flex':'none';if(qt)$('shbw').style.display='none';
-$('shn').textContent=qt?'Do stuff, get paid. Finished quests are claimed right here.':'If you bring deer to the counter, you get $10 for each one!1!111! Rabbits are $5, bears are $20 and the gray one is worth $30!!1!';
+const sk=shopTab==='skins';renderSkins();$('shg').style.display=(qt||sk)?'none':'';$('qg').style.display=qt?'flex':'none';$('sg').style.display=sk?'':'none';if(qt||sk)$('shbw').style.display='none';
+$('shn').textContent=qt?'Do stuff, get paid. Finished quests are claimed right here.':sk?'Skins for the rifle and shotgun. Other players in multiplayer see the skin you have equipped.':'If you bring deer to the counter, you get $10 for each one!1!111! Rabbits are $5, bears are $20 and the gray one is worth $30!!1!';
 document.querySelectorAll('#shtabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===shopTab));
 $('qdot').style.display=stats.quests.some(q=>qProg(q)>=q.n)?'inline':'none'}
 $('shtabs').onclick=e=>{const b=e.target.closest('button[data-t]');if(!b)return;shopTab=b.dataset.t;renderShop()};
@@ -950,7 +1027,7 @@ showScreen('dead')}
 function showScreen(m){const c={title:['DEER HUNTING SIMULATOR','Hey this game is like REALLY buggy, too much stuff softlocks you and it overall sucks. This is a JOKE game, not one to be taken SERIOUSLY.','PLAY'],pause:['PAUSED','Hey why we pause the game?','RESUME'],dead:[deathCause==='bear'?'A BEAR GOT YOU':(deathCause==='deer'?'YOU WERE OVERRUN':'THE GRAY ONE FOUND YOU'),deathCause==='bear'?'The bear took all 3 hearts. Choose a mode and try again.':(deathCause==='deer'?'Defense run over. Choose a mode and try again.':'Murdered by the gray one: '+stats.deaths+(stats.deaths==1?' time.':' times.')),'RESPAWN AT THE CABIN']}[m];
 $('t1').textContent=c[0];$('t2').textContent=c[1];$('go').textContent=c[2];$('kick').style.display=m==='title'?'block':'none';$('mode-overlay').style.display='none';
 $('sv-deer').textContent=stats.deer;$('sv-shots').textContent=stats.shots;$('sv-dead').textContent=stats.deaths;
-$('mpmsg').style.display='none';$('wn').style.display=m==='title'?'flex':'none';$('wnp').style.display='none';$('mp').style.display=m==='title'?'':'none';$('tt').style.display=m==='title'?'none':'';$('ov').className=m;$('scr-help').style.display='none';$('scr-main').style.display='flex';$('ov').style.display='flex'}
+$('mpmsg').style.display='none';$('wn').style.display=m==='title'?'flex':'none';$('wnp').style.display='none';$('mp').style.display=m==='title'?'':'none';$('tt').style.display=m==='title'?'none':'';$('ov').className=m;$('scr-help').style.display='none';$('scr-main').style.display='flex';$('ov').style.display='flex';try{mpSyncAdminTitle()}catch(e){}}
 function updateHearts(){const h=$('hearts'),l=Math.max(0,Math.min(3,lives));h.style.display=playing?'block':'none';h.textContent=('♥ '.repeat(l)+'♡ '.repeat(3-l)).trim();h.style.color=l===1?'#ff3939':'#e85b55'}
 function setGameMode(mode){gameMode=mode;$('mode-regular').classList.toggle('selected',mode==='regular');$('mode-defense').classList.toggle('selected',mode==='defense')}
 async function launchSelectedMode(mode){
@@ -1350,6 +1427,9 @@ function drawRadar(dt){const on=!!stats.radar;if(rd.style.display!==(on?'block':
  const sy=Math.sin(P.yaw),cy=Math.cos(P.yaw);
  const dot=(o,col,sz)=>{if(!o.active||!o.alive||o.carried)return;const dx=o.x-P.x,dz=o.z-P.z,u=dx*cy-dz*sy,v=-dx*sy-dz*cy;if(Math.hypot(u,v)>R)return;rx.fillStyle=col;rx.fillRect(Math.round(c+u/R*rad-sz/2),Math.round(c-v/R*rad-sz/2),sz,sz)};
  for(const o of deers)dot(o,'#e0a050',3);for(const o of rabbits)dot(o,'#d8d2b0',2);for(const o of bears)dot(o,'#ff5a4a',5);
+ if(mpOnline)for(const [,o] of mpRemote){const dx=o.root.position.x-P.x,dz=o.root.position.z-P.z,u=dx*cy-dz*sy,v=-dx*sy-dz*cy,d=Math.hypot(u,v),col=(o.row&&o.row.alive===false)?'#8a9aa0':'#4fd3ff';
+  if(d<=R){const px=c+u/R*rad,py=c-v/R*rad;rx.fillStyle=col;rx.fillRect(Math.round(px-2),Math.round(py-2),4,4);rx.strokeStyle=col;rx.beginPath();rx.arc(px,py,5,0,6.283);rx.stroke()}
+  else{const ex=u/d,ey=-v/d,px=c+ex*(rad-4),py=c+ey*(rad-4);rx.save();rx.translate(px,py);rx.rotate(Math.atan2(ey,ex));rx.fillStyle=col;rx.globalAlpha=.85;rx.beginPath();rx.moveTo(5,0);rx.lineTo(-3,-4);rx.lineTo(-3,4);rx.closePath();rx.fill();rx.restore()}}
  rx.fillStyle='#fff';rx.beginPath();rx.moveTo(c,c-5);rx.lineTo(c-3,c+3);rx.lineTo(c+3,c+3);rx.fill()}
 function upd(dt){
 T+=dt;for(let i=auraCraters.length-1;i>=0;i--){const crater=auraCraters[i];crater.userData.life-=dt;const fade=Math.max(0,Math.min(1,crater.userData.life/1.4));crater.traverse(o=>{if(o.material&&o.material.transparent)o.material.opacity=(o.userData.baseOpacity??(o.userData.baseOpacity=o.material.opacity))*fade});if(crater.userData.life<=0){scene.remove(crater);auraCraters.splice(i,1)}}if(hitCooldown>0)hitCooldown=Math.max(0,hitCooldown-dt);
@@ -1401,7 +1481,7 @@ if(isTouch){setTBtn($('theal'),stats.heal?'HEAL '+stats.heal:'');setTBtn($('trep
 let last=performance.now();
 function checkOrient(){const por=isTouch&&innerHeight>innerWidth;if(document.body.classList.contains('portrait')!==por)document.body.classList.toggle('portrait',por);if(por&&playing)pauseGame()}
 addEventListener('resize',checkOrient);addEventListener('orientationchange',()=>setTimeout(checkOrient,150));
-function loop(n){requestAnimationFrame(loop);checkOrient();const rdt=Math.min(.05,(n-last)/1000),dt=rdt*gameSpeed;last=n;if(playing){upd(dt);if($('hearts').style.display==='none')updateHearts()}else{wxMute();if($('hearts').style.display!=='none')$('hearts').style.display='none'}if(mpOnline)mpTickRemote(rdt);document.body.classList.toggle('tplay',isTouch&&playing);if(!playing&&(tj.id!==null||lk.id!==null)){joyReset();lookReset()}
+function loop(n){requestAnimationFrame(loop);checkOrient();prismMat.uniforms.tm.value=n/1000;const rdt=Math.min(.05,(n-last)/1000),dt=rdt*gameSpeed;last=n;if(playing){upd(dt);if($('hearts').style.display==='none')updateHearts()}else{wxMute();if($('hearts').style.display!=='none')$('hearts').style.display='none'}if(mpOnline){mpTickRemote(rdt);mpUpdateLocator(rdt)}document.body.classList.toggle('tplay',isTouch&&playing);if(!playing&&(tj.id!==null||lk.id!==null)){joyReset();lookReset()}
 const ft=scoped&&!P.hid?sf[cur]:baseFov;if(Math.abs(cam.fov-ft)>.05){cam.fov+=(ft-cam.fov)*Math.min(1,dt*14);cam.updateProjectionMatrix()}
 const sv=scoped&&cur==0&&cam.fov<34;$('sc').style.opacity=sv?1:0;$('ch').style.display=scoped?'none':'block';
 const tt=n/1000;drunk+=((drugOn?.15+.85*drugLvl:0)-drunk)*Math.min(1,rdt*1.6);
@@ -1470,11 +1550,35 @@ const MP_CONTROL_FUNCTION=MP_SUPABASE_URL+'/functions/v1/admin-control';
 const mpChatLog=$('mp-chat-messages');
 function mpIsAdminSession(){return mpOnline&&mpAdminAuthenticated&&/^ADMINISTRATOR$/i.test(String(mpName||'').trim())}
 function mpAdminHas(key){return (mpIsAdminSession()&&!!mpAdminPerks[key])||!!mpGrantedPermissions[key]}
+function mpAdminUnlocked(){return mpAdminAuthenticated&&!!mpAdminSecret&&/^ADMINISTRATOR$/i.test(String(mpName||'').trim())}
+function mpSyncAdminTitle(){const b=$('admin-open');if(!b)return;const onTitle=$('ov').className==='title';b.style.display=(onTitle&&/^ADMINISTRATOR$/i.test(String(mpName||'').trim()))?'':'none'}
 function mpRenderAdminUI(){
- const ui=$('mp-admin-ui'),panel=$('mp-admin-panel');if(!ui||!panel)return;
- const allowed=mpIsAdminSession();ui.style.display=allowed?'block':'none';
- if(!allowed){panel.style.display='none';mpResumeFromUI('admin')}
+ const panel=$('mp-admin-panel');if(!panel)return;
  panel.querySelectorAll('[data-admin-perk]').forEach(input=>{input.checked=!!mpAdminPerks[input.dataset.adminPerk]});
+ mpSyncAdminTitle();mpUpdateLocator(0,true);
+}
+let mpLocT=0;
+function mpUpdateLocator(dt,force){
+ const box=$('mp-locator');if(!box)return;
+ if(!(playing&&mpAdminHas('playerList'))){if(box.style.display!=='none'){box.style.display='none';box.textContent=''}mpLocT=0;return}
+ mpLocT-=dt;if(mpLocT>0&&!force)return;mpLocT=.2;
+ const sy=Math.sin(P.yaw),cy=Math.cos(P.yaw),list=[];
+ for(const [,o] of mpRemote){const x=o.root.position.x,z=o.root.position.z,dx=x-P.x,dz=z-P.z;list.push({name:o.name||'Hunter',x,z,d:Math.hypot(dx,dz),u:dx*cy-dz*sy,v:-dx*sy-dz*cy,dead:!!(o.row&&o.row.alive===false)})}
+ list.sort((a,b)=>a.d-b.d);
+ box.textContent='';box.style.display='block';
+ const head=document.createElement('div');head.className='ml-head';head.textContent='OTHER PLAYERS: '+list.length;box.appendChild(head);
+ if(!list.length){const none=document.createElement('div');none.className='ml-info';none.textContent='Nobody else is online.';box.appendChild(none);return}
+ for(const p of list.slice(0,12)){
+  const row=document.createElement('div');row.className='ml-row'+(p.dead?' dead':'');
+  const arrow=document.createElement('span');arrow.className='ml-arrow';arrow.textContent='\u25B2';arrow.style.transform='rotate('+Math.atan2(p.u,p.v)+'rad)';
+  const name=document.createElement('span');name.className='ml-name';name.textContent=p.name;
+  const info=document.createElement('span');info.className='ml-info';info.textContent=Math.round(p.d)+'m  ('+Math.round(p.x)+', '+Math.round(p.z)+')';
+  row.append(arrow,name,info);box.appendChild(row);
+ }
+}
+function mpMakeBeacon(o){
+ const beam=new THREE.Mesh(new THREE.CylinderGeometry(.09,.09,90,8,1,true),new THREE.MeshBasicMaterial({color:0xff3b3b,transparent:true,opacity:.5,depthTest:false,depthWrite:false,fog:false,side:THREE.DoubleSide}));
+ beam.position.y=45;beam.renderOrder=9;o.root.add(beam);return beam;
 }
 async function mpCallControl(body){
  const response=await fetch(MP_CONTROL_FUNCTION,{method:'POST',headers:{'Content-Type':'application/json','apikey':MP_SUPABASE_KEY,'Authorization':'Bearer '+MP_SUPABASE_KEY},body:JSON.stringify(body)});
@@ -1521,20 +1625,41 @@ function mpAttemptJoin(){
  if(!/^ADMINISTRATOR$/i.test(requested))mpAdminAuthenticated=false;
  mpConnectAndStart();
 }
-$('mp-admin-button').addEventListener('click',()=>{const opening=$('mp-admin-panel').style.display!=='block';$('mp-admin-panel').style.display=opening?'block':'none';if(opening)mpPauseForUI('admin');else mpResumeFromUI('admin')});
-$('mp-admin-close').addEventListener('click',()=>{$('mp-admin-panel').style.display='none';mpResumeFromUI('admin')});
+async function mpAdminLoadSettings(){try{const result=await mpCallControl({action:'status',username:mpName,device_id:mpPlayerId,mode:'singleplayer',admin_password:mpAdminSecret});if(result&&result.settings&&result.is_admin){$('mp-disable-sp').checked=result.settings.singleplayer_enabled===false;$('mp-disable-mp').checked=result.settings.multiplayer_enabled===false;$('mp-sp-reason').value=result.settings.singleplayer_reason||'';$('mp-mp-reason').value=result.settings.multiplayer_reason||''}}catch(e){}}
+function mpAdminShowBody(unlocked){$('mp-admin-lock').style.display=unlocked?'none':'block';$('mp-admin-body').style.display=unlocked?'block':'none'}
+function mpOpenAdminPanel(){
+ if(!/^ADMINISTRATOR$/i.test(String(mpName||'').trim()))return;
+ $('mp-admin-ui').classList.add('open');$('mp-admin-panel').style.display='block';$('mp-admin-lock-error').textContent='';
+ const ok=mpAdminUnlocked();mpAdminShowBody(ok);
+ if(ok){mpRenderAdminUI();mpAdminLoadSettings()}else setTimeout(()=>$('mp-admin-lock-pass').focus(),40);
+}
+function mpCloseAdminPanel(){mpAdminStopWarningTest();$('mp-admin-ui').classList.remove('open');$('mp-admin-panel').style.display='none';$('mp-admin-lock-pass').value=''}
+async function mpAdminUnlock(){
+ const err=$('mp-admin-lock-error'),password=$('mp-admin-lock-pass').value;
+ if(!password){err.textContent='Enter the administrator password.';return}
+ err.textContent='Checking...';
+ try{await mpCallControl({action:'verify',admin_password:password});mpAdminAuthenticated=true;mpAdminSecret=password;$('mp-admin-lock-pass').value='';err.textContent='';mpAdminShowBody(true);mpRenderAdminUI();mpAdminLoadSettings()}
+ catch(e){err.textContent=e.message||'Administrator verification failed.';$('mp-admin-lock-pass').select()}
+}
+$('admin-open').addEventListener('click',mpOpenAdminPanel);
+$('mp-admin-lock-go').addEventListener('click',mpAdminUnlock);
+$('mp-admin-lock-pass').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();mpAdminUnlock()}});
+$('mp-admin-ui').addEventListener('click',e=>{if(e.target===$('mp-admin-ui'))mpCloseAdminPanel()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('mp-admin-ui').classList.contains('open'))mpCloseAdminPanel()});
+$('mp-admin-close').addEventListener('click',mpCloseAdminPanel);
 document.querySelectorAll('[data-admin-tab]').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('[data-admin-tab]').forEach(b=>b.classList.toggle('active',b===button));document.querySelectorAll('[data-admin-section]').forEach(section=>section.classList.toggle('active',section.dataset.adminSection===button.dataset.adminTab))}));
 let mpAdminWarningTestTimer=null,mpAdminTestScreenWasVisible=false;
 const mpAdminWarningSamples=[
  'NO DEER NEARBY','BUY THE AXE AT THE SHOP ($70)','NO BANDAGES — BUY SOME AT THE SHOP','YOU ARE ALREADY AT FULL HEALTH','NO REPELLENT — BUY SOME AT THE SHOP','BEAR TRAP! MASH WASD TO BREAK FREE','STUCK IN THE MUD — YOU MOVE SLOWLY','THE GRAY ONE SEES YOU','A BEAR IS CHARGING YOU!','HANDS FULL — MAX 2 DEER','NOT TIRED — YOU CAN ONLY SLEEP AT NIGHT','RIFLE ROUNDS DO NOTHING — USE THE SHOTGUN'
 ];
+function mpAdminPreview(text){const el=$('mp-test-preview');if(el)el.textContent=text||''}
 function mpAdminTestStatus(text){const el=$('mp-test-status');if(el)el.textContent=text}
 function mpAdminTestAudio(){if(!ac){const AudioCtor=window.AudioContext||window.webkitAudioContext;if(!AudioCtor){mpAdminTestStatus('Audio is not supported by this browser.');return false}ac=new AudioCtor()}if(ac.state==='suspended')ac.resume();return true}
-function mpAdminStopWarningTest(){if(mpAdminWarningTestTimer){clearInterval(mpAdminWarningTestTimer);mpAdminWarningTestTimer=null}msgT=0;$('ms').textContent='';mpAdminTestStatus('Warning test stopped.')}
-function mpAdminRunWarningTest(){mpAdminStopWarningTest();let i=0;const show=()=>{if(i>=mpAdminWarningSamples.length){mpAdminStopWarningTest();mpAdminTestStatus('Finished testing '+mpAdminWarningSamples.length+' warning messages.');return}msg(mpAdminWarningSamples[i],2.2);mpAdminTestStatus('Warning '+(i+1)+' of '+mpAdminWarningSamples.length+': '+mpAdminWarningSamples[i]);i++};show();mpAdminWarningTestTimer=setInterval(show,2350)}
+function mpAdminStopWarningTest(){if(mpAdminWarningTestTimer){clearInterval(mpAdminWarningTestTimer);mpAdminWarningTestTimer=null}msgT=0;$('ms').textContent='';mpAdminPreview('');mpAdminTestStatus('Warning test stopped.')}
+function mpAdminRunWarningTest(){mpAdminStopWarningTest();let i=0;const show=()=>{if(i>=mpAdminWarningSamples.length){mpAdminStopWarningTest();mpAdminTestStatus('Finished testing '+mpAdminWarningSamples.length+' warning messages.');return}msg(mpAdminWarningSamples[i],2.2);mpAdminPreview(mpAdminWarningSamples[i]);mpAdminTestStatus('Warning '+(i+1)+' of '+mpAdminWarningSamples.length+': '+mpAdminWarningSamples[i]);i++};show();mpAdminWarningTestTimer=setInterval(show,2350)}
 function mpAdminTestAccess(kind){mpAdminStopWarningTest();mpAdminTestScreenWasVisible=$('mp-access-overlay').style.display==='flex';if(kind==='ban-ip'||kind==='ban-device')mpShowAccessScreen('ban',{type:kind==='ban-ip'?'ip':'device',reason:'TEST ONLY: This is a preview. No ban has been applied.'});else{const sp=kind!=='shutdown-sp',mp=kind!=='shutdown-mp';mpShowAccessScreen('shutdown',{reason:'TEST ONLY: This is a preview of an administrator shutdown notice.',singleplayerEnabled:sp,multiplayerEnabled:mp})}mpAdminTestStatus('Preview screen shown. Close it with the button below or the screen button.')}
 document.querySelectorAll('[data-admin-test]').forEach(button=>button.addEventListener('click',()=>{
- if(!mpIsAdminSession())return;const test=button.dataset.adminTest;
+ if(!mpAdminUnlocked())return;const test=button.dataset.adminTest;
  if(test==='warnings'){mpAdminRunWarningTest();return}if(test==='stop-warnings'){mpAdminStopWarningTest();return}
  if(test==='close-screen'){mpAdminStopWarningTest();$('mp-access-overlay').style.display='none';mpAdminTestStatus('Test screen closed.');return}
  if(test.startsWith('ban-')||test.startsWith('shutdown-')){mpAdminTestAccess(test);return}
@@ -1550,7 +1675,7 @@ document.querySelectorAll('[data-admin-test]').forEach(button=>button.addEventLi
 }));
 
 $('mp-admin-panel').addEventListener('change',e=>{
- const input=e.target.closest('[data-admin-perk]');if(!input||!mpIsAdminSession())return;
+ const input=e.target.closest('[data-admin-perk]');if(!input||!mpAdminUnlocked())return;
  const key=input.dataset.adminPerk;mpAdminPerks[key]=input.checked;
  if(key==='instantReload'&&input.checked){rel=0;ammo[cur]=WP[cur].mag}
  if(key==='noCooldown'&&input.checked)cd=0;
@@ -1559,11 +1684,11 @@ $('mp-admin-panel').addEventListener('change',e=>{
 });
 function mpAdminFeedback(message,error=false){$('mp-admin-feedback').textContent=message;$('mp-admin-feedback').style.color=error?'#ff7777':'#ffd35a'}
 function mpDurationValue(value){if(value==='permanent')return null;const map={'1h':3600000,'1d':86400000,'7d':604800000,'30d':2592000000};return new Date(Date.now()+(map[value]||86400000)).toISOString()}
-$('mp-ban-submit').addEventListener('click',async()=>{if(!mpIsAdminSession())return;const username=$('mp-ban-user').value.trim(),reason=$('mp-ban-reason').value.trim();if(!username||!reason){mpAdminFeedback('Enter a username and a reason.',true);return}try{await mpCallControl({action:'ban',admin_password:mpAdminSecret,username,ban_type:$('mp-ban-type').value,reason,expires_at:mpDurationValue($('mp-ban-duration').value)});mpAdminFeedback('Ban saved for '+username+'. They will be blocked on their next access check.')}catch(e){mpAdminFeedback(e.message,true)}});
-$('mp-unban-submit').addEventListener('click',async()=>{if(!mpIsAdminSession())return;const username=$('mp-ban-user').value.trim();if(!username){mpAdminFeedback('Enter the username to unban.',true);return}try{await mpCallControl({action:'unban',admin_password:mpAdminSecret,username,ban_type:$('mp-ban-type').value});mpAdminFeedback('Matching ban removed for '+username+'.')}catch(e){mpAdminFeedback(e.message,true)}});
-$('mp-save-shutdown').addEventListener('click',async()=>{if(!mpIsAdminSession())return;try{await mpCallControl({action:'settings',admin_password:mpAdminSecret,singleplayer_enabled:!$('mp-disable-sp').checked,multiplayer_enabled:!$('mp-disable-mp').checked,singleplayer_reason:$('mp-sp-reason').value.trim(),multiplayer_reason:$('mp-mp-reason').value.trim()});mpAdminFeedback('Global game availability saved.')}catch(e){mpAdminFeedback(e.message,true)}});
-$('mp-grant-submit').addEventListener('click',async()=>{if(!mpIsAdminSession())return;const username=$('mp-permission-user').value.trim();if(!username){mpAdminFeedback('Enter the username to grant permissions to.',true);return}const permissions={};document.querySelectorAll('[data-grant-perk]').forEach(input=>permissions[input.dataset.grantPerk]=input.checked);try{await mpCallControl({action:'grant',admin_password:mpAdminSecret,username,permissions,expires_at:mpDurationValue($('mp-permission-duration').value)});mpAdminFeedback('Permissions saved for '+username+'. They take effect on their next access check.')}catch(e){mpAdminFeedback(e.message,true)}});
-$('mp-revoke-submit').addEventListener('click',async()=>{if(!mpIsAdminSession())return;const username=$('mp-permission-user').value.trim();if(!username){mpAdminFeedback('Enter the username to revoke.',true);return}try{await mpCallControl({action:'revoke',admin_password:mpAdminSecret,username});mpAdminFeedback('Permissions revoked for '+username+'.')}catch(e){mpAdminFeedback(e.message,true)}});
+$('mp-ban-submit').addEventListener('click',async()=>{if(!mpAdminUnlocked())return;const username=$('mp-ban-user').value.trim(),reason=$('mp-ban-reason').value.trim();if(!username||!reason){mpAdminFeedback('Enter a username and a reason.',true);return}try{await mpCallControl({action:'ban',admin_password:mpAdminSecret,username,ban_type:$('mp-ban-type').value,reason,expires_at:mpDurationValue($('mp-ban-duration').value)});mpAdminFeedback('Ban saved for '+username+'. They will be blocked on their next access check.')}catch(e){mpAdminFeedback(e.message,true)}});
+$('mp-unban-submit').addEventListener('click',async()=>{if(!mpAdminUnlocked())return;const username=$('mp-ban-user').value.trim();if(!username){mpAdminFeedback('Enter the username to unban.',true);return}try{await mpCallControl({action:'unban',admin_password:mpAdminSecret,username,ban_type:$('mp-ban-type').value});mpAdminFeedback('Matching ban removed for '+username+'.')}catch(e){mpAdminFeedback(e.message,true)}});
+$('mp-save-shutdown').addEventListener('click',async()=>{if(!mpAdminUnlocked())return;try{await mpCallControl({action:'settings',admin_password:mpAdminSecret,singleplayer_enabled:!$('mp-disable-sp').checked,multiplayer_enabled:!$('mp-disable-mp').checked,singleplayer_reason:$('mp-sp-reason').value.trim(),multiplayer_reason:$('mp-mp-reason').value.trim()});mpAdminFeedback('Global game availability saved.')}catch(e){mpAdminFeedback(e.message,true)}});
+$('mp-grant-submit').addEventListener('click',async()=>{if(!mpAdminUnlocked())return;const username=$('mp-permission-user').value.trim();if(!username){mpAdminFeedback('Enter the username to grant permissions to.',true);return}const permissions={};document.querySelectorAll('[data-grant-perk]').forEach(input=>permissions[input.dataset.grantPerk]=input.checked);try{await mpCallControl({action:'grant',admin_password:mpAdminSecret,username,permissions,expires_at:mpDurationValue($('mp-permission-duration').value)});mpAdminFeedback('Permissions saved for '+username+'. They take effect on their next access check.')}catch(e){mpAdminFeedback(e.message,true)}});
+$('mp-revoke-submit').addEventListener('click',async()=>{if(!mpAdminUnlocked())return;const username=$('mp-permission-user').value.trim();if(!username){mpAdminFeedback('Enter the username to revoke.',true);return}try{await mpCallControl({action:'revoke',admin_password:mpAdminSecret,username});mpAdminFeedback('Permissions revoked for '+username+'.')}catch(e){mpAdminFeedback(e.message,true)}});
 $('mp-admin-verify').addEventListener('click',async()=>{
  const requested=($('mp-name').value.trim()||mpName).trim();
  if(!/^ADMINISTRATOR$/i.test(requested)){$('mp-admin-error').textContent='Set your player name to ADMINISTRATOR first.';return}
@@ -1670,7 +1795,7 @@ addEventListener('keydown',e=>{
 if(window.visualViewport){window.visualViewport.addEventListener('resize',()=>{mpConfigureChatKeyboard();mpMobileChatLayout()});window.visualViewport.addEventListener('scroll',mpMobileChatLayout)}
 addEventListener('resize',()=>{mpConfigureChatKeyboard();mpMobileChatLayout()});
 const mpTasks=['Loading forest terrain','Loading trees and chopping state','Loading mud and terrain details','Loading wildlife','Loading shop inventory','Connecting to other hunters','Synchronizing player positions'];
-function mpAvatar(dead=false,item=0){
+function mpAvatar(dead=false,item=0,skin='classic'){
  // Minimal floating avatar: a black round head, yellow smiley face, and a weapon floating nearby.
  const g=new THREE.Group();
  const black=new THREE.MeshBasicMaterial({color:0x080909});
@@ -1700,30 +1825,16 @@ function mpAvatar(dead=false,item=0){
   new THREE.Vector3(.105,1.535,-.354)
  );
  g.add(new THREE.Mesh(new THREE.TubeGeometry(smileCurve,18,.012,6,false),faceInk));
- // The weapon floats at the avatar's side; there are deliberately no hands, arms, ears, or hair.
+ // Rifle and shotgun use the exact same model (and skin) as the one in your own hands.
  if(item===2){
   // Axe
   box(.43,1.09,-.17,.085,.085,.62,wood);
   box(.43,1.30,-.46,.085,.42,.12,metal);
   box(.43,1.39,-.49,.32,.20,.075,metal);
- }else if(item===1){
-  // Shotgun
-  box(.43,1.10,-.28,.15,.14,.91,gunDark);
-  box(.43,1.13,-.78,.20,.17,.22,metal);
-  box(.43,1.00,.10,.13,.23,.30,wood);
-  box(.43,1.24,-.73,.055,.055,.34,metal);
-  cylinder(.045,.045,.50,metal,.43,1.10,-.88,Math.PI/2);
  }else{
-  // Rifle
-  box(.43,1.10,-.28,.105,.105,.96,gunDark);
-  box(.43,1.14,-.80,.14,.13,.24,metal);
-  box(.43,1.00,.13,.12,.20,.32,wood);
-  box(.43,1.27,-.36,.075,.075,.29,metal);
-  box(.43,.96,-.16,.065,.22,.14,gunDark);
-  cylinder(.027,.027,.42,metal,.43,1.10,-.92,Math.PI/2);
+  const gm=new THREE.Mesh(gunGeo(item===1?1:0,skin),skinMat(skin));gm.position.set(.43,1.10,-.12);gm.userData.shared=true;g.add(gm);
  }
- g.userData={dead,item};return g;
-}
+ g.userData={dead,item,skin};return g;}
 function mpMakeNameTag(name){
  const label=String(name||'Hunter'),badge=mpTagForName(label),hasBadge=!!badge;
  const canvas=document.createElement('canvas');canvas.width=768;canvas.height=160;
@@ -1745,19 +1856,20 @@ function mpMakeNameTag(name){
  const sprite=new THREE.Sprite(material);sprite.position.set(0,2.35,0);sprite.scale.set(hasBadge?2.25:1.75,.5,1);sprite.renderOrder=10;return sprite;
 }
 function mpUpdateNameTag(o,name){const n=String(name||'Hunter');if(o.name===n&&o.nameTag)return;o.name=n;if(o.nameTag){o.root.remove(o.nameTag);if(o.nameTag.material.map)o.nameTag.material.map.dispose();o.nameTag.material.dispose()}o.nameTag=mpMakeNameTag(n);o.root.add(o.nameTag)}
+function mpRowSkin(row){const id=row&&row.inventory&&row.inventory.skin;return skinOk(id)?id:'classic'}
 function mpSetRemote(row){
  if(!row||!row.id||row.id===mpPlayerId)return;
  const x=Number(row.x),z=Number(row.z),yaw=Number(row.yaw)||0;if(!Number.isFinite(x)||!Number.isFinite(z))return;
  const stamp=Date.parse(row.updated_at||'')||Date.now();let o=mpRemote.get(row.id);
  if(o&&stamp<o.stamp)return;
  if(!o){
-  const root=new THREE.Group(),avatar=mpAvatar(!row.alive,Number(row.held_item)||0);root.add(avatar);scene.add(root);
+  const root=new THREE.Group(),avatar=mpAvatar(!row.alive,Number(row.held_item)||0,mpRowSkin(row));root.add(avatar);scene.add(root);
   root.position.set(x,hgt(x,z),z);root.rotation.y=yaw;
   o={root,avatar,row,target:{x,z,yaw},stamp,lastSeen:Date.now(),name:'',nameTag:null};mpRemote.set(row.id,o);
  }else{
   o.target={x,z,yaw};o.row=row;o.stamp=stamp;o.lastSeen=Date.now();
-  if((!row.alive)!==!!o.avatar.userData.dead||Number(row.held_item||0)!==Number(o.avatar.userData.item||0)){
-   o.root.remove(o.avatar);o.avatar=mpAvatar(!row.alive,Number(row.held_item)||0);o.root.add(o.avatar);
+  if((!row.alive)!==!!o.avatar.userData.dead||Number(row.held_item||0)!==Number(o.avatar.userData.item||0)||mpRowSkin(row)!==(o.avatar.userData.skin||'classic')){
+   o.root.remove(o.avatar);o.avatar=mpAvatar(!row.alive,Number(row.held_item)||0,mpRowSkin(row));o.root.add(o.avatar);
   }
  }
  mpUpdateNameTag(o,row.name);o.lastSeen=Date.now();o.row=row;o.root.visible=true;
@@ -1769,12 +1881,13 @@ function mpTickRemote(dt){
   const k=1-Math.exp(-Math.max(0,dt)*14),t=o.target;
   o.root.position.x+=(t.x-o.root.position.x)*k;o.root.position.z+=(t.z-o.root.position.z)*k;
   o.root.position.y=hgt(o.root.position.x,o.root.position.z);
+  if(mpAdminHas('playerBeacons')){if(!o.beacon)o.beacon=mpMakeBeacon(o);o.beacon.visible=true}else if(o.beacon)o.beacon.visible=false;
   let da=((t.yaw-o.root.rotation.y+Math.PI*3)%(Math.PI*2))-Math.PI;o.root.rotation.y+=da*k;
   o.root.visible=true;
  }
 }
-function mpRemoveRemote(id){const o=mpRemote.get(id);if(o){scene.remove(o.root);o.root.traverse(v=>{if(v.geometry)v.geometry.dispose();if(v.material){if(Array.isArray(v.material))v.material.forEach(m=>m.dispose());else v.material.dispose()}});mpRemote.delete(id)}}
-function mpBuildRow(){return {id:mpPlayerId,name:mpName,x:+P.x.toFixed(2),z:+P.z.toFixed(2),yaw:+P.yaw.toFixed(3),pitch:+P.pitch.toFixed(3),held_item:cur,alive:G!=='dead',money:Math.max(0,Math.floor(stats.money||0)),inventory:{rifle:!!stats.rifle,shotgun:!!stats.shotgun,axe:!!stats.axe,flash:!!stats.flash},updated_at:new Date().toISOString()}}
+function mpRemoveRemote(id){const o=mpRemote.get(id);if(o){scene.remove(o.root);o.root.traverse(v=>{if(v.userData&&v.userData.shared)return;if(v.geometry)v.geometry.dispose();if(v.material){if(Array.isArray(v.material))v.material.forEach(m=>m.dispose());else v.material.dispose()}});mpRemote.delete(id)}}
+function mpBuildRow(){return {id:mpPlayerId,name:mpName,x:+P.x.toFixed(2),z:+P.z.toFixed(2),yaw:+P.yaw.toFixed(3),pitch:+P.pitch.toFixed(3),held_item:cur,alive:G!=='dead',money:Math.max(0,Math.floor(stats.money||0)),inventory:{rifle:!!stats.rifle,shotgun:!!stats.shotgun,axe:!!stats.axe,flash:!!stats.flash,skin:curSkinId()},updated_at:new Date().toISOString()}}
 async function mpPersistPosition(force=false){if(!mpClient||!mpOnline)return;const now=Date.now();if(!force&&now-mpLastPersist<1000)return;mpLastPersist=now;try{const {error}=await mpClient.from('hs_players').upsert(mpBuildRow(),{onConflict:'id'});if(error)console.warn('Multiplayer player save:',error.message)}catch(e){console.warn('Multiplayer player save:',e.message)}}
 async function mpBroadcastPosition(){if(!mpOnline||!mpChannel)return;if(mpBroadcastBusy){mpBroadcastQueued=true;return}mpBroadcastBusy=true;try{const {error}=await mpChannel.send({type:'broadcast',event:'player_position',payload:mpBuildRow()});if(error)console.warn('Player broadcast:',error.message)}catch(e){console.warn('Player broadcast:',e.message)}finally{mpBroadcastBusy=false;if(mpBroadcastQueued){mpBroadcastQueued=false;mpBroadcastPosition()}}}
 async function mpEmit(type,payload={}){if(!mpClient||!mpOnline)return;try{const {error}=await mpClient.from('hs_world_events').insert({player_id:mpPlayerId,player_name:mpName,event_type:type,payload});if(error)console.warn('Multiplayer event failed:',error.message)}catch(e){console.warn('Multiplayer event failed:',e.message)}}
@@ -1808,7 +1921,7 @@ async function mpConnectAndStart(){
 async function mpStopSession(){
  if(!mpOnline&&!mpChannel)return;
  const client=mpClient,channel=mpChannel,wasOnline=mpOnline;
- mpOnline=false;mpChannel=null;mpStarting=false;mpAdminAuthenticated=false;mpAdminSecret='';mpGrantedPermissions={};Object.keys(mpAdminPerks).forEach(k=>mpAdminPerks[k]=false);mpSetChatActive(false);mpRenderAdminUI();
+ mpOnline=false;mpChannel=null;mpStarting=false;mpGrantedPermissions={};Object.keys(mpAdminPerks).forEach(k=>{if(k!=='playerList'&&k!=='playerBeacons')mpAdminPerks[k]=false});mpSetChatActive(false);mpRenderAdminUI();
  try{if(channel)await channel.send({type:'broadcast',event:'player_left',payload:{id:mpPlayerId}})}catch(e){}
  try{if(client&&wasOnline)await client.from('hs_players').delete().eq('id',mpPlayerId)}catch(e){console.warn('Multiplayer leave:',e.message)}
  try{if(client&&channel)await client.removeChannel(channel)}catch(e){}
@@ -1824,8 +1937,10 @@ $('change-user').onclick=()=>{
  mpName=clean;localStorage.setItem('hsm.playerName',mpName);
  $('t2').textContent='USERNAME SET: '+mpName.toUpperCase();
  if(!/^ADMINISTRATOR$/i.test(mpName)){mpAdminAuthenticated=false;mpAdminSecret=''}
+ mpSyncAdminTitle();
 };
-$('mp').onclick=mpOpen;$('mp-connect').onclick=mpAttemptJoin;$('mp-cancel').onclick=$('mp-load-cancel').onclick=()=>{$('mp-panel').style.display='none';document.body.classList.remove('mp-ui-unlocked');mpAdminAuthenticated=false;mpHideAdminGate();if(mpStarting){mpStarting=false;if(mpChannel&&mpClient)mpClient.removeChannel(mpChannel);mpChannel=null}};
+$('mp').onclick=mpOpen;$('mp-connect').onclick=mpAttemptJoin;$('mp-cancel').onclick=$('mp-load-cancel').onclick=()=>{$('mp-panel').style.display='none';document.body.classList.remove('mp-ui-unlocked');mpHideAdminGate();if(mpStarting){mpStarting=false;if(mpChannel&&mpClient)mpClient.removeChannel(mpChannel);mpChannel=null}};
+mpSyncAdminTitle();
 // 100 ms Realtime movement broadcasts; database persistence is deliberately slower.
 setInterval(()=>{if(mpOnline&&playing)mpBroadcastPosition()},100);
 setInterval(()=>{if(mpOnline){mpPersistPosition();for(const [id,o] of mpRemote){if(Date.now()-o.lastSeen>8000)mpRemoveRemote(id)}}},1000);
