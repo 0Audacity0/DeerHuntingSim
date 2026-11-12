@@ -313,18 +313,18 @@ body.touch #mp-locator{left:auto;right:12px;top:252px;width:210px;font-size:10px
 
 /* ADMIN+ local game modifiers */
 #admin-open{position:fixed;left:calc(8px + env(safe-area-inset-left,0px));bottom:calc(29px + env(safe-area-inset-bottom,0px));z-index:65;width:auto;max-width:190px;margin:0;padding:8px 11px;font-size:12px;letter-spacing:1px}
-#adminplus-button{position:fixed;right:18px;top:calc(254px + env(safe-area-inset-top,0px));z-index:76;display:none;padding:10px 13px;background:#080808;color:#ff4b4b;border:2px solid #a51c1c;box-shadow:0 0 12px #ff202055;font:bold 12px "Courier New",monospace;letter-spacing:2px;cursor:pointer;touch-action:manipulation}
-#adminplus-button:hover{background:#210909;border-color:#ff4545}
+#adminplus-button{position:fixed;right:18px;top:calc(254px + env(safe-area-inset-top,0px));z-index:76;display:none;padding:10px 13px;background:linear-gradient(135deg,#fffef5,#fff4c7);color:#59420a;border:2px solid #e5b82f;border-radius:7px;box-shadow:0 0 12px #ffd84c66,0 2px 8px #0008;font:bold 12px "Courier New",monospace;letter-spacing:2px;cursor:pointer;touch-action:manipulation}
+#adminplus-button:hover{background:linear-gradient(135deg,#fff,#ffe89a);border-color:#ffcf32;box-shadow:0 0 18px #ffd84caa,0 2px 8px #0008}
 #adminplus-panel{position:fixed;right:18px;top:calc(300px + env(safe-area-inset-top,0px));z-index:77;display:none;width:min(340px,calc(100vw - 28px));max-height:min(68vh,560px);overflow:auto;box-sizing:border-box;padding:14px;background:rgba(7,7,7,.98);border:2px solid #a51c1c;box-shadow:0 0 18px #ff202055,0 12px 38px #000b;color:#eee;font-family:"Courier New",monospace;text-shadow:none}
 #adminplus-panel.open{display:block}
-#adminplus-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;color:#ff5555;font-size:15px;letter-spacing:3px}
+#adminplus-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;color:#ffdb62;font-size:15px;letter-spacing:3px}
 #adminplus-close{min-width:34px;min-height:32px;color:#eee;background:transparent;border:1px solid #743030;font:20px "Courier New",monospace;cursor:pointer}
-.ap-switch{display:flex;align-items:center;gap:9px;padding:10px 3px;border-top:1px solid #3a1a1a;color:#eee;font-size:12px;letter-spacing:1px}
-.ap-switch input{width:18px;height:18px;accent-color:#f33}
+.ap-switch{display:flex;align-items:center;gap:9px;padding:10px 3px;border-top:1px solid #55451e;color:#fff8df;font-size:12px;letter-spacing:1px}
+.ap-switch input{width:18px;height:18px;accent-color:#e6b92e}
 .ap-range{display:flex;flex-direction:column;gap:7px;padding:10px 3px;border-top:1px solid #3a1a1a;font-size:12px;color:#eee}
-.ap-range-line{display:flex;justify-content:space-between;color:#ff7777}
-.ap-range input{width:100%;accent-color:#f33}
-#adminplus-note{font-size:10px;line-height:1.45;color:#9b8585;margin-top:10px}
+.ap-range-line{display:flex;justify-content:space-between;color:#ffdc69}
+.ap-range input{width:100%;accent-color:#e6b92e}
+#adminplus-note{font-size:10px;line-height:1.45;color:#c6b98f;margin-top:10px}
 @media(max-width:560px),(pointer:coarse){
  #adminplus-button{right:calc(14px + env(safe-area-inset-right,0px));top:calc(178px + env(safe-area-inset-top,0px));padding:9px 11px}
  #adminplus-panel{left:10px;right:10px;top:auto;bottom:calc(10px + env(safe-area-inset-bottom,0px));width:auto;max-height:65dvh}
@@ -411,7 +411,15 @@ body.touch #mp-locator{left:auto;right:12px;top:252px;width:210px;font-size:10px
  <label class="ap-range"><span class="ap-range-line"><span>SPEED MULTIPLIER</span><b id="ap-speed-value">2×</b></span><input id="ap-speed" type="range" min="1" max="8" step="0.25" value="2"></label>
  <label class="ap-switch"><input id="ap-aimbot" type="checkbox"> AIMBOT (WILDLIFE TARGETS)</label>
  <label class="ap-switch"><input id="ap-esp" type="checkbox"> PLAYER ESP (BOX + TRACKING LINE)</label>
- <div id="adminplus-note">These are local game modifiers. Aim lock targets wildlife only; Player ESP is visible only to you and works in multiplayer.</div>
+ <label class="ap-switch"><input id="ap-infinite-ammo" type="checkbox"> UNLIMITED AMMO</label>
+ <label class="ap-switch"><input id="ap-no-cooldowns" type="checkbox"> NO COOLDOWNS</label>
+ <label class="ap-switch"><input id="ap-unlimited-carry" type="checkbox"> UNLIMITED ANIMAL CARRY</label>
+ <label class="ap-switch"><input id="ap-no-carry-slow" type="checkbox"> DISABLE CARRY SLOWDOWN</label>
+ <label class="ap-switch"><input id="ap-invulnerable" type="checkbox"> INVULNERABILITY</label>
+ <label class="ap-switch"><input id="ap-instant-reload" type="checkbox"> INSTANT RELOAD</label>
+ <label class="ap-switch"><input id="ap-infinite-supplies" type="checkbox"> INFINITE SUPPLIES</label>
+ <label class="ap-switch"><input id="ap-no-mud-slow" type="checkbox"> IGNORE MUD SLOWDOWN</label>
+ <div id="adminplus-note">Local ADMIN+ modifiers. Aim lock targets wildlife only. Player ESP is visible only to you in multiplayer. These switches do not grant permissions to other players.</div>
 </div>
 <div id="mp-admin-ui" aria-label="Administrator controls">
  <div id="mp-admin-panel" role="dialog" aria-label="Administrator panel">
@@ -929,7 +937,7 @@ _c.lerpColors(cDay,cNight,nf);{const k=Math.min(.7,wx.rain*.5+wx.fog*.7);if(k>0)
 const fm=SET.fog;mat.uniforms.fogf.value=fm<=.02?4000:(80-28*nf)*(1-.38*wx.rain-.5*wx.fog)/fm;mat.uniforms.fogn.value=fm<=.02?3000:(6-2*nf)*(1-.5*wx.fog)/fm;mat.uniforms.tint.value.set(1-.5*nf,1-.45*nf,1-.22*nf)}
 let cheatAmmo=false,gameMode='regular',lives=3,hitCooldown=0,deathCause='gray',hf=0,carry=[],sf=[16,50,50],sleepT=0,scoped=false,playing=false,G='menu',T=0,camY=1.7,bob=0,msgT=0,hb=0,ac;
 let mpAdminAuthenticated=false,mpAdminSecret='',mpGrantedPermissions={};const mpAdminPerks={infiniteAmmo:false,noCooldown:false,instantReload:false,invulnerability:false,superSpeed:false,infiniteSupplies:false,extraCarry:false,playerList:false,playerBeacons:false};
-const adminPlus={speedOn:false,speed:2,aimbot:false,esp:false};
+const adminPlus={speedOn:false,speed:2,aimbot:false,esp:false,infiniteAmmo:false,noCooldowns:false,unlimitedCarry:false,noCarrySlow:false,invulnerable:false,instantReload:false,infiniteSupplies:false,noMudSlow:false};
 const keys={};
 const UPDATES=[
 {v:'1.7.3',t:'Gun Skins and Model Update 🥶🥶🥶',n:['Added gun skins','Gun skins CAN be seen by other plays','Fixed gun models looking like complete doodoo garbage (on multiplayer)']},
@@ -966,7 +974,7 @@ function tbtn(id,fn){const el=$(id);el.addEventListener('pointerdown',e=>{e.prev
 const off=()=>{el.classList.remove('on');lastTouchT=performance.now()};el.addEventListener('pointerup',off);el.addEventListener('pointercancel',off);el.addEventListener('pointerleave',off)}
 function setTBtn(el,label,always){const show=!!(label||always);const d=show?'flex':'none';if(el.style.display!==d)el.style.display=d;if(show&&el.textContent!==label)el.textContent=label}
 function pauseGame(){if(!playing)return;scoped=false;joyReset();if(mpOnline){mpUiPauseToken='pausemenu';document.body.classList.add('mp-ui-unlocked');releaseLock();showScreen('pause');return}playing=false;G='menu';releaseLock();document.body.classList.add('mp-ui-unlocked');showScreen('pause')}
-function carryDrop(){if(P.hid)return;const dd=nearDead();if(dd&&cw()+wOf(dd)<=2){pickUp(dd);return}if(carry.length){dropDeer();return}if(dd){msg(dd.giant?'THE GRAY ONE NEEDS BOTH HANDS':(dd.kind==='bear'?'THE BEAR NEEDS BOTH HANDS':'HANDS FULL \u2014 MAX 2 DEER'),2);return}msg('NO DEER NEARBY',1.5)}
+function carryDrop(){if(P.hid)return;const dd=nearDead();if(dd&&(adminPlus.unlimitedCarry||mpAdminHas('extraCarry')||cw()+wOf(dd)<=2)){pickUp(dd);return}if(carry.length){dropDeer();return}if(dd){msg(dd.giant?'THE GRAY ONE NEEDS BOTH HANDS':(dd.kind==='bear'?'THE BEAR NEEDS BOTH HANDS':'HANDS FULL — MAX 2 DEER'),2);return}msg('NO DEER NEARBY',1.5)}
 tbtn('theal',()=>useBandage());tbtn('trep',()=>useRepellent());tbtn('tshoot',()=>shoot());tbtn('tcarry',carryDrop);tbtn('tact',()=>toggleHide());tbtn('treload',()=>reload());
 tbtn('tlight',toggleFlash);tbtn('tswap',()=>equip((cur+1)%(stats.axe?3:2)));tbtn('tscope',()=>{if(!P.hid&&cur<2)scoped=!scoped});tbtn('tpause',pauseGame);
 function equip(i){if(i===2&&!stats.axe){msg('BUY THE AXE AT THE SHOP ($70)',2.5);return}cur=i;guns.forEach((g,k)=>g.visible=k==cur);rel=0;if(i===2)scoped=false}
@@ -1000,6 +1008,7 @@ const HINTS={radar:['RADAR BOUGHT \u2014 IT SHOWS ON THE RIGHT SIDE OF THE SCREE
 let flOn=false;
 function toggleFlash(){if(!stats.flash||!playing)return;flOn=!flOn;mat.uniforms.fl.value=flOn?1:0;msg(flOn?'FLASHLIGHT ON':'FLASHLIGHT OFF',1)}
 function applyGear(){WP[0].mag=cheatAmmo?100:(stats.belt?8:5);WP[1].mag=stats.belt?4:2;ammo[0]=WP[0].mag;ammo[1]=WP[1].mag}
+let manualMouseUnlock=false;
 function releaseLock(){try{if(document.exitPointerLock&&document.pointerLockElement)document.exitPointerLock()}catch(_){}}
 const QT=[
 {k:'deer',t:n=>'Hunt '+n+' deer',r:[3,7],u:9},
@@ -1082,7 +1091,7 @@ async function launchSelectedMode(mode){
 }
 $('mode-regular').onclick=()=>launchSelectedMode('regular');
 $('mode-defense').onclick=()=>launchSelectedMode('defense');
-function hurt(why,cause){if(mpAdminHas('invulnerability'))return;if(hitCooldown>0||G!=='play')return;lives=Math.max(0,lives-1);hitCooldown=D.hitCd;regT=0;hf=.85;updateHearts();snd(80,.18,'sine',.5,.4);noise(.12,.35);msg(lives?why:'YOU WERE OVERRUN',2);if(lives<=0){deathCause=cause;die()}}
+function hurt(why,cause){if(adminPlus.invulnerable||mpAdminHas('invulnerability'))return;if(hitCooldown>0||G!=='play')return;lives=Math.max(0,lives-1);hitCooldown=D.hitCd;regT=0;hf=.85;updateHearts();snd(80,.18,'sine',.5,.4);noise(.12,.35);msg(lives?why:'YOU WERE OVERRUN',2);if(lives<=0){deathCause=cause;die()}}
 function hurtDefense(){if(gameMode!=='defense')return;hurt('A DEER HIT YOU!','deer')}
 function resumeGame(){if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();if(mpUiPauseToken==='pausemenu')mpUiPauseToken=null;G='play';playing=true;document.body.classList.remove('mp-ui-unlocked');updateHearts();$('ov').style.display='none';adminPlusSync();if(!isTouch)cv.requestPointerLock()}
 $('go').onclick=()=>{
@@ -1151,11 +1160,13 @@ addEventListener('keydown',e=>{
 addEventListener('keydown',e=>{if(!playing&&e.code==='Enter'&&$('ov').style.display!=='none'&&$('scr-main').style.display!=='none'&&$('wnp').style.display!=='flex'&&$('set').style.display!=='flex')$('go').click()});
 let qStarted=false,saBuf='',showAll=false;
 addEventListener('keydown',e=>{if(e.repeat||mpTypingTarget(e)||!/^[a-z]$/i.test(e.key))return;saBuf=(saBuf+e.key.toLowerCase()).slice(-7);if(saBuf==='showall'){saBuf='';setShowAll(!showAll);if(playing)msg(showAll?'SHOW ALL: ON':'SHOW ALL: OFF',2);else $('t2').textContent=showAll?'SHOW ALL ON: pointers to the gray biome, nearest deer and the gray one':'SHOW ALL OFF'}});
-document.addEventListener('pointerlockchange',()=>{if(document.pointerLockElement!==cv&&playing&&!mpUiPauseToken&&$('shop').style.display!=='flex'&&$('set').style.display!=='flex'&&$('mp-chat-panel').style.display!=='flex'&&$('mp-admin-panel').style.display!=='block'&&!$('adminplus-panel').classList.contains('open'))pauseGame()});
-cv.addEventListener('click',()=>{if(playing&&!isTouch&&!mpUiPauseToken&&$('shop').style.display!=='flex'&&$('set').style.display!=='flex'&&$('mp-chat-panel').style.display!=='flex'&&!$('adminplus-panel').classList.contains('open')&&document.pointerLockElement!==cv&&cv.requestPointerLock){try{cv.requestPointerLock()}catch(e){}}});
+document.addEventListener('pointerlockchange',()=>{if(document.pointerLockElement!==cv&&playing&&!manualMouseUnlock&&!mpUiPauseToken&&$('shop').style.display!=='flex'&&$('set').style.display!=='flex'&&$('mp-chat-panel').style.display!=='flex'&&$('mp-admin-panel').style.display!=='block'&&!$('adminplus-panel').classList.contains('open'))pauseGame()});
+// Press J to release the pointer so the normal cursor can be used without pausing gameplay. Click the game again to relock it.
+addEventListener('keydown',e=>{if(e.code!=='KeyJ'||e.repeat||!playing||mpTypingTarget(e))return;e.preventDefault();if(document.pointerLockElement===cv){manualMouseUnlock=true;releaseLock();msg('MOUSE UNLOCKED — CLICK THE GAME TO LOCK IT AGAIN',3)}});
+cv.addEventListener('click',()=>{if(playing&&!isTouch&&!mpUiPauseToken&&$('shop').style.display!=='flex'&&$('set').style.display!=='flex'&&$('mp-chat-panel').style.display!=='flex'&&!$('adminplus-panel').classList.contains('open')&&document.pointerLockElement!==cv&&cv.requestPointerLock){try{manualMouseUnlock=false;cv.requestPointerLock()}catch(e){}}});
 document.addEventListener('pointerlockerror',()=>{if(playing&&!isTouch)msg('CLICK THE GAME TO LOCK THE MOUSE',2)});
 addEventListener('mousemove',e=>{if(!playing||document.pointerLockElement!==cv)return;const k=cam.fov/72;P.yaw-=e.movementX*.0022*k*SET.sens;P.pitch=Math.max(-1.4,Math.min(1.4,P.pitch-e.movementY*.0022*k*SET.sens))});
-addEventListener('mousedown',e=>{if(!playing||performance.now()-lastTouchT<700)return;if(e.button==0)shoot();if(e.button==2&&!P.hid&&cur<2)scoped=true});addEventListener('mouseup',e=>{if(e.button==2)scoped=false});addEventListener('contextmenu',e=>e.preventDefault());addEventListener('wheel',e=>{if(!scoped)return;const r=cur?[38,62]:[5,30];sf[cur]=Math.max(r[0],Math.min(r[1],sf[cur]*(e.deltaY>0?1.12:.89)))},{passive:true});
+addEventListener('mousedown',e=>{if(!playing||document.pointerLockElement!==cv||performance.now()-lastTouchT<700)return;if(e.button==0)shoot();if(e.button==2&&!P.hid&&cur<2)scoped=true});addEventListener('mouseup',e=>{if(e.button==2)scoped=false});addEventListener('contextmenu',e=>e.preventDefault());addEventListener('wheel',e=>{if(!scoped)return;const r=cur?[38,62]:[5,30];sf[cur]=Math.max(r[0],Math.min(r[1],sf[cur]*(e.deltaY>0?1.12:.89)))},{passive:true});
 addEventListener('keydown',e=>{if(mpTypingTarget(e))return;keys[e.code]=true;if(!playing||e.repeat)return;
 if(e.code==='KeyR')reload();if(e.code==='KeyH')useBandage();if(e.code==='KeyV')useRepellent();
 if(e.code==='Digit1'||e.code==='Digit2'||e.code==='Digit3')equip(+e.code.slice(5)-1);
@@ -1164,7 +1175,7 @@ if(P.stuck>0&&/^Key[WASD]$/.test(e.code))P.stuck-=.35;if(e.code==='KeyE')toggleH
 addEventListener('keyup',e=>keys[e.code]=false);
 function nearDead(){let b=null,bd=3.6;const chk=d=>{if(d.active&&!d.alive&&!d.carried&&!d.done&&!d.falling){const k=Math.hypot(d.x-P.x,d.z-P.z);if(k<bd){bd=k;b=d}}};for(const d of deers)chk(d);for(const d of rabbits)chk(d);for(const d of bears)chk(d);if(!giant.alive&&giant.active&&!giant.carried&&!giant.done){const k=Math.hypot(giant.x-P.x,giant.z-P.z);if(k<bd){bd=k;b=giant}}return b}
 const wOf=d=>d.wt||(d.giant?2:1),cw=()=>carry.reduce((a,d)=>a+wOf(d),0);
-function pickUp(dd){if(cw()+wOf(dd)>(mpAdminHas('extraCarry')?99:2)){msg(dd.giant?'THE GRAY ONE NEEDS BOTH HANDS \u2014 DROP WHAT YOU HOLD':(dd.kind==='bear'?'THE BEAR NEEDS BOTH HANDS \u2014 DROP WHAT YOU HOLD':'HANDS FULL \u2014 MAX 2 DEER'),2);return}carry.push(dd);dd.carried=true;dd.g.visible=false;msg(dd.giant?'CARRYING THE GRAY ONE \u2014 TAKE IT TO THE SHOP':(dd.kind==='bear'?'CARRYING A BEAR \u2014 WORTH $20, TAKE IT TO THE SHOP':(dd.kind==='rabbit'?'CARRYING '+cw()+'/2 \u2014 A RABBIT IS WORTH $5':(dd.val>10?'A RARE '+dd.vn.toUpperCase()+'! WORTH $'+dd.val+' \u2014 TAKE IT TO THE SHOP':'CARRYING '+cw()+'/2 \u2014 TAKE THEM TO THE SHOP'))),3)}
+function pickUp(dd){if(cw()+wOf(dd)>((adminPlus.unlimitedCarry)?999999:(mpAdminHas('extraCarry')?99:2))){msg(dd.giant?'THE GRAY ONE NEEDS BOTH HANDS \u2014 DROP WHAT YOU HOLD':(dd.kind==='bear'?'THE BEAR NEEDS BOTH HANDS \u2014 DROP WHAT YOU HOLD':'HANDS FULL \u2014 MAX 2 DEER'),2);return}carry.push(dd);dd.carried=true;dd.g.visible=false;msg(dd.giant?'CARRYING THE GRAY ONE \u2014 TAKE IT TO THE SHOP':(dd.kind==='bear'?'CARRYING A BEAR \u2014 WORTH $20, TAKE IT TO THE SHOP':(dd.kind==='rabbit'?'CARRYING '+cw()+'/2 \u2014 A RABBIT IS WORTH $5':(dd.val>10?'A RARE '+dd.vn.toUpperCase()+'! WORTH $'+dd.val+' \u2014 TAKE IT TO THE SHOP':'CARRYING '+cw()+'/2 \u2014 TAKE THEM TO THE SHOP'))),3)}
 function dropDeer(){const d=carry.pop();if(!d)return;d.g.visible=true;d.x=P.x-Math.sin(P.yaw)*1.5;d.z=P.z-Math.cos(P.yaw)*1.5;d.g.rotation.set(0,d.yaw,1.45);d.g.position.set(d.x,hgt(d.x,d.z)+(d.ly||(d.giant?.72:.6)),d.z);d.carried=false}
 const bedD=()=>Math.abs(P.x)<4.4&&Math.abs(P.z)<3.5&&Math.hypot(P.x+3.5,P.z+2.2)<2.8;
 function sleep(){if(nf<.5){msg('NOT TIRED \u2014 YOU CAN ONLY SLEEP AT NIGHT',3);return}sleepT=2.2;$('bk').style.opacity=1}
@@ -1177,9 +1188,9 @@ if(nearShop()){openShop();return}
 const b=nearBush();if(!b)return;
 if(Math.hypot(giant.x-P.x,giant.z-P.z)<6){msg('TOO CLOSE TO HIDE!',2);return}
 P.hid=true;stats.hides++;P.hx=b.x;P.hz=b.z;P.x=b.x;P.z=b.z}
-function reload(){if(mpAdminHas('instantReload')){rel=0;ammo[cur]=WP[cur].mag;return}if(rel>0||ammo[cur]==WP[cur].mag)return;rel=WP[cur].rel;snd(300,.1,'square',.2,.5)}
+function reload(){if(adminPlus.noCooldowns||adminPlus.instantReload||mpAdminHas('instantReload')){rel=0;ammo[cur]=WP[cur].mag;return}if(rel>0||ammo[cur]==WP[cur].mag)return;rel=WP[cur].rel;snd(300,.1,'square',.2,.5)}
 const falls=[];let swing=0;
-function swingAxe(){cd=mpAdminHas('noCooldown')?0:.7;swing=1;
+function swingAxe(){cd=(adminPlus.noCooldowns||mpAdminHas('noCooldown'))?0:.7;swing=1;
 const fx=-Math.sin(P.yaw),fz=-Math.cos(P.yaw);let best=null,bd=3.4;
 for(const t of treeSpots){if(t.cut)continue;const dx=t.x-P.x,dz=t.z-P.z;if(dx>3.6||dx<-3.6||dz>3.6||dz<-3.6)continue;const d=Math.hypot(dx,dz);if(d>=bd)continue;if(d>1&&(dx*fx+dz*fz)/d<.6)continue;best=t;bd=d}
 if(!best){snd(150,.12,'sawtooth',.15,.5);noise(.12,.15);return}
@@ -1207,7 +1218,7 @@ function killGiant(){stats.gKills++;saveStats();giant.alive=false;giant.st='dead
 function rayS(o,d,c,r){const ox=c.x-o.x,oy=c.y-o.y,oz=c.z-o.z,tca=ox*d.x+oy*d.y+oz*d.z;if(tca<0)return 1e9;const d2=ox*ox+oy*oy+oz*oz-tca*tca;if(d2>r*r)return 1e9;return tca-Math.sqrt(r*r-d2)}
 function rayBlocked(o,d,t){for(let k=1;k<t;k+=1.2){const y=o.y+d.y*k,qx=o.x+d.x*k,qz=o.z+d.z*k,hh=hgt(qx,qz);if(y<hh)return true;if(y<hh+6&&hit(qx,qz,.05))return true}return false}
 function shoot(){
-const w=WP[cur],adminInfinite=mpAdminHas('infiniteAmmo'),adminNoCooldown=mpAdminHas('noCooldown'),adminInstantReload=mpAdminHas('instantReload');if(!playing||P.hid||(rel>0&&!adminInstantReload)||(!(cheatAmmo||adminNoCooldown)&&cd>0))return;
+const w=WP[cur],adminInfinite=adminPlus.infiniteAmmo||mpAdminHas('infiniteAmmo'),adminNoCooldown=adminPlus.noCooldowns||mpAdminHas('noCooldown'),adminInstantReload=adminPlus.noCooldowns||adminPlus.instantReload||mpAdminHas('instantReload');if(!playing||P.hid||(rel>0&&!adminInstantReload)||(!(cheatAmmo||adminNoCooldown)&&cd>0))return;
 if(cur===2){swingAxe();return}
 if(ammo[cur]<=0&&!cheatAmmo&&!adminInfinite){reload();return}
 if(!(cheatAmmo||adminInfinite))ammo[cur]--;stats.shots++;saveStats();if(stillT>=40)calmDeer();stillT=0;cd=(cheatAmmo||adminNoCooldown)?0:w.cd;kick=1;flash=.06;noise(.4,.6);snd(110,.3,'square',.3,.3);$('fl').style.opacity=.3;
@@ -1435,13 +1446,13 @@ function bearSound(kind,dist,src){if(!ac)return;const dd=dist==null?8:dist;if(dd
  else if(kind==='die')growlV(out,t,2.2,135,38,.9,.8);
  else if(kind==='huff'){burst(out,t,.16,900,500,.9,.9);burst(out,t+.22,.2,800,450,.9,.7)}
  else if(kind==='swipe'){burst(out,t,.22,3200,600,1.2,1);const o=ac.createOscillator(),e=ac.createGain();o.type='sine';o.frequency.setValueAtTime(85,t);o.frequency.exponentialRampToValueAtTime(38,t+.16);e.gain.setValueAtTime(.9,t);e.gain.exponentialRampToValueAtTime(.001,t+.18);o.connect(e);e.connect(out);o.start(t);o.stop(t+.2)}}
-function useBandage(){if(!playing)return;const infinite=mpAdminHas('infiniteSupplies');if(!(stats.heal>0)&&!infinite){msg('NO BANDAGES \u2014 BUY SOME AT THE SHOP',2);return}if(lives>=3){msg('YOU ARE ALREADY AT FULL HEALTH',2);return}
+function useBandage(){if(!playing)return;const infinite=adminPlus.infiniteSupplies||mpAdminHas('infiniteSupplies');if(!(stats.heal>0)&&!infinite){msg('NO BANDAGES \u2014 BUY SOME AT THE SHOP',2);return}if(lives>=3){msg('YOU ARE ALREADY AT FULL HEALTH',2);return}
  if(!infinite){stats.heal--;saveStats()}lives++;updateHearts();msg('PATCHED UP \u2014 +1 HEART',2.5);if(ac){const t=ac.currentTime,o=sfxOut(.7);burst(o,t,.25,2600,1400,.6,.5);burst(o,t+.3,.35,2000,900,.5,.4)}}
-function useRepellent(){if(!playing)return;const infinite=mpAdminHas('infiniteSupplies');if(!(stats.rep>0)&&!infinite){msg('NO REPELLENT \u2014 BUY SOME AT THE SHOP',2);return}
+function useRepellent(){if(!playing)return;const infinite=adminPlus.infiniteSupplies||mpAdminHas('infiniteSupplies');if(!(stats.rep>0)&&!infinite){msg('NO REPELLENT \u2014 BUY SOME AT THE SHOP',2);return}
  if(!infinite){stats.rep--;saveStats()}spray();msg('SPRAYED \u2014 BEARS WILL STAY AWAY FOR A WHILE',3);if(ac){const t=ac.currentTime,o=sfxOut(.6);burst(o,t,1.1,5200,3000,.8,.45,'highpass');burst(o,t,.1,900,500,1,.3)}}
 const HS=[
- {k:'1',svg:SVG_RIFLE,has:()=>1,cnt:()=>mpAdminHas('infiniteAmmo')?'∞':ammo[0],sel:()=>cur===0},
- {k:'2',svg:SVG_SHOT,has:()=>1,cnt:()=>mpAdminHas('infiniteAmmo')?'∞':ammo[1],sel:()=>cur===1},
+ {k:'1',svg:SVG_RIFLE,has:()=>1,cnt:()=>(adminPlus.infiniteAmmo||mpAdminHas('infiniteAmmo'))?'∞':ammo[0],sel:()=>cur===0},
+ {k:'2',svg:SVG_SHOT,has:()=>1,cnt:()=>(adminPlus.infiniteAmmo||mpAdminHas('infiniteAmmo'))?'∞':ammo[1],sel:()=>cur===1},
  {k:'3',svg:SVG_AXE,has:()=>stats.axe,sel:()=>cur===2},
  {k:'H',svg:SVG_BAND,has:()=>stats.heal,cnt:()=>stats.heal},
  {k:'V',svg:SVG_REP,has:()=>stats.rep,cnt:()=>stats.rep},
@@ -1474,7 +1485,7 @@ const dA=Math.hypot(P.x,P.z-4.6)<5.5?1.5:0;door.rotation.y+=(dA-door.rotation.y)
 const tjOn=tj.on&&Math.hypot(tj.x,tj.y)>.14,kbd=!!(keys.KeyA||keys.KeyD||keys.KeyW||keys.KeyS),kx=(keys.KeyD?1:0)-(keys.KeyA?1:0)+(tjOn?tj.x:0),kz=(keys.KeyW?1:0)-(keys.KeyS?1:0)+(tjOn?-tj.y:0),am=tjOn&&!kbd?Math.max(.4,Math.min(1,Math.hypot(tj.x,tj.y))):1;
 P.moving=!P.hid&&!(P.stuck>0)&&!!(kx||kz);P.run=P.moving&&!scoped&&!!(keys.ShiftLeft||keys.ShiftRight||(tjOn&&tj.run));
 if(P.moving){if(stillT>=40)calmDeer();stillT=0}else{const was=stillT;stillT+=dt;if(was<40&&stillT>=40)for(const d of deers)d.cq=Math.random()<.75}
-if(P.moving){let inBog=false;for(let bi=0;bi<bogs.length;bi++){const b=bogs[bi];if(P.x>=b.minX&&P.x<=b.maxX&&P.z>=b.minZ&&P.z<=b.maxZ&&inMud(P.x,P.z,b)){inBog=true;break}}const bg=inBog?.6:1;if(inBog)stats.mudT+=dt;if(bg<1&&!P.inBog)msg('STUCK IN THE MUD \u2014 YOU MOVE SLOWLY',2);P.inBog=bg<1;const sp=Math.max(inBog?1.6:0,(scoped?2.2:(P.run?RUN_SP:5))*(cw()>1?.4:cw()?.7:1)*bg*am*(stats.boots?1.08:1)*(mpAdminHas('superSpeed')?2.5:1)*(adminPlus.speedOn?adminPlus.speed:1)),l=Math.hypot(kx,kz),s=Math.sin(P.yaw),c=Math.cos(P.yaw);
+if(P.moving){let inBog=false;for(let bi=0;bi<bogs.length;bi++){const b=bogs[bi];if(P.x>=b.minX&&P.x<=b.maxX&&P.z>=b.minZ&&P.z<=b.maxZ&&inMud(P.x,P.z,b)){inBog=true;break}}const bg=inBog?.6:1;if(inBog)stats.mudT+=dt;if(bg<1&&!P.inBog&&!adminPlus.noMudSlow)msg('STUCK IN THE MUD \u2014 YOU MOVE SLOWLY',2);P.inBog=bg<1;const carryFactor=adminPlus.noCarrySlow?1:(cw()>1?.4:cw()?.7:1),mudFactor=adminPlus.noMudSlow?1:bg;const sp=Math.max((inBog&&!adminPlus.noMudSlow)?1.6:0,(scoped?2.2:(P.run?RUN_SP:5))*carryFactor*mudFactor*am*(stats.boots?1.08:1)*(mpAdminHas('superSpeed')?2.5:1)*(adminPlus.speedOn?adminPlus.speed:1)),l=Math.hypot(kx,kz),s=Math.sin(P.yaw),c=Math.cos(P.yaw);
 const ux=(-s*kz+c*kx)/l,uz=(-c*kz-s*kx)/l,gr=hgt(P.x+ux,P.z+uz)-hgt(P.x,P.z),sl=Math.max(inBog?.8:.4,Math.min(1.2,1-gr*.5));const dx=ux*sp*sl*dt,dz=uz*sp*sl*dt;
 const ox0=P.x,oz0=P.z;if(!hit(P.x+dx,P.z,.45))P.x+=dx;if(!hit(P.x,P.z+dz,.45))P.z+=dz;stats.dist+=Math.hypot(P.x-ox0,P.z-oz0);
 P.x=Math.max(-W/2+3,Math.min(W/2-3,P.x));P.z=Math.max(-W/2+3,Math.min(W/2-3,P.z));if(auraEnabled){auraStepDistance+=Math.hypot(P.x-auraLastX,P.z-auraLastZ);auraLastX=P.x;auraLastZ=P.z;if(auraStepDistance>=2.25){auraStepDistance=0;makeAuraCrater(P.x,P.z)}}bob+=dt*(P.run?12:8)}
@@ -1507,7 +1518,7 @@ qTimer+=dt;if(qTimer>=1){qTimer=0;qCheck()}
 if(msgT>0){msgT-=dt;if(msgT<=0)$('ms').textContent=''}
 renderHotbar();drawRadar(dt);$('tl').textContent='DEER '+stats.deer+'   SHOTS '+stats.shots+'   MURDERED '+stats.deaths+(carry.length?'   CARRYING '+cw()+'/2':'');
 {const hh=Math.floor(clock),mm=Math.floor((clock-hh)*60);$('clk').textContent='$'+stats.money+'   '+(hh<10?'0':'')+hh+':'+(mm<10?'0':'')+mm+'  '+(nf<.15?'DAY':nf>.85?'NIGHT':(clock<12?'DAWN':'DUSK'))+(wx.rain>.8?(wx.storm?'  STORM':'  HEAVY RAIN'):wx.rain>.2?'  RAIN':wx.fog>.4?'  FOG':'')}
-$('br').textContent=WP[cur].n+(cur<2?' '+(mpAdminHas('infiniteAmmo')?'∞':ammo[cur]+'/'+WP[cur].mag):'')+(rel>0&&!mpAdminHas('instantReload')?'  RELOADING':'')+(scoped?'  ZOOM '+(72/sf[cur]).toFixed(1)+'x':'');
+$('br').textContent=WP[cur].n+(cur<2?' '+((adminPlus.infiniteAmmo||mpAdminHas('infiniteAmmo'))?'∞':ammo[cur]+'/'+WP[cur].mag):'')+(rel>0&&!adminPlus.noCooldowns&&!adminPlus.instantReload&&!mpAdminHas('instantReload')?'  RELOADING':'')+(scoped?'  ZOOM '+(72/sf[cur]).toFixed(1)+'x':'');
 const tx=Math.atan2(-P.x,-P.z),h=Math.atan2(-Math.sin(P.yaw),-Math.cos(P.yaw));
 $('ar').style.transform='rotate('+(-(tx-h))+'rad)';$('cd').textContent='CABIN '+Math.round(Math.hypot(P.x,P.z))+'m';
 {const sbx=Math.atan2(SH.x-P.x,SH.z+4-P.z);$('sha').style.transform='rotate('+(-(sbx-h))+'rad)';$('shd').textContent='SHOP '+Math.round(Math.hypot(SH.x-P.x,SH.z+4-P.z))+'m'}
@@ -1517,9 +1528,9 @@ let nd2=null,nb2=1e9;for(const d of deers)if(d.active&&d.alive){const k=Math.hyp
 $('sr2').style.display=nd2?'':'none';if(nd2){rot($('sa2'),nd2.x,nd2.z);$('st2').textContent='NEAREST DEER '+Math.round(nb2)+'m'}
 $('sr3').style.display=giant.alive?'':'none';if(giant.alive){rot($('sa3'),giant.x,giant.z);$('st3').textContent='GRAY ONE '+Math.round(Math.hypot(giant.x-P.x,giant.z-P.z))+'m'}}
 {const nd=nearDead(),bd=bedD(),ns=!P.hid&&!bd&&!nd&&nearShop(),nb=(!P.hid&&!bd&&!nd&&!ns)?nearBush():null;
-const pr=P.hid?'[E] LEAVE BUSH':(bd?(nf>.5?'[E] SLEEP':'[E] BED \u2014 SLEEP AT NIGHT'):(nd?(cw()+wOf(nd)<=2?'[E] PICK UP '+(nd.giant?'THE GRAY ONE':(nd.kind==='bear'?'THE BEAR':(nd.kind==='rabbit'?'RABBIT':'DEER'))):'HANDS FULL'):(ns?'[E] SHOP':(nb?'[E] HIDE':(carry.length?'[G] DROP DEER':'')))));
+const pr=P.hid?'[E] LEAVE BUSH':(bd?(nf>.5?'[E] SLEEP':'[E] BED \u2014 SLEEP AT NIGHT'):(nd?((adminPlus.unlimitedCarry||mpAdminHas('extraCarry')||cw()+wOf(nd)<=2)?'[E] PICK UP '+(nd.giant?'THE GRAY ONE':(nd.kind==='bear'?'THE BEAR':(nd.kind==='rabbit'?'RABBIT':'DEER'))):'HANDS FULL'):(ns?'[E] SHOP':(nb?'[E] HIDE':(carry.length?'[G] DROP DEER':'')))));
 $('pr').textContent=isTouch?pr.replace(/^\[[EG]\] /,''):pr;
-if(isTouch){setTBtn($('theal'),stats.heal?'HEAL '+stats.heal:'');setTBtn($('trep'),stats.rep?'SPRAY '+stats.rep:'');setTBtn($('tlight'),stats.flash?(flOn?'LIGHT ON':'LIGHT'):'');setTBtn($('tact'),P.hid?'LEAVE':(bd&&nf>.5?'SLEEP':(ns?'SHOP':(nb?'HIDE':''))));setTBtn($('tcarry'),nd&&cw()+wOf(nd)<=2?'CARRY':(carry.length?'DROP':'CARRY'),true)}}}
+if(isTouch){setTBtn($('theal'),stats.heal?'HEAL '+stats.heal:'');setTBtn($('trep'),stats.rep?'SPRAY '+stats.rep:'');setTBtn($('tlight'),stats.flash?(flOn?'LIGHT ON':'LIGHT'):'');setTBtn($('tact'),P.hid?'LEAVE':(bd&&nf>.5?'SLEEP':(ns?'SHOP':(nb?'HIDE':''))));setTBtn($('tcarry'),nd&&(adminPlus.unlimitedCarry||mpAdminHas('extraCarry')||cw()+wOf(nd)<=2)?'CARRY':(carry.length?'DROP':'CARRY'),true)}}}
 let last=performance.now();
 function checkOrient(){const por=isTouch&&innerHeight>innerWidth;if(document.body.classList.contains('portrait')!==por)document.body.classList.toggle('portrait',por);if(por&&playing)pauseGame()}
 addEventListener('resize',checkOrient);addEventListener('orientationchange',()=>setTimeout(checkOrient,150));
@@ -1690,13 +1701,15 @@ $('mp-admin-ui').addEventListener('click',e=>{if(e.target===$('mp-admin-ui'))mpC
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('mp-admin-ui').classList.contains('open'))mpCloseAdminPanel()});
 $('mp-admin-close').addEventListener('click',mpCloseAdminPanel);
 function adminPlusSync(){const button=$('adminplus-button'),panel=$('adminplus-panel');if(!button||!panel)return;const allowed=mpAdminUnlocked()&&G==='play'&&$('ov').style.display==='none';button.style.display=allowed?'block':'none';if(!allowed&&panel.classList.contains('open'))adminPlusClose()}
-function adminPlusOpen(){if(!mpAdminUnlocked()||G!=='play')return;mpPauseForUI('adminplus');$('adminplus-panel').classList.add('open');$('adminplus-panel').setAttribute('aria-hidden','false');$('ap-speed-on').checked=adminPlus.speedOn;$('ap-speed').value=adminPlus.speed;$('ap-speed-value').textContent=adminPlus.speed+'×';$('ap-aimbot').checked=adminPlus.aimbot;$('ap-esp').checked=adminPlus.esp}
+function adminPlusOpen(){if(!mpAdminUnlocked()||G!=='play')return;mpPauseForUI('adminplus');$('adminplus-panel').classList.add('open');$('adminplus-panel').setAttribute('aria-hidden','false');$('ap-speed-on').checked=adminPlus.speedOn;$('ap-speed').value=adminPlus.speed;$('ap-speed-value').textContent=adminPlus.speed+'×';$('ap-aimbot').checked=adminPlus.aimbot;$('ap-esp').checked=adminPlus.esp;['infinite-ammo','no-cooldowns','unlimited-carry','no-carry-slow','invulnerable','instant-reload','infinite-supplies','no-mud-slow'].forEach(k=>{const el=$('ap-'+k);if(el)el.checked=!!adminPlus[({'infinite-ammo':'infiniteAmmo','no-cooldowns':'noCooldowns','unlimited-carry':'unlimitedCarry','no-carry-slow':'noCarrySlow','invulnerable':'invulnerable','instant-reload':'instantReload','infinite-supplies':'infiniteSupplies','no-mud-slow':'noMudSlow'})[k]]})}
 function adminPlusClose(){$('adminplus-panel').classList.remove('open');$('adminplus-panel').setAttribute('aria-hidden','true');mpResumeFromUI('adminplus')}
 $('adminplus-button').addEventListener('click',adminPlusOpen);$('adminplus-close').addEventListener('click',adminPlusClose);
 $('ap-speed-on').addEventListener('change',e=>adminPlus.speedOn=e.target.checked);
 $('ap-speed').addEventListener('input',e=>{adminPlus.speed=Number(e.target.value)||2;$('ap-speed-value').textContent=adminPlus.speed+'×'});
 $('ap-aimbot').addEventListener('change',e=>adminPlus.aimbot=e.target.checked);
 $('ap-esp').addEventListener('change',e=>adminPlus.esp=e.target.checked);
+const apToggleMap={'infinite-ammo':'infiniteAmmo','no-cooldowns':'noCooldowns','unlimited-carry':'unlimitedCarry','no-carry-slow':'noCarrySlow','invulnerable':'invulnerable','instant-reload':'instantReload','infinite-supplies':'infiniteSupplies','no-mud-slow':'noMudSlow'};
+Object.entries(apToggleMap).forEach(([id,key])=>{const el=$('ap-'+id);if(!el)return;el.addEventListener('change',e=>{adminPlus[key]=e.target.checked;if(key==='infiniteAmmo'&&e.target.checked){ammo[0]=WP[0].mag;ammo[1]=WP[1].mag}if(key==='noCooldowns'&&e.target.checked){cd=0;rel=0}if(key==='instantReload'&&e.target.checked)rel=0;renderHotbar()})});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('adminplus-panel').classList.contains('open'))adminPlusClose()});
 
 document.querySelectorAll('[data-admin-tab]').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('[data-admin-tab]').forEach(b=>b.classList.toggle('active',b===button));document.querySelectorAll('[data-admin-section]').forEach(section=>section.classList.toggle('active',section.dataset.adminSection===button.dataset.adminTab))}));
