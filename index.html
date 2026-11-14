@@ -330,7 +330,18 @@ body.touch #mp-locator{left:auto;right:12px;top:252px;width:210px;font-size:10px
  #adminplus-panel{left:10px;right:10px;top:auto;bottom:calc(10px + env(safe-area-inset-bottom,0px));width:auto;max-height:65dvh}
  #admin-open{font-size:10px;padding:7px 8px;max-width:145px}
 }
-</style></head><body>
+
+#ov{z-index:9}#mp-chat-button,#mp-chat-panel{z-index:10}
+button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.btn,.modechoices button,#shtabs button,.it button{-webkit-user-select:none;user-select:none;min-height:42px;transition:transform .06s,background .12s,border-color .12s}
+.btn:active,.modechoices button:active,.it button:active{transform:scale(.97)}
+.btn:focus-visible,.modechoices button:focus-visible{outline:2px solid #9fd27a;outline-offset:2px}
+.modechoices button:hover{border-color:var(--fg)}
+.btns,.modebox{position:relative;z-index:1}
+@media (max-height:520px){#ov{align-items:flex-start;padding:10px}.btn{font-size:16px;padding:8px 14px;min-height:36px}.btns{gap:8px}#ov h1{margin-bottom:2px}#t2{margin:2px 0 10px}#stats{margin-top:12px}}
+body.lite #scan{display:none}
+body.lite #ov.pause,body.lite #mode-overlay,body.lite #shop{backdrop-filter:none!important}
+#wnb{position:absolute;top:-10px;right:-10px;width:22px;height:22px;border-radius:50%;box-sizing:border-box;background:#ffd83d;border:2px solid #000;color:#000;font:bold 14px/18px "Courier New",monospace;letter-spacing:0;text-align:center;font-style:normal;display:none;box-shadow:0 0 0 1px #6f6b55;pointer-events:none}</style></head><body>
 <canvas id="c"></canvas><canvas id="gh"></canvas>
 <div id="vhs"><div class="vl"></div><span id="vrec">● REC</span><span id="vts"></span></div><audio id="whatSong" src="WHAT.mp3" loop preload="auto"></audio>
 <div class="f" id="hd"></div><div class="f" id="dg"></div><div class="f" id="fl"></div><div class="f" id="sc"></div><div class="f" id="bk"></div><div class="f" id="scan"></div>
@@ -344,7 +355,7 @@ body.touch #mp-locator{left:auto;right:12px;top:252px;width:210px;font-size:10px
 <button id="cog" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M10.09 4.03 L10.43 1.52 L13.57 1.52 L13.91 4.03 L16.28 5.01 L18.31 3.48 L20.52 5.69 L18.99 7.72 L19.97 10.09 L22.48 10.43 L22.48 13.57 L19.97 13.91 L18.99 16.28 L20.52 18.31 L18.31 20.52 L16.28 18.99 L13.91 19.97 L13.57 22.48 L10.43 22.48 L10.09 19.97 L7.72 18.99 L5.69 20.52 L3.48 18.31 L5.01 16.28 L4.03 13.91 L1.52 13.57 L1.52 10.43 L4.03 10.09 L5.01 7.72 L3.48 5.69 L5.69 3.48 L7.72 5.01ZM8.5 12.0 a3.5 3.5 0 1 0 7 0 a3.5 3.5 0 1 0 -7 0Z"/></svg></button>
 <div class="scr" id="scr-main">
 <button class="btn sec" id="htp" style="position:fixed;top:calc(14px + env(safe-area-inset-top,0px));right:14px;width:auto;font-size:14px;padding:8px 14px;letter-spacing:2px;z-index:5">HOW TO PLAY</button>
-<button id="wn" aria-label="What's New" title="What's New"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" shape-rendering="crispEdges"><path d="M3 4h14v16H5a2 2 0 0 1-2-2z"/><path d="M17 8h4v10a2 2 0 0 1-2 2h-2"/><path d="M6 8h8M6 11h8M6 14h4M12 14h2M6 17h8"/></svg><span>WHAT'S NEW</span></button>
+<button id="wn" aria-label="What's New" title="What's New"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" shape-rendering="crispEdges"><path d="M3 4h14v16H5a2 2 0 0 1-2-2z"/><path d="M17 8h4v10a2 2 0 0 1-2 2h-2"/><path d="M6 8h8M6 11h8M6 14h4M12 14h2M6 17h8"/></svg><span>WHAT'S NEW</span><i id="wnb">!</i></button>
 <div id="kick">&mdash; Made by RandomStuff.CO &mdash;</div>
 <h1 id="t1">DEER HUNTING SIMULATOR</h1>
 <p id="t2"></p>
@@ -366,7 +377,7 @@ body.touch #mp-locator{left:auto;right:12px;top:252px;width:210px;font-size:10px
 <li>Bear traps are inside the gray biome. Mash <b>WASD</b> to break free. Mud slows you down.</li>
 <li>You can carry 2 deer, but they slow you down a lot. Sell them at the <b>shop</b> by the road east of the cabin (the arrow in the bottom left points to it) for <b>$10</b> each.</li>
 <li>Save up <b>$70</b> for the <b>axe</b>. Chop down a tree with a deer on top and the deer comes down with it.</li>
-<li>The gray one takes <b>5 shotgun hits</b> to kill, and it runs faster than you. If it catches you, you die instantly.</li>
+<li>The gray one takes <b>15 shotgun hits</b> to kill, and it runs faster than you. If it catches you, you die instantly.</li>
 <li>You always have <b>3 hearts</b>. <b>Bears</b> are rare and charge you when they spot you. Every swipe costs 1 heart. A bear takes <b>8 rifle shots</b> or <b>6 shotgun shots</b>, takes both hands to carry and sells for <b>$20</b>.</li>
 <li><b>Rabbits</b> are small, fast and jumpy. They sell for <b>$5</b> each.</li>
 <li>You can even carry the dead <b>gray one</b> (both hands, so you move like you carry 2 deer) and sell it for <b>$30</b>. Check the <b>Quests</b> tab in the shop for extra cash.</li>
@@ -486,7 +497,7 @@ body.touch #mp-locator{left:auto;right:12px;top:252px;width:210px;font-size:10px
  </div>
 </div>
 <div id="rot"><div class="ph"></div><b>ROTATE YOUR PHONE</b><span>It is recommended that this game is played in landscape mode</span></div>
-<div id="ver">v1.7.3</div>
+<div id="ver">v1.8.0</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -509,9 +520,12 @@ if(fl>.5){vec2 uv=gl_FragCoord.xy/res-vec2(.5,.46);uv.x*=res.x/res.y;float b=(1.
 gl_FragColor=vec4(mix(c,fogc,f),1.);}`});
 const SDEF={fog:1,bright:1,contrast:1,sat:1,fov:72,px:3,vol:1,sens:1,fps:0},SET=Object.assign({},SDEF);
 try{const q=JSON.parse(localStorage.getItem('deerHunter98.settings')||'{}');for(const k in SDEF)if(typeof q[k]==='number'&&isFinite(q[k]))SET[k]=q[k]}catch(e){}
+const LOW=/CrOS/.test(navigator.userAgent)||(navigator.hardwareConcurrency||8)<=4||(navigator.deviceMemory||8)<=4;
+try{if(LOW&&!localStorage.getItem('deerHunter98.settings'))SDEF.px=SET.px=4}catch(e){}
+if(LOW)document.body.classList.add('lite');
 let pxs=Math.max(1,Math.min(6,Math.round(SET.px))),baseFov=SET.fov;
-function rs(){const w=Math.floor(innerWidth/pxs),h=Math.floor(innerHeight/pxs);renderer.setSize(w,h,false);mat.uniforms.res.value.set(w,h);{const g2=$('gh');g2.width=w;g2.height=h}cam.aspect=gcam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();gcam.updateProjectionMatrix()}
-addEventListener('resize',rs);rs();renderer.autoClear=false;
+function rs(){loop.force=true;const W=cv.clientWidth||innerWidth,H=cv.clientHeight||innerHeight,w=Math.max(2,Math.floor(W/pxs)),h=Math.max(2,Math.floor(H/pxs));if(rs.w===w&&rs.h===h&&rs.a===W/H)return;rs.w=w;rs.h=h;rs.a=W/H;renderer.setSize(w,h,false);mat.uniforms.res.value.set(w,h);{const g2=$('gh');g2.width=w;g2.height=h}cam.aspect=gcam.aspect=W/H;cam.updateProjectionMatrix();gcam.updateProjectionMatrix()}
+addEventListener('resize',rs);addEventListener('orientationchange',()=>[100,400,900,1600].forEach(t=>setTimeout(rs,t)));if(window.visualViewport)visualViewport.addEventListener('resize',rs);rs();if(window.ResizeObserver)new ResizeObserver(rs).observe(cv);renderer.autoClear=false;
 const matT=new THREE.ShaderMaterial({uniforms:{res:mat.uniforms.res,fogc:mat.uniforms.fogc,fogn:mat.uniforms.fogn,fogf:mat.uniforms.fogf,tint:mat.uniforms.tint,fl:mat.uniforms.fl,map:{value:null}},
 vertexShader:`varying vec2 vu;varying float fd;uniform vec2 res;
 void main(){vu=uv;vec4 mv=modelViewMatrix*vec4(position,1.);fd=-mv.z;vec4 p=projectionMatrix*mv;vec2 g=res*.25;p.xy=floor(p.xy/p.w*g+.5)/g*p.w;gl_Position=p;}`,
@@ -577,6 +591,7 @@ for(let i=0;i<8500;i++){
 const x=(rnd()-.5)*(W-4),z=(rnd()-.5)*(W-4);if(Math.hypot(x,z)<14||nearRoad(x,z)||nearGrayRoad(x,z))continue;
 const b=chunk(x,z),s=1.15+rnd()*.9;HB=hgt(x,z);const v0=b.p.length/3;
 const gray=Math.hypot(x-GZ.x,z-GZ.z)<GZ.r+6;let cr=.65*s;
+if(gray&&rnd()<.55)continue;
 if(gray&&rnd()<.16){snag(b,x,z,s,0x4a4842);treeSpots.push({x,z,y:5.2*s,b,v0,v1:b.p.length/3,hp:4})}else if(gray){
  add(b,BOX,0x554331,x,.0+1.9*s,z,.48*s,3.8*s,.48*s);
  const greens=[0x454f43,0x59604d,0x68705a,0x3d4b40];
@@ -672,7 +687,7 @@ inMud=function(x,z,b){
  }
  return inside;
 };
-for(let i=0;i<160;i++){const a=rnd()*6.28,d=rnd()*GZ.r*.9,x=GZ.x+Math.cos(a)*d,z=GZ.z+Math.sin(a)*d;if(nearRoad(x,z))continue;HB=hgt(x,z);add(zb,BOX,0x6a4a30,x,.1,z,.8,.05,.8);add(zb,BOX,0x8a8a82,x,.14,z,.7,.04,.12);add(zb,BOX,0x8a8a82,x,.14,z,.12,.04,.7);traps.push({x,z,on:true})}
+for(let i=0;i<50;i++){const a=rnd()*6.28,d=rnd()*GZ.r*.9,x=GZ.x+Math.cos(a)*d,z=GZ.z+Math.sin(a)*d;if(nearRoad(x,z))continue;HB=hgt(x,z);add(zb,BOX,0x6a4a30,x,.1,z,.8,.05,.8);add(zb,BOX,0x8a8a82,x,.14,z,.7,.04,.12);add(zb,BOX,0x8a8a82,x,.14,z,.12,.04,.7);traps.push({x,z,on:true})}
 scene.add(new THREE.Mesh(fin(zb),mat));HB=0;
 const rb=mk();
 for(const L of roadPts)for(let i=0;i<L.length-1;i++)roadSeg(rb,0x8a7a58,L[i][0],L[i][1],L[i+1][0],L[i+1][1],2.6,.4,5);
@@ -920,7 +935,7 @@ const guns=[gunMesh(0),gunMesh(1),axeMesh()];gunInit=true;
 const WP=[{n:'RIFLE',mag:5,pel:1,spr:.012,rng:160,cd:.9,rel:1.8},{n:'SHOTGUN',mag:2,pel:7,spr:.055,rng:45,cd:.6,rel:2.2},{n:'AXE',mag:0,pel:0,spr:0,rng:0,cd:.7,rel:0}];
 let ammo=[5,2,0],cur=0,cd=0,rel=0,kick=0,flash=0;
 const P={x:0,z:9,yaw:0,pitch:0,hid:false,hx:0,hz:0,moving:false,run:false};let stillT=0;function calmDeer(){for(const d of deers){d.cq=false;d.cd=0}}
-const DAY_LEN=480,DEER_DAY=40,RUN_SP=8.5,GSP=RUN_SP*1.1;
+const DAY_LEN=480,DEER_DAY=40,RUN_SP=8.5,GSP=RUN_SP*1.5;
 const SK='deerHunter98.stats',QK=['deer','sold','nightDeer','chopped','hides','mudT','grayT','dist','gHits','gKills'],stats={deer:0,deaths:0,shots:0,money:0,axe:0,flash:0,boots:0,belt:0,radar:0,heal:0,rep:0,sold:0,nightDeer:0,chopped:0,hides:0,mudT:0,grayT:0,dist:0,gHits:0,gKills:0,quests:[],skins:[],skin:'classic'};
 try{const s=JSON.parse(localStorage.getItem(SK)||'null');if(s&&typeof s==='object'){stats.deer=+s.deer||0;stats.deaths=+s.deaths||0;stats.shots=+s.shots||0;stats.money=+s.money||0;stats.axe=s.axe?1:0;stats.flash=s.flash?1:0;stats.boots=s.boots?1:0;stats.belt=s.belt?1:0;stats.radar=s.radar?1:0;stats.heal=Math.max(0,Math.min(5,+s.heal||0));stats.rep=Math.max(0,Math.min(3,+s.rep||0));for(const k of QK)if(k!=='deer')stats[k]=+s[k]||0;if(Array.isArray(s.skins))stats.skins=s.skins.filter(k=>typeof k==='string').slice(0,30);if(typeof s.skin==='string')stats.skin=s.skin;if(Array.isArray(s.quests))stats.quests=s.quests.filter(q=>q&&QK.includes(q.k)&&q.n>0&&q.pay>0).slice(0,3).map(q=>({k:q.k,n:+q.n,b:+q.b||0,pay:+q.pay,nt:q.nt?1:0}))}}catch(e){}
 function saveStats(){try{localStorage.setItem(SK,JSON.stringify(stats))}catch(e){}}
@@ -940,6 +955,7 @@ let mpAdminAuthenticated=false,mpAdminSecret='',mpGrantedPermissions={};const mp
 const adminPlus={speedOn:false,speed:2,aimbot:false,esp:false,infiniteAmmo:false,noCooldowns:false,unlimitedCarry:false,noCarrySlow:false,invulnerable:false,instantReload:false,infiniteSupplies:false,noMudSlow:false};
 const keys={};
 const UPDATES=[
+{v:'1.8.0',t:'The (ALMOST) Everything Update',n:['Fixed UI getting stuck on the screen sometimes','Fixed more UI','Fixed game not figuring out how many hearts you have','Fixed a bunch of more stuff that I will NOT be saying here','Made it so any animal can be seen by everybody and makes you look like youre not schizophrenic','Gray One has 15 HP, walks 1.4x faster than the player but can get stuck in bear traps','Removed MANY trees from the gray biome as it was kinda stupid','Player with the lowest value (ID) in Multiplayer is deemed the host, so you CANNOT be attacked by hostile animals if youre not the host','Yayyy thats it yippeeeee']},
 {v:'1.7.3',t:'Gun Skins and Model Update 🥶🥶🥶',n:['Added gun skins','Gun skins CAN be seen by other plays','Fixed gun models looking like complete doodoo garbage (on multiplayer)']},
 {v:'1.7.0',t:'Administrator & Chat Update',n:['Administrators are able to ban you','Singleplayer and Multiplayer can be shut down now','Added chat message dings and an unread message counter','PC mouse cursor now unlocks over in game interfaces and locks again during gameplay']},
 {v:'1.6.5',t:'Chat and Models Update',n:['Added chat to Multiplayer','Fixed leaving Multiplayer','Made the playermodel a little better for Multiplayer, looked horrible','Multiplayer is STILL a little buggy, and WILL be fixed eventually']},
@@ -980,7 +996,10 @@ tbtn('tlight',toggleFlash);tbtn('tswap',()=>equip((cur+1)%(stats.axe?3:2)));tbtn
 function equip(i){if(i===2&&!stats.axe){msg('BUY THE AXE AT THE SHOP ($70)',2.5);return}cur=i;guns.forEach((g,k)=>g.visible=k==cur);rel=0;if(i===2)scoped=false}
 function renderWN(){const u=UPDATES[wnI];$('wnv').textContent='v'+u.v+' \u2014 '+u.t+(wnI===0?'  (LATEST)':'');const ul=$('wnu');ul.textContent='';for(const t of u.n){const li=document.createElement('li');li.textContent=t;ul.appendChild(li)}
 $('wnl').style.visibility=wnI>0?'visible':'hidden';$('wnr').style.visibility=wnI<UPDATES.length-1?'visible':'hidden'}
-$('wn').onclick=()=>{wnI=0;renderWN();$('wnp').style.display='flex'};
+const WN_KEY='deerHunter98.seenUpdate';
+function wnBadge(){let seen=null;try{seen=localStorage.getItem(WN_KEY)}catch(e){}$('wnb').style.display=seen===UPDATES[0].v?'none':'block'}
+$('wn').onclick=()=>{wnI=0;renderWN();$('wnp').style.display='flex';try{localStorage.setItem(WN_KEY,UPDATES[0].v)}catch(e){}wnBadge()};
+wnBadge();
 $('wnx').onclick=()=>{$('wnp').style.display='none'};
 $('wnp').onclick=e=>{if(e.target===$('wnp'))$('wnp').style.display='none'};
 $('wnr').onclick=()=>{wnI=Math.min(UPDATES.length-1,wnI+1);renderWN()};
@@ -1060,15 +1079,15 @@ addEventListener('keydown',e=>{if(e.code==='Escape'){if(G==='shop')closeShop();e
 function msg(t,s){$('ms').textContent=t;msgT=s||3}
 function noise(dur,vol){if(!ac)return;const n=ac.sampleRate*dur,b=ac.createBuffer(1,n,ac.sampleRate),d=b.getChannelData(0);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*(1-i/n);const s=ac.createBufferSource(),g=ac.createGain();g.gain.value=vol*SET.vol;s.buffer=b;s.connect(g).connect(ac.destination);s.start()}
 function snd(f,dur,type,vol,sw){if(!ac)return;const o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime;o.type=type;o.frequency.setValueAtTime(f,t);o.frequency.exponentialRampToValueAtTime(Math.max(20,f*sw),t+dur);g.gain.setValueAtTime(Math.max(.0001,vol*SET.vol),t);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(g).connect(ac.destination);o.start();o.stop(t+dur)}
-function respawn(){stillT=0;calmDeer();lives=3;hitCooldown=0;updateHearts();carry.forEach(d=>d.active=false);carry=[];scoped=false;P.stuck=0;P.x=0;P.z=9;P.yaw=0;P.pitch=0;P.hid=false;ammo=[WP[0].mag,WP[1].mag,0];rel=0;cd=0;resetGiant();calmBears()}
-function resetGiant(){giant.x=GZ.x;giant.z=GZ.z;giant.st='stalk';giant.angry=0;giant.roadI=Math.floor(Math.random()*grayRoad.length);giant.alive=true;giant.active=true;carry=carry.filter(x=>x!==giant);giant.carried=false;giant.done=false;giant.us=0;giant.hp=5;giant.dT=0;giant.g.rotation.set(0,0,0);giant.px=undefined;giant.g.position.set(giant.x,hgt(giant.x,giant.z),giant.z);giant.g.visible=true}
+function respawn(){stillT=0;calmDeer();lives=D.hp;hitCooldown=0;updateHearts();carry.forEach(d=>d.active=false);carry=[];scoped=false;P.stuck=0;P.x=0;P.z=9;P.yaw=0;P.pitch=0;P.hid=false;ammo=[WP[0].mag,WP[1].mag,0];rel=0;cd=0;resetGiant();calmBears()}
+function resetGiant(){giant.trapT=0;giant.x=GZ.x;giant.z=GZ.z;giant.st='stalk';giant.angry=0;giant.roadI=Math.floor(Math.random()*grayRoad.length);giant.alive=true;giant.active=true;carry=carry.filter(x=>x!==giant);giant.carried=false;giant.done=false;giant.us=0;giant.hp=15;giant.dT=0;giant.g.rotation.set(0,0,0);giant.px=undefined;giant.g.position.set(giant.x,hgt(giant.x,giant.z),giant.z);giant.g.visible=true}
 function die(){if(G==='dead')return;stats.deaths++;saveStats();playing=false;scoped=false;G='dead';updateHearts();releaseLock();snd(70,.8,'sawtooth',.5,.3);noise(.6,.5);
 showScreen('dead')}
-function showScreen(m){const c={title:['DEER HUNTING SIMULATOR','Hey this game is like REALLY buggy, too much stuff softlocks you and it overall sucks. This is a JOKE game, not one to be taken SERIOUSLY.','PLAY'],pause:['PAUSED','Hey why we pause the game?','RESUME'],dead:[deathCause==='bear'?'A BEAR GOT YOU':(deathCause==='deer'?'YOU WERE OVERRUN':'THE GRAY ONE FOUND YOU'),deathCause==='bear'?'The bear took all 3 hearts. Choose a mode and try again.':(deathCause==='deer'?'Defense run over. Choose a mode and try again.':'Murdered by the gray one: '+stats.deaths+(stats.deaths==1?' time.':' times.')),'RESPAWN AT THE CABIN']}[m];
+function showScreen(m){const c={title:['DEER HUNTING SIMULATOR','Hey this game is like REALLY buggy, too much stuff softlocks you and it overall sucks. This is a JOKE game, not one to be taken SERIOUSLY.','PLAY'],pause:['PAUSED','Hey why we pause the game?','RESUME'],dead:[deathCause==='bear'?'A BEAR GOT YOU':(deathCause==='deer'?'YOU WERE OVERRUN':'THE GRAY ONE FOUND YOU'),deathCause==='bear'?'The bear took all your hearts. Choose a mode and try again.':(deathCause==='deer'?'Defense run over. Choose a mode and try again.':'Murdered by the gray one: '+stats.deaths+(stats.deaths==1?' time.':' times.')),'RESPAWN AT THE CABIN']}[m];
 $('t1').textContent=c[0];$('t2').textContent=c[1];$('go').textContent=c[2];$('kick').style.display=m==='title'?'block':'none';$('mode-overlay').style.display='none';
 $('sv-deer').textContent=stats.deer;$('sv-shots').textContent=stats.shots;$('sv-dead').textContent=stats.deaths;
 $('mpmsg').style.display='none';$('wn').style.display=m==='title'?'flex':'none';$('wnp').style.display='none';$('mp').style.display=m==='title'?'':'none';$('tt').style.display=m==='title'?'none':'';$('ov').className=m;$('scr-help').style.display='none';$('scr-main').style.display='flex';$('ov').style.display='flex';try{mpSyncAdminTitle()}catch(e){}}
-function updateHearts(){const h=$('hearts'),l=Math.max(0,Math.min(3,lives));h.style.display=playing?'block':'none';h.textContent=('♥ '.repeat(l)+'♡ '.repeat(3-l)).trim();h.style.color=l===1?'#ff3939':'#e85b55'}
+function updateHearts(){const h=$('hearts');let m=3;try{m=D.hp}catch(e){}const l=Math.max(0,Math.min(m,lives));h.style.display=playing?'block':'none';h.textContent=('♥ '.repeat(l)+'♡ '.repeat(m-l)).trim();h.style.color=l===1?'#ff3939':'#e85b55'}
 function setGameMode(mode){gameMode=mode;$('mode-regular').classList.toggle('selected',mode==='regular');$('mode-defense').classList.toggle('selected',mode==='defense')}
 async function launchSelectedMode(mode){
  if(/^ADMINISTRATOR$/i.test(String(mpName||'').trim())&&!mpAdminSecret){const password=window.prompt('Administrator password:');if(password===null)return;try{await mpCallControl({action:'verify',admin_password:password});mpAdminSecret=password;mpAdminAuthenticated=true}catch(error){window.alert(error.message||'Administrator verification failed.');return}}
@@ -1081,19 +1100,19 @@ async function launchSelectedMode(mode){
  mpGrantedPermissions=permissionsForRun;
  if(gameMode==='defense'){
   msg('Yo shoot the deer now bru',4);
-  lives=3;hitCooldown=0;
+  lives=D.hp;hitCooldown=0;
   for(const d of deers){if(d.active&&d.alive){d.perched=false;d.g.position.y=hgt(d.x,d.z)}}
  }else if(G==='menu'&&!qStarted){
   qStarted=true;msg('FREE ROAM — FIND SOME DEER',4);
  }
- G='play';playing=true;
+ window.lockGrace=performance.now();G='play';playing=true;
  updateHearts();$('ov').style.display='none';if(!isTouch)cv.requestPointerLock();
 }
 $('mode-regular').onclick=()=>launchSelectedMode('regular');
 $('mode-defense').onclick=()=>launchSelectedMode('defense');
 function hurt(why,cause){if(adminPlus.invulnerable||mpAdminHas('invulnerability'))return;if(hitCooldown>0||G!=='play')return;lives=Math.max(0,lives-1);hitCooldown=D.hitCd;regT=0;hf=.85;updateHearts();snd(80,.18,'sine',.5,.4);noise(.12,.35);msg(lives?why:'YOU WERE OVERRUN',2);if(lives<=0){deathCause=cause;die()}}
 function hurtDefense(){if(gameMode!=='defense')return;hurt('A DEER HIT YOU!','deer')}
-function resumeGame(){if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();if(mpUiPauseToken==='pausemenu')mpUiPauseToken=null;G='play';playing=true;document.body.classList.remove('mp-ui-unlocked');updateHearts();$('ov').style.display='none';adminPlusSync();if(!isTouch)cv.requestPointerLock()}
+function resumeGame(){window.lockGrace=performance.now();if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();if(mpUiPauseToken==='pausemenu')mpUiPauseToken=null;G='play';playing=true;document.body.classList.remove('mp-ui-unlocked');updateHearts();$('ov').style.display='none';adminPlusSync();if(!isTouch)cv.requestPointerLock()}
 $('go').onclick=()=>{
  if($('ov').className==='pause'){resumeGame();return}
  if($('ov').className==='dead'){
@@ -1160,7 +1179,7 @@ addEventListener('keydown',e=>{
 addEventListener('keydown',e=>{if(!playing&&e.code==='Enter'&&$('ov').style.display!=='none'&&$('scr-main').style.display!=='none'&&$('wnp').style.display!=='flex'&&$('set').style.display!=='flex')$('go').click()});
 let qStarted=false,saBuf='',showAll=false;
 addEventListener('keydown',e=>{if(e.repeat||mpTypingTarget(e)||!/^[a-z]$/i.test(e.key))return;saBuf=(saBuf+e.key.toLowerCase()).slice(-7);if(saBuf==='showall'){saBuf='';setShowAll(!showAll);if(playing)msg(showAll?'SHOW ALL: ON':'SHOW ALL: OFF',2);else $('t2').textContent=showAll?'SHOW ALL ON: pointers to the gray biome, nearest deer and the gray one':'SHOW ALL OFF'}});
-document.addEventListener('pointerlockchange',()=>{if(document.pointerLockElement!==cv&&playing&&!manualMouseUnlock&&!mpUiPauseToken&&$('shop').style.display!=='flex'&&$('set').style.display!=='flex'&&$('mp-chat-panel').style.display!=='flex'&&$('mp-admin-panel').style.display!=='block'&&!$('adminplus-panel').classList.contains('open'))pauseGame()});
+document.addEventListener('pointerlockchange',()=>{if(document.pointerLockElement!==cv&&playing&&!manualMouseUnlock&&!mpUiPauseToken&&$('shop').style.display!=='flex'&&$('set').style.display!=='flex'&&$('mp-chat-panel').style.display!=='flex'&&$('mp-admin-panel').style.display!=='block'&&!$('adminplus-panel').classList.contains('open')&&performance.now()-(window.lockGrace||0)>700)setTimeout(()=>{if(playing&&!isTouch&&document.pointerLockElement!==cv&&!mpUiPauseToken)pauseGame()},200)});
 // Press J to release the pointer so the normal cursor can be used without pausing gameplay. Click the game again to relock it.
 addEventListener('keydown',e=>{if(e.code!=='KeyJ'||e.repeat||!playing||mpTypingTarget(e))return;e.preventDefault();if(document.pointerLockElement===cv){manualMouseUnlock=true;releaseLock();msg('MOUSE UNLOCKED — CLICK THE GAME TO LOCK IT AGAIN',3)}});
 cv.addEventListener('click',()=>{if(playing&&!isTouch&&!mpUiPauseToken&&$('shop').style.display!=='flex'&&$('set').style.display!=='flex'&&$('mp-chat-panel').style.display!=='flex'&&!$('adminplus-panel').classList.contains('open')&&document.pointerLockElement!==cv&&cv.requestPointerLock){try{manualMouseUnlock=false;cv.requestPointerLock()}catch(e){}}});
@@ -1213,7 +1232,7 @@ if(u>=1){const nx=Math.max(-W/2+3,Math.min(W/2-3,f.x+_v.x)),nz=Math.max(-W/2+3,M
 if(u>=1){f.done=true;noise(.4,.6);snd(60,.4,'sine',.5,.4);if(f.deers.length)msg('THE TREE FELL \u2014 AND THE DEER WITH IT',3)}}
 else{f.rm+=dt;if(f.rm>25){scene.remove(f.m);f.m.geometry.dispose();falls.splice(i,1)}}}}
 function hitGiant(){if(!giant.alive)return;if(cur!==1){msg('RIFLE ROUNDS DO NOTHING \u2014 USE THE SHOTGUN',2);return}
-giant.hp--;stats.gHits++;snd(90,.25,'sawtooth',.4,.5);if(giant.hp<=0){killGiant();return}msg('GRAY ONE HIT '+(5-giant.hp)+'/5',1.5)}
+giant.hp--;stats.gHits++;snd(90,.25,'sawtooth',.4,.5);if(giant.hp<=0){killGiant();return}msg('GRAY ONE HIT '+(15-giant.hp)+'/15',1.5)}
 function killGiant(){stats.gKills++;saveStats();giant.alive=false;giant.st='dead';giant.dT=0;giant.g.rotation.set(0,giant.yaw,1.45);giant.g.position.y=hgt(giant.x,giant.z)+.72;snd(60,.9,'sawtooth',.5,.3);noise(.5,.4);msg('YOU KILLED THE GRAY ONE!',5);$('dg').style.opacity=0}
 function rayS(o,d,c,r){const ox=c.x-o.x,oy=c.y-o.y,oz=c.z-o.z,tca=ox*d.x+oy*d.y+oz*d.z;if(tca<0)return 1e9;const d2=ox*ox+oy*oy+oz*oz-tca*tca;if(d2>r*r)return 1e9;return tca-Math.sqrt(r*r-d2)}
 function rayBlocked(o,d,t){for(let k=1;k<t;k+=1.2){const y=o.y+d.y*k,qx=o.x+d.x*k,qz=o.z+d.z*k,hh=hgt(qx,qz);if(y<hh)return true;if(y<hh+6&&hit(qx,qz,.05))return true}return false}
@@ -1284,6 +1303,8 @@ const d=giant,dx=P.x-d.x,dz=P.z-d.z,dist=Math.hypot(dx,dz);
 if(auraEnabled&&d.alive&&dist<90){const face=Math.atan2(dx,dz),df=((face-d.yaw+PI*3)%(PI*2))-PI;d.yaw+=Math.max(-8*dt,Math.min(8*dt,df));d.g.position.set(d.x,hgt(d.x,d.z),d.z);d.g.rotation.set(Math.sin(T*25)*.05,d.yaw,Math.sin(T*32)*.06);return dist}
 if(!d.alive){d.dT+=dt;if(d.dT>150){resetGiant();msg('THE GRAY ONE HAS RETURNED...',4)}return 999}
 d.angry-=dt;
+if(d.trapT>0){d.trapT-=dt;d.g.position.set(d.x,hgt(d.x,d.z),d.z);d.g.rotation.set(Math.sin(T*40)*.08,d.yaw,Math.sin(T*47)*.1);return dist}
+for(const t of traps)if(t.on&&Math.abs(d.x-t.x)<1.1&&Math.abs(d.z-t.z)<1.1&&Math.hypot(d.x-t.x,d.z-t.z)<1.1){t.on=false;d.trapT=3.5;snd(90,.2,'square',.4,.5);noise(.2,.4);if(dist<45)msg('THE GRAY ONE IS CAUGHT IN A TRAP!',2.5);return dist}
 const inZ=Math.hypot(d.x-GZ.x,d.z-GZ.z)<GZ.r;
 const night=nf>.5,outZ=Math.hypot(d.x-GZ.x,d.z-GZ.z)>GZ.r-3,nh=(tx,tz)=>outZ?freeHeading(d,tx,tz):navHeading(d,tx,tz,dt),gC=(x,z)=>night?{x,z}:gClamp(x,z);
 const playerFromGray=Math.max(0,Math.hypot(P.x-GZ.x,P.z-GZ.z)-GZ.r);
@@ -1378,14 +1399,14 @@ else{
   else{ty=d.wy;sp=1.5;d.t-=dt;if(d.t<=0){d.st='idle';d.t=3+Math.random()*5}}}}
 move(d,ty,sp,dt,1.1)}
 const DIFFS={
- easy:{bearN:2,bearSense:.65,bearSp:5.6,bearWind:.85,bearCd:2.2,bearHp:.75,bearResp:1.4,giantSp:.85,giantSee:.75,deerSense:.8,hitCd:1.6,regen:75,wxBad:.7,desc:'Fewer and slower bears, sleepy animals, a slower gray one, and hearts slowly come back on their own.'},
- med:{bearN:3,bearSense:1,bearSp:6.6,bearWind:.5,bearCd:1.5,bearHp:1,bearResp:1,giantSp:1,giantSee:1,deerSense:1,hitCd:1.15,regen:0,wxBad:1,desc:'The normal experience.'},
- hard:{bearN:5,bearSense:1.35,bearSp:7.6,bearWind:.3,bearCd:1.05,bearHp:1.25,bearResp:.5,giantSp:1.12,giantSee:1.25,deerSense:1.25,hitCd:.9,regen:0,wxBad:1.5,desc:'Lots of bears, they notice you from far and hit fast, the gray one is quicker, and you only heal with items or sleep.'}};
+ easy:{hp:5,bearN:2,bearSense:.65,bearSp:5.6,bearWind:.85,bearCd:2.2,bearHp:.75,bearResp:1.4,giantSp:.85,giantSee:.75,deerSense:.8,hitCd:1.6,regen:75,wxBad:.7,desc:'5 hearts. Fewer and slower bears, sleepy animals, a slower gray one, and hearts slowly come back on their own.'},
+ med:{hp:3,bearN:3,bearSense:1,bearSp:6.6,bearWind:.5,bearCd:1.5,bearHp:1,bearResp:1,giantSp:1,giantSee:1,deerSense:1,hitCd:1.15,regen:0,wxBad:1,desc:'3 hearts. The normal experience.'},
+ hard:{hp:1,bearN:5,bearSense:1.35,bearSp:7.6,bearWind:.3,bearCd:1.05,bearHp:1.25,bearResp:.5,giantSp:1.12,giantSee:1.25,deerSense:1.25,hitCd:.9,regen:0,wxBad:1.5,desc:'1 heart. Lots of bears, they notice you from far and hit fast, the gray one is quicker, and you only heal with items or sleep.'}};
 let diffKey='med';try{const q=localStorage.getItem('deerHunter98.diff');if(DIFFS[q])diffKey=q}catch(e){}
 let D=DIFFS[diffKey],regT=0;
-function setDiff(k){if(!DIFFS[k])return;diffKey=k;D=DIFFS[k];try{localStorage.setItem('deerHunter98.diff',k)}catch(e){}document.querySelectorAll('#diffchoices button').forEach(b=>b.classList.toggle('selected',b.dataset.d===k));$('diffdesc').textContent=D.desc}
+function setDiff(k){if(!DIFFS[k])return;diffKey=k;D=DIFFS[k];if(G!=='play'){lives=D.hp;hitCooldown=0}else lives=Math.min(lives,D.hp);try{localStorage.setItem('deerHunter98.diff',k)}catch(e){}document.querySelectorAll('#diffchoices button').forEach(b=>b.classList.toggle('selected',b.dataset.d===k));$('diffdesc').textContent=D.desc}
 document.querySelectorAll('#diffchoices button').forEach(b=>b.onclick=()=>setDiff(b.dataset.d));
-function updRegen(dt){if(D.regen&&lives>0&&lives<3){regT+=dt;if(regT>=D.regen){regT=0;lives++;updateHearts();msg('YOU FEEL A BIT BETTER',2)}}else if(!D.regen)regT=0}
+function updRegen(dt){if(D.regen&&lives>0&&lives<D.hp){regT+=dt;if(regT>=D.regen){regT=0;lives++;updateHearts();msg('YOU FEEL A BIT BETTER',2)}}else if(!D.regen)regT=0}
 const wxS=()=>1-.25*wx.rain-.2*wx.fog;
 const WXN=['CLEAR','RAIN','STORM','FOG'],wxCur=()=>wx.storm?'STORM':(wx.tr>.2?'RAIN':(wx.tf>.4?'FOG':'CLEAR'));
 function wxForce(){const i=(WXN.indexOf(wxCur())+1)%4;wx.storm=false;if(i===0){wx.tr=0;wx.tf=0}else if(i===1){wx.tr=.6;wx.tf=.1}else if(i===2){wx.tr=1;wx.tf=.3;wx.storm=true}else{wx.tr=0;wx.tf=.9}wx.t=240}
@@ -1446,7 +1467,7 @@ function bearSound(kind,dist,src){if(!ac)return;const dd=dist==null?8:dist;if(dd
  else if(kind==='die')growlV(out,t,2.2,135,38,.9,.8);
  else if(kind==='huff'){burst(out,t,.16,900,500,.9,.9);burst(out,t+.22,.2,800,450,.9,.7)}
  else if(kind==='swipe'){burst(out,t,.22,3200,600,1.2,1);const o=ac.createOscillator(),e=ac.createGain();o.type='sine';o.frequency.setValueAtTime(85,t);o.frequency.exponentialRampToValueAtTime(38,t+.16);e.gain.setValueAtTime(.9,t);e.gain.exponentialRampToValueAtTime(.001,t+.18);o.connect(e);e.connect(out);o.start(t);o.stop(t+.2)}}
-function useBandage(){if(!playing)return;const infinite=adminPlus.infiniteSupplies||mpAdminHas('infiniteSupplies');if(!(stats.heal>0)&&!infinite){msg('NO BANDAGES \u2014 BUY SOME AT THE SHOP',2);return}if(lives>=3){msg('YOU ARE ALREADY AT FULL HEALTH',2);return}
+function useBandage(){if(!playing)return;const infinite=adminPlus.infiniteSupplies||mpAdminHas('infiniteSupplies');if(!(stats.heal>0)&&!infinite){msg('NO BANDAGES \u2014 BUY SOME AT THE SHOP',2);return}if(lives>=D.hp){msg('YOU ARE ALREADY AT FULL HEALTH',2);return}
  if(!infinite){stats.heal--;saveStats()}lives++;updateHearts();msg('PATCHED UP \u2014 +1 HEART',2.5);if(ac){const t=ac.currentTime,o=sfxOut(.7);burst(o,t,.25,2600,1400,.6,.5);burst(o,t+.3,.35,2000,900,.5,.4)}}
 function useRepellent(){if(!playing)return;const infinite=adminPlus.infiniteSupplies||mpAdminHas('infiniteSupplies');if(!(stats.rep>0)&&!infinite){msg('NO REPELLENT \u2014 BUY SOME AT THE SHOP',2);return}
  if(!infinite){stats.rep--;saveStats()}spray();msg('SPRAYED \u2014 BEARS WILL STAY AWAY FOR A WHILE',3);if(ac){const t=ac.currentTime,o=sfxOut(.6);burst(o,t,1.1,5200,3000,.8,.45,'highpass');burst(o,t,.1,900,500,1,.3)}}
@@ -1477,7 +1498,7 @@ function drawRadar(dt){const on=!!stats.radar;if(rd.style.display!==(on?'block':
  rx.fillStyle='#fff';rx.beginPath();rx.moveTo(c,c-5);rx.lineTo(c-3,c+3);rx.lineTo(c+3,c+3);rx.fill()}
 function upd(dt){
 T+=dt;for(let i=auraCraters.length-1;i>=0;i--){const crater=auraCraters[i];crater.userData.life-=dt;const fade=Math.max(0,Math.min(1,crater.userData.life/1.4));crater.traverse(o=>{if(o.material&&o.material.transparent)o.material.opacity=(o.userData.baseOpacity??(o.userData.baseOpacity=o.material.opacity))*fade});if(crater.userData.life<=0){scene.remove(crater);auraCraters.splice(i,1)}}if(hitCooldown>0)hitCooldown=Math.max(0,hitCooldown-dt);
-if(sleepT>0){sleepT-=dt;if(sleepT<=0){$('bk').style.opacity=0;clock=6.5;skyUpdate();popTick();lives=3;updateHearts();msg('YOU SLEPT \u2014 ALL HEARTS RESTORED',3)}return}
+if(sleepT>0){sleepT-=dt;if(sleepT<=0){$('bk').style.opacity=0;clock=6.5;skyUpdate();popTick();lives=D.hp;updateHearts();msg('YOU SLEPT \u2014 ALL HEARTS RESTORED',3)}return}
 updFalls(dt);if(!frozen)clock=(clock+dt*24/DAY_LEN)%24;skyUpdate();popT-=dt;if(popT<=0){popT=1;popTick()}critT-=dt;if(critT<=0){critT=3;critTick()}updWeather(dt);updClouds(dt);updRegen(dt);
 if(P.stuck>0)P.stuck-=dt;
 for(const t of traps)if(t.on&&!P.hid&&Math.hypot(P.x-t.x,P.z-t.z)<.8){t.on=false;P.stuck=4;noise(.3,.5);snd(90,.2,'square',.4,.5);msg(isTouch?'BEAR TRAP! TAP THE SCREEN TO BREAK FREE':'BEAR TRAP! MASH WASD TO BREAK FREE',4);if(giant.st!=='chase'){giant.st='chase';giant.angry=6}}
@@ -1534,14 +1555,14 @@ if(isTouch){setTBtn($('theal'),stats.heal?'HEAL '+stats.heal:'');setTBtn($('trep
 let last=performance.now();
 function checkOrient(){const por=isTouch&&innerHeight>innerWidth;if(document.body.classList.contains('portrait')!==por)document.body.classList.toggle('portrait',por);if(por&&playing)pauseGame()}
 addEventListener('resize',checkOrient);addEventListener('orientationchange',()=>setTimeout(checkOrient,150));
-function loop(n){requestAnimationFrame(loop);checkOrient();prismMat.uniforms.tm.value=n/1000;const rdt=Math.min(.05,(n-last)/1000),dt=rdt*gameSpeed;last=n;if(playing){upd(dt);if($('hearts').style.display==='none')updateHearts()}else{wxMute();if($('hearts').style.display!=='none')$('hearts').style.display='none'}if(mpOnline){mpTickRemote(rdt);mpUpdateLocator(rdt)}document.body.classList.toggle('tplay',isTouch&&playing);if(!playing&&(tj.id!==null||lk.id!==null)){joyReset();lookReset()}
+function loop(n){requestAnimationFrame(loop);if(n-(loop.aps||0)>400){loop.aps=n;try{adminPlusSync()}catch(e){}}if(playing&&G==='play'&&!mpUiPauseToken){const o=$('ov');if(o.style.display!=='none'&&o.className!=='title'||(o.style.display!=='none'&&o.className==='title')){o.style.display='none';document.body.classList.remove('mp-ui-unlocked')}}checkOrient();prismMat.uniforms.tm.value=n/1000;const rdt=Math.min(.05,(n-last)/1000),dt=rdt*gameSpeed;last=n;if(playing){upd(dt);if($('hearts').style.display==='none')updateHearts()}else{wxMute();if($('hearts').style.display!=='none')$('hearts').style.display='none'}if(mpOnline){mpTickRemote(rdt);mpUpdateLocator(rdt)}document.body.classList.toggle('tplay',isTouch&&playing);if(!playing&&(tj.id!==null||lk.id!==null)){joyReset();lookReset()}
 const ft=scoped&&!P.hid?sf[cur]:baseFov;if(Math.abs(cam.fov-ft)>.05){cam.fov+=(ft-cam.fov)*Math.min(1,dt*14);cam.updateProjectionMatrix()}
 const sv=scoped&&cur==0&&cam.fov<34;$('sc').style.opacity=sv?1:0;$('ch').style.display=scoped?'none':'block';
 const tt=n/1000;drunk+=((drugOn?.15+.85*drugLvl:0)-drunk)*Math.min(1,rdt*1.6);
 const r0=[cam.rotation.x,cam.rotation.y,cam.rotation.z];let zn=1;
 if(drunk>.01){const k=drunk;cam.rotation.z+=(Math.sin(tt*.9)*.1+Math.sin(tt*1.9+1)*.045)*k;cam.rotation.y+=(Math.sin(tt*.55)*.1+Math.sin(tt*1.3)*.03)*k;cam.rotation.x+=Math.sin(tt*.7+2)*.05*k;zn=1+Math.sin(tt*.6)*.09*k}
 if(cam.zoom!==zn){cam.zoom=zn;cam.updateProjectionMatrix()}
-renderer.clear();renderer.render(scene,cam);if(!P.hid&&!sv){renderer.clearDepth();renderer.render(gs,gcam)}
+if(playing||n-(loop.mr||0)>400||loop.force){loop.mr=n;loop.force=false;renderer.clear();renderer.render(scene,cam);if(!P.hid&&!sv){renderer.clearDepth();renderer.render(gs,gcam)}}
 cam.rotation.x=r0[0];cam.rotation.y=r0[1];cam.rotation.z=r0[2];
 fxPost(tt)}
 const gh=$('gh'),ghx=gh.getContext('2d');
@@ -1551,8 +1572,8 @@ const SROWS={vis:[['fog','Fog',0,2,.05,v=>v<=.02?'OFF':pct(v)],['bright','Bright
 let setTab='vis';
 function saveSet(){try{localStorage.setItem('deerHunter98.settings',JSON.stringify(SET))}catch(e){}}
 function setShowAll(v){showAll=v;$('sall').style.display=v?'block':'none'}
-function cvFilter(tt){let f='brightness('+SET.bright+') saturate('+SET.sat+') contrast('+SET.contrast+')';if(vhs)f+=' sepia(.2) saturate(1.2) contrast(1.08) blur(.4px)';if(drunk>.01)f+=' blur('+(drunk*2.2).toFixed(2)+'px) hue-rotate('+(Math.sin((tt||0)*.7)*30*drunk).toFixed(1)+'deg)';cv.style.filter=f;gh.style.filter=f}
-function applySet(){if(pxs!==Math.round(SET.px)){pxs=Math.round(SET.px);rs()}baseFov=SET.fov;const fm=SET.fog;cam.far=fm<=.02?160:Math.max(95,Math.min(160,80/fm*1.2));cam.updateProjectionMatrix();skyUpdate();$('fps').style.display=SET.fps?'block':'none';cvFilter(0)}
+function cvFilter(tt){let f='brightness('+SET.bright+') saturate('+SET.sat+') contrast('+SET.contrast+')';if(vhs)f+=' sepia(.2) saturate(1.2) contrast(1.08) blur(.4px)';if(drunk>.01)f+=' blur('+(drunk*2.2).toFixed(2)+'px) hue-rotate('+(Math.sin((tt||0)*.7)*30*drunk).toFixed(1)+'deg)';const neutral=SET.bright===1&&SET.sat===1&&SET.contrast===1&&!vhs&&drunk<=.01;f=neutral?'none':f;if(cvFilter.last!==f){cvFilter.last=f;cv.style.filter=f;gh.style.filter=f}}
+function applySet(){if(pxs!==Math.round(SET.px)){pxs=Math.round(SET.px);rs.w=0;rs()}baseFov=SET.fov;const fm=SET.fog;cam.far=fm<=.02?160:Math.max(95,Math.min(160,80/fm*1.2));cam.updateProjectionMatrix();skyUpdate();$('fps').style.display=SET.fps?'block':'none';cvFilter(0)}
 function fxPost(tt){
 if(drunk>.01){const k=drunk;cv.style.transform='translate('+(Math.sin(tt*.55)*16*k).toFixed(1)+'px,'+(Math.cos(tt*.43)*10*k).toFixed(1)+'px) rotate('+(Math.sin(tt*.8)*3.6*k).toFixed(2)+'deg) scale('+(1+.12*k).toFixed(3)+')';
 ghx.drawImage(cv,0,0);gh.style.opacity=Math.min(.6,.25+.4*k);gh.style.transform='translate('+(Math.sin(tt*.9+1.3)*28*k).toFixed(1)+'px,'+(Math.cos(tt*.7+.5)*14*k).toFixed(1)+'px) rotate('+(Math.sin(tt*.6+2)*4*k).toFixed(2)+'deg) scale('+(1+.14*k).toFixed(3)+')';cvFilter(tt);dWas=true}
@@ -1648,10 +1669,12 @@ function mpShowAccessScreen(kind,data={}){
 }
 function mpHideAccessScreen(){$('mp-access-overlay').style.display='none';showScreen('title')}
 $('mp-access-back').addEventListener('click',mpHideAccessScreen);
+var mpPermBase=[],mpPermInit=false;
+function mpPermWarn(on){let b=document.getElementById('perm-banner');if(!on){if(b)b.remove();return}if(b)return;b=document.createElement('div');b.id='perm-banner';b.style.cssText='position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:3000;max-width:92vw;box-sizing:border-box;padding:10px 14px;background:#14160f;border:2px solid #e6b92e;color:#f0e6a8;font:14px "Courier New",monospace;letter-spacing:1px;text-align:center;box-shadow:0 6px 30px #000';b.innerHTML='You have been given permissions, so refresh your tab to get them <button type="button" style="margin-left:8px;font:inherit;color:#14160f;background:#e6b92e;border:0;padding:2px 8px;cursor:pointer">X</button>';b.querySelector('button').onclick=()=>b.remove();document.body.appendChild(b)}
 async function mpCheckAccess(mode){
  try{
   const result=await mpCallControl({action:'status',username:mpName,device_id:mpPlayerId,mode,admin_password:mpAdminSecret||undefined});
-  mpGrantedPermissions=result.permissions||{};
+  mpGrantedPermissions=result.permissions||{};mpPermBase=Object.keys(mpGrantedPermissions).filter(k=>mpGrantedPermissions[k]);mpPermInit=true;mpPermWarn(false);
   if(result.is_admin)mpAdminAuthenticated=true;
   if(result.settings&&result.is_admin){ $('mp-disable-sp').checked=result.settings.singleplayer_enabled===false; $('mp-disable-mp').checked=result.settings.multiplayer_enabled===false; $('mp-sp-reason').value=result.settings.singleplayer_reason||''; $('mp-mp-reason').value=result.settings.multiplayer_reason||''; }
   if(result.ban){mpShowAccessScreen('ban',result.ban);return false}
@@ -1972,7 +1995,7 @@ async function mpConnectAndStart(){
  try{
   if(!window.supabase?.createClient)throw new Error('Supabase library did not load. Check your internet connection.');
   if(mpChannel){try{await mpClient.removeChannel(mpChannel)}catch(e){}mpChannel=null}
-  mpClient=window.supabase.createClient(MP_SUPABASE_URL,MP_SUPABASE_KEY,{realtime:{params:{eventsPerSecond:20}}});
+  mpClient=window.supabase.createClient(MP_SUPABASE_URL,MP_SUPABASE_KEY,{realtime:{params:{eventsPerSecond:40}}});
   const {error:checkError}=await mpClient.from('hs_players').select('id').limit(1);if(checkError)throw checkError;
   for(let i=0;i<mpTasks.length;i++){await new Promise(r=>setTimeout(r,100));const el=$('mpt'+i);if(el){el.className='done';el.textContent='✓ '+mpTasks[i]}$('mp-progress-bar').style.width=((i+1)/mpTasks.length*100)+'%'}
   const {data:world,error:worldError}=await mpClient.from('hs_world_state').select('*');if(worldError)throw worldError;(world||[]).forEach(mpApplyWorld);
@@ -1981,13 +2004,15 @@ async function mpConnectAndStart(){
    .on('broadcast',{event:'player_position'},({payload})=>mpSetRemote(payload))
    .on('broadcast',{event:'player_left'},({payload})=>{if(payload?.id)mpRemoveRemote(payload.id)})
    .on('broadcast',{event:'chat_message'},({payload})=>mpReceiveChat(payload))
+   .on('broadcast',{event:'mobs'},({payload})=>mpApplyMobs(payload))
+   .on('broadcast',{event:'mob_act'},({payload})=>mpApplyAct(payload))
    .on('postgres_changes',{event:'*',schema:'public',table:'hs_players'},p=>{if(p.eventType==='DELETE')mpRemoveRemote(p.old.id);else mpSetRemote(p.new)})
    .on('postgres_changes',{event:'INSERT',schema:'public',table:'hs_world_events'},p=>mpApplyEvent(p.new))
    .on('postgres_changes',{event:'*',schema:'public',table:'hs_world_state'},p=>{if(p.eventType!=='DELETE')mpApplyWorld(p.new)});
   await new Promise((resolve,reject)=>{let settled=false;const timer=setTimeout(()=>{if(!settled){settled=true;reject(new Error('Realtime subscription timed out. Check Supabase Realtime is enabled.'))}},12000);mpChannel.subscribe(status=>{if(status==='SUBSCRIBED'&&!settled){settled=true;clearTimeout(timer);resolve()}else if(['CHANNEL_ERROR','TIMED_OUT','CLOSED'].includes(status)&&!settled){settled=true;clearTimeout(timer);reject(new Error('Realtime subscription status: '+status))}})});
   const {data:players,error}=await mpClient.from('hs_players').select('*').neq('id',mpPlayerId);if(error)throw error;(players||[]).forEach(row=>{if(Date.now()-(Date.parse(row.updated_at)||0)<10000)mpSetRemote(row)});
   mpOnline=true;mpStarting=false;mpLastPersist=0;mpSetChatActive(true);mpRenderAdminUI();adminPlusSync();mpAppendChat('SYSTEM','Connected to multiplayer chat.',true);
-  if(G==='dead')respawn();qStarted=true;gameMode='regular';G='play';playing=true;scoped=false;document.body.classList.remove('mp-ui-unlocked');updateHearts();$('mp-panel').style.display='none';$('ov').style.display='none';$('mp').style.display='';if(!isTouch&&cv.requestPointerLock)cv.requestPointerLock();await mpPersistPosition(true);mpBroadcastPosition();msg('MULTIPLAYER CONNECTED',3);
+  if(G==='dead')respawn();qStarted=true;gameMode='regular';G='play';playing=true;scoped=false;document.body.classList.remove('mp-ui-unlocked');updateHearts();$('mp-panel').style.display='none';$('ov').style.display='none';$('mp').style.display='';if(!isTouch&&cv.requestPointerLock)cv.requestPointerLock();await mpPersistPosition(true);mpBroadcastPosition();adminPlusSync();msg('MULTIPLAYER CONNECTED',3);
  }catch(e){console.error(e);$('mp-status').textContent='Connection failed: '+(e.message||'Unknown error')+'. Check that the SQL setup was run and Realtime is enabled.';mpStarting=false;mpOnline=false;mpAdminAuthenticated=false;mpSetChatActive(false);mpRenderAdminUI();if(mpChannel&&mpClient){try{await mpClient.removeChannel(mpChannel)}catch(err){}mpChannel=null}}
 }
 async function mpStopSession(){
@@ -2016,7 +2041,22 @@ mpSyncAdminTitle();
 // 100 ms Realtime movement broadcasts; database persistence is deliberately slower.
 setInterval(()=>{if(mpOnline&&playing)mpBroadcastPosition()},100);
 setInterval(()=>{if(mpOnline){mpPersistPosition();for(const [id,o] of mpRemote){if(Date.now()-o.lastSeen>8000)mpRemoveRemote(id)}}},1000);
-let mpAccessPollBusy=false;setInterval(async()=>{if(mpAccessPollBusy||G!=='play')return;mpAccessPollBusy=true;try{const allowed=await mpCheckAccess(mpOnline?'multiplayer':'singleplayer');if(!allowed){playing=false;scoped=false;G='menu';releaseLock();if(mpOnline)await mpStopSession()}}finally{mpAccessPollBusy=false}},15000);
+var mpBanShown=false,mpWatchBusy=false,mpPermSeen='';
+async function mpWatch(){
+ if(mpWatchBusy||document.hidden)return;mpWatchBusy=true;
+ try{
+  const r=await mpCallControl({action:'status',username:mpName,device_id:mpPlayerId,mode:mpOnline?'multiplayer':'singleplayer',admin_password:mpAdminSecret||undefined});
+  if(r.ban){if(!mpBanShown){mpBanShown=true;mpShowAccessScreen('ban',r.ban);if(mpOnline)await mpStopSession()}return}
+  mpBanShown=false;
+  if(r.allowed===false&&G==='play'){mpShowAccessScreen('shutdown',{reason:r.reason,singleplayerEnabled:r.singleplayer_enabled!==false,multiplayerEnabled:r.multiplayer_enabled!==false});if(mpOnline)await mpStopSession();return}
+  const now=r.permissions||{},nowKeys=Object.keys(now).filter(k=>now[k]);
+  for(const k of Object.keys(mpGrantedPermissions))if(mpGrantedPermissions[k]&&!now[k])delete mpGrantedPermissions[k];
+  if(!mpPermInit){mpPermBase=nowKeys;mpPermInit=true}
+  const gained=nowKeys.filter(k=>!mpPermBase.includes(k));
+  if(gained.length){const sig=gained.sort().join(',');if(sig!==mpPermSeen){mpPermSeen=sig;mpPermWarn(true)}}else{mpPermSeen='';mpPermWarn(false)}
+ }catch(e){}finally{mpWatchBusy=false}
+}
+setInterval(mpWatch,4000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)mpWatch()});addEventListener('focus',mpWatch);setTimeout(mpWatch,1500);
 async function mpLeave(){if(!mpClient||!mpOnline)return;try{if(mpChannel)await mpChannel.send({type:'broadcast',event:'player_left',payload:{id:mpPlayerId}});await mpClient.from('hs_players').delete().eq('id',mpPlayerId)}catch(e){}}
 addEventListener('pagehide',()=>{mpLeave()});
 // Shared world/action events are deliberately small and append-only.
@@ -2027,6 +2067,51 @@ const mpOriginalFellTree=fellTree;fellTree=function(t){const index=treeSpots.ind
 const mpOriginalShoot=shoot;shoot=function(){const before=[...deers,...rabbits,...bears,giant].map(a=>!!a.alive),old=stats.shots;mpOriginalShoot();if(stats.shots>old)mpEmit('shot',{x:P.x,z:P.z,weapon:cur});const all=[...deers,...rabbits,...bears,giant];all.forEach((a,i)=>{if(before[i]&&!a.alive){const kind=a===giant?'gray':a.kind||'deer',arr=kind==='rabbit'?rabbits:kind==='bear'?bears:kind==='gray'?[giant]:deers,index=arr.indexOf(a);mpEmit('animal_killed',{kind,index});mpStoreWorld('animal:'+kind+':'+index,{alive:false,active:true})}})};
 // Keep remote hunters moving smoothly between 100 ms packets.
 const mpOriginalUpd=upd;let mpLastSold=0;upd=function(dt){mpOriginalUpd(dt);if(mpOnline){if(stats.sold>mpLastSold){mpEmit('shop_sale',{count:stats.sold-mpLastSold,money:stats.money});mpLastSold=stats.sold}}};
+// ---- multiplayer mobs: the lowest player id simulates every animal, everyone else mirrors it ----
+const mpMobs=()=>deers.concat(rabbits,bears,[giant]);
+function mpIsHost(){if(!mpOnline)return true;for(const id of mpRemote.keys())if(id<mpPlayerId)return false;return true}
+const mpPup=()=>mpOnline&&!mpIsHost();
+function mpSendMobs(){if(!mpOnline||!mpChannel||!mpIsHost())return;
+ const a=mpMobs().map(m=>!m.active?[0]:[1,Math.round(m.x*10)/10,Math.round(m.z*10)/10,Math.round(m.yaw*100)/100,(m.alive?1:0)|(m.carried?2:0)|(m.st==='chase'?4:0)|(m.perched?8:0)|(m.trapT>0?16:0),m.giant?m.hp:0]);
+ try{mpChannel.send({type:'broadcast',event:'mobs',payload:{h:mpPlayerId,a}})}catch(e){}}
+function mpApplyMobs(p){if(!mpOnline||!p||!p.a||p.h>=mpPlayerId)return;const ms=mpMobs(),now=performance.now();
+ p.a.forEach((r,i)=>{const m=ms[i];if(!m||m.lock>now)return;const was=m.active;m.active=!!r[0];if(!m.active){m.g.visible=false;return}
+  m.tx=r[1];m.tz=r[2];m.tyaw=r[3];const f=r[4];m.alive=!!(f&1);m.carried=!!(f&2);m.st=(f&4)?'chase':'idle';m.perched=!!(f&8);m.trapT=(f&16)?1:0;if(m.giant)m.hp=r[5];
+  if(!was||m.x===undefined||Math.hypot(m.x-m.tx,m.z-m.tz)>25){m.x=m.tx;m.z=m.tz;m.yaw=m.tyaw}})}
+function mpPuppet(d,dt){if(!d.active){d.g.visible=false;return}if(d.tx===undefined)return;
+ d.g.visible=!d.carried&&Math.hypot(d.x-P.x,d.z-P.z)<(d.giant?130:100);
+ const f=Math.min(1,dt*8),ox=d.x,oz=d.z;d.x+=(d.tx-d.x)*f;d.z+=(d.tz-d.z)*f;d.yaw+=(((d.tyaw-d.yaw+PI*3)%(PI*2))-PI)*f;
+ const gy=hgt(d.x,d.z),sp=Math.hypot(d.x-ox,d.z-oz)/Math.max(dt,.001);
+ if(!d.alive){d.g.rotation.set(0,d.yaw,1.45);d.g.position.set(d.x,gy+(d.ly||(d.giant?.72:.6)),d.z);return}
+ d.ph+=sp*dt*1.4;if(!d.giant&&d.kind!=='bear')d.legs.forEach((l,i)=>l.rotation.x=sp>.5?Math.sin(d.ph+(i%2?PI:0)+(i>1?PI:0))*.7:0);
+ d.g.position.set(d.x,gy+(d.perched?d.perchY:0)+(d.kind==='rabbit'&&sp>.5?Math.abs(Math.sin(T*12))*.2:0),d.z);
+ d.g.rotation.set(d.trapT>0?Math.sin(T*40)*.08:0,d.yaw,0)}
+function mpAct(i,a,n,x,z,yaw){if(!mpOnline||!mpChannel||i<0)return;const m=mpMobs()[i];if(m)m.lock=performance.now()+1500;if(mpIsHost())return;
+ try{mpChannel.send({type:'broadcast',event:'mob_act',payload:{i,a,n,x,z,yaw,from:mpPlayerId}})}catch(e){}}
+function mpApplyAct(p){if(!mpOnline||!p||p.from===mpPlayerId||!mpIsHost())return;const m=mpMobs()[p.i];if(!m)return;
+ const pose=()=>{m.g.rotation.set(0,m.yaw,1.45);m.g.position.set(m.x,hgt(m.x,m.z)+(m.ly||(m.giant?.72:.6)),m.z);m.legs.forEach(l=>l.rotation.x=0)};
+ if(p.a==='kill'&&m.alive&&!m.giant&&m.kind!=='bear'){m.alive=false;m.perched=false;pose()}
+ else if(p.a==='bhit'&&m.alive&&m.kind==='bear'){m.hits=(m.hits||0)+p.n;m.st='chase';m.angry=10;m.imm=0;if(m.hits>=48*D.bearHp){m.alive=false;pose()}}
+ else if(p.a==='ghit'&&m.alive&&m.giant){m.hp-=p.n;m.st='chase';m.angry=6;if(m.hp<=0){m.alive=false;m.st='dead';m.dT=0;pose()}}
+ else if(p.a==='pick'&&!m.alive&&!m.carried){m.carried=true;m.g.visible=false}
+ else if(p.a==='drop'&&m.carried){m.carried=false;m.x=p.x;m.z=p.z;m.yaw=p.yaw||0;m.g.visible=true;pose()}
+ else if(p.a==='sold'){m.done=true;m.carried=false;m.g.visible=false;if(!m.giant)m.active=false}}
+{const uD=updDeer,uR=updRabbit,uB=updBear,uG=updGiant,pT=popTick,cT=critTick,rG=resetGiant,pk=pickUp,dr=dropDeer;
+ updDeer=function(d,dt){if(mpPup())mpPuppet(d,dt);else uD(d,dt)};
+ updRabbit=function(d,dt){if(mpPup())mpPuppet(d,dt);else uR(d,dt)};
+ updBear=function(d,dt){if(!mpPup())return uB(d,dt);mpPuppet(d,dt);if(!d.alive||!d.active)return;const dist=Math.hypot(P.x-d.x,P.z-d.z);d.cdn=Math.max(0,(d.cdn||0)-dt);
+  if(d.st==='chase'&&!P.hid&&dist<2.9&&d.cdn<=0){d.wind=(d.wind||0)+dt;if(d.wind>=D.bearWind){d.wind=0;d.cdn=D.bearCd;hurt('A BEAR MAULED YOU!','bear')}}else d.wind=0};
+ updGiant=function(dt){if(!mpPup())return uG(dt);mpPuppet(giant,dt);const dist=Math.hypot(P.x-giant.x,P.z-giant.z);
+  if(giant.alive&&giant.active&&!giant.carried&&!P.hid&&dist<2.6&&G==='play'){lives=0;deathCause='gray';die()}return giant.alive?dist:999};
+ popTick=function(f){if(!mpPup())return pT(f)};critTick=function(){if(!mpPup())return cT()};resetGiant=function(){if(!mpPup())rG()};
+ pickUp=function(dd){const had=carry.length;pk(dd);if(carry.length>had)mpAct(mpMobs().indexOf(dd),'pick')};
+ dropDeer=function(){const d=carry[carry.length-1];dr();if(d&&!d.carried)mpAct(mpMobs().indexOf(d),'drop',0,d.x,d.z,d.yaw)};
+ const sh=shoot;shoot=function(){if(!mpOnline){sh();return}const ms=mpMobs(),bA=ms.map(m=>m.alive),bH=ms.map(m=>m.hits||0),gH=giant.hp,gi=ms.length-1;sh();
+  ms.forEach((m,i)=>{if(i===gi)return;if(bA[i]&&!m.alive&&m.kind!=='bear')mpAct(i,'kill');else if(m.kind==='bear'&&(m.hits||0)>bH[i])mpAct(i,'bhit',m.hits-bH[i])});
+  if(giant.hp<gH)mpAct(gi,'ghit',gH-giant.hp)};
+ const up2=upd;upd=function(dt){up2(dt);if(mpPup()){const ms=mpMobs();ms.forEach((m,i)=>{if(m.done&&!m.sentDone){m.sentDone=true;mpAct(i,'sold')}else if(!m.done)m.sentDone=false})}};
+}
+setInterval(mpSendMobs,200);
 applySet();
 applyGear();skyUpdate();setDiff(diffKey);popTick(true);critFill();resetGiant();showScreen('title');adminPlusSync();cam.position.set(P.x,1.7,P.z);loop(last);
 </script></body></html>
