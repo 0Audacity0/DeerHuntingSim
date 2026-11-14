@@ -380,7 +380,7 @@ body.lite #ov.pause,body.lite #mode-overlay,body.lite #shop{backdrop-filter:none
 <li>The gray one takes <b>15 shotgun hits</b> to kill, and it runs faster than you. If it catches you, you die instantly.</li>
 <li>You always have <b>3 hearts</b>. <b>Bears</b> are rare and charge you when they spot you. Every swipe costs 1 heart. A bear takes <b>8 rifle shots</b> or <b>6 shotgun shots</b>, takes both hands to carry and sells for <b>$20</b>.</li>
 <li><b>Rabbits</b> are small, fast and jumpy. They sell for <b>$5</b> each.</li>
-<li>You can even carry the dead <b>gray one</b> (both hands, so you move like you carry 2 deer) and sell it for <b>$30</b>. Check the <b>Quests</b> tab in the shop for extra cash.</li>
+<li>You can even carry the dead <b>gray one</b> (both hands, so you move like you carry 2 deer) and sell it for <b>$100-130</b>. Check the <b>Quests</b> tab in the shop for extra cash.</li>
 <li>The <b>radar</b> ($60) shows animals around you: orange is deer, pale is rabbits and red is bears. In multiplayer, other players show up in blue, and ones that are far away stick to the edge of the radar as an arrow. <b>Bandages</b> ($15, key <b>H</b>) heal 1 heart, and sleeping in the bed heals all of them.</li>
 <li><b>Bear repellent</b> ($25, key <b>V</b>) makes a cloud that scares bears away for about 35 seconds. Rain and fog make animals notice you less, but you can see less too.</li>
 <li>The bar at the bottom shows your items. Pick the difficulty when starting a new run.</li>
@@ -1534,7 +1534,7 @@ const o=parseFloat($('fl').style.opacity)||0;if(o>0)$('fl').style.opacity=Math.m
 if(gd<50){hb-=dt;if(hb<=0){snd(55,.18,'sine',.7,.6);hb=.3+gd/70}}
 hf=Math.max(0,hf-dt*1.5);$('dg').style.opacity=Math.max(hf,0,Math.min(.8,1-(gd-6)/42));
 $('hd').style.opacity=P.hid?1:0;
-if(carry.length&&nearShop()){let n=0,pay=0,gs=false;const ks=new Set();for(const d of carry){n++;ks.add(d.kind||'deer');d.done=true;d.carried=false;pay+=d.giant?30:(d.val||10);if(d.giant)gs=true;else d.active=false}carry=[];stats.money+=pay;stats.sold+=n;saveStats();msg(gs?'SOLD THE GRAY ONE \u2014 +$'+pay:'SOLD '+n+' '+(ks.size>1?'ANIMALS':ks.has('bear')?(n>1?'BEARS':'BEAR'):ks.has('rabbit')?(n>1?'RABBITS':'RABBIT'):'DEER')+' \u2014 +$'+pay,3);snd(660,.12,'square',.2,1.5)}
+if(carry.length&&nearShop()){let n=0,pay=0,gs=false;const ks=new Set();for(const d of carry){n++;ks.add(d.kind||'deer');d.done=true;d.carried=false;pay+=d.giant?100+Math.floor(Math.random()*31):(d.val||10);if(d.giant)gs=true;else d.active=false}carry=[];stats.money+=pay;stats.sold+=n;saveStats();msg(gs?'SOLD THE GRAY ONE \u2014 +$'+pay:'SOLD '+n+' '+(ks.size>1?'ANIMALS':ks.has('bear')?(n>1?'BEARS':'BEAR'):ks.has('rabbit')?(n>1?'RABBITS':'RABBIT'):'DEER')+' \u2014 +$'+pay,3);snd(660,.12,'square',.2,1.5)}
 qTimer+=dt;if(qTimer>=1){qTimer=0;qCheck()}
 if(msgT>0){msgT-=dt;if(msgT<=0)$('ms').textContent=''}
 renderHotbar();drawRadar(dt);$('tl').textContent='DEER '+stats.deer+'   SHOTS '+stats.shots+'   MURDERED '+stats.deaths+(carry.length?'   CARRYING '+cw()+'/2':'');
@@ -2073,8 +2073,9 @@ function mpIsHost(){if(!mpOnline)return true;for(const id of mpRemote.keys())if(
 const mpPup=()=>mpOnline&&!mpIsHost();
 function mpSendMobs(){if(!mpOnline||!mpChannel||!mpIsHost())return;
  const a=mpMobs().map(m=>!m.active?[0]:[1,Math.round(m.x*10)/10,Math.round(m.z*10)/10,Math.round(m.yaw*100)/100,(m.alive?1:0)|(m.carried?2:0)|(m.st==='chase'?4:0)|(m.perched?8:0)|(m.trapT>0?16:0),m.giant?m.hp:0]);
- try{mpChannel.send({type:'broadcast',event:'mobs',payload:{h:mpPlayerId,a}})}catch(e){}}
+ try{mpChannel.send({type:'broadcast',event:'mobs',payload:{h:mpPlayerId,a,k:Math.round(clock*1000)/1000,w:[wx.tr,wx.tf,wx.storm?1:0,Math.round(wx.t)]}})}catch(e){}}
 function mpApplyMobs(p){if(!mpOnline||!p||!p.a||p.h>=mpPlayerId)return;const ms=mpMobs(),now=performance.now();
+ if(typeof p.k==='number'&&sleepT<=0)clock=p.k;if(p.w){wx.tr=p.w[0];wx.tf=p.w[1];wx.storm=!!p.w[2];wx.t=Math.max(5,p.w[3])}
  p.a.forEach((r,i)=>{const m=ms[i];if(!m||m.lock>now)return;const was=m.active;m.active=!!r[0];if(!m.active){m.g.visible=false;return}
   m.tx=r[1];m.tz=r[2];m.tyaw=r[3];const f=r[4];m.alive=!!(f&1);m.carried=!!(f&2);m.st=(f&4)?'chase':'idle';m.perched=!!(f&8);m.trapT=(f&16)?1:0;if(m.giant)m.hp=r[5];
   if(!was||m.x===undefined||Math.hypot(m.x-m.tx,m.z-m.tz)>25){m.x=m.tx;m.z=m.tz;m.yaw=m.tyaw}})}
@@ -2103,7 +2104,7 @@ function mpApplyAct(p){if(!mpOnline||!p||p.from===mpPlayerId||!mpIsHost())return
   if(d.st==='chase'&&!P.hid&&dist<2.9&&d.cdn<=0){d.wind=(d.wind||0)+dt;if(d.wind>=D.bearWind){d.wind=0;d.cdn=D.bearCd;hurt('A BEAR MAULED YOU!','bear')}}else d.wind=0};
  updGiant=function(dt){if(!mpPup())return uG(dt);mpPuppet(giant,dt);const dist=Math.hypot(P.x-giant.x,P.z-giant.z);
   if(giant.alive&&giant.active&&!giant.carried&&!P.hid&&dist<2.6&&G==='play'){lives=0;deathCause='gray';die()}return giant.alive?dist:999};
- popTick=function(f){if(!mpPup())return pT(f)};critTick=function(){if(!mpPup())return cT()};resetGiant=function(){if(!mpPup())rG()};
+ popTick=function(f){if(!mpPup())return pT(f)};{const wp=wxPick;wxPick=function(){if(!mpPup())wp()}};critTick=function(){if(!mpPup())return cT()};resetGiant=function(){if(!mpPup())rG()};
  pickUp=function(dd){const had=carry.length;pk(dd);if(carry.length>had)mpAct(mpMobs().indexOf(dd),'pick')};
  dropDeer=function(){const d=carry[carry.length-1];dr();if(d&&!d.carried)mpAct(mpMobs().indexOf(d),'drop',0,d.x,d.z,d.yaw)};
  const sh=shoot;shoot=function(){if(!mpOnline){sh();return}const ms=mpMobs(),bA=ms.map(m=>m.alive),bH=ms.map(m=>m.hits||0),gH=giant.hp,gi=ms.length-1;sh();
