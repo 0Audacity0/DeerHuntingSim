@@ -502,7 +502,7 @@ body.lite #ov.pause,body.lite #mode-overlay,body.lite #shop{backdrop-filter:none
   <div id="mp-admin-body">
   <div id="mp-admin-tabs"><button type="button" class="active" data-admin-tab="bans">BANS</button><button type="button" data-admin-tab="game">GAME OPTIONS</button><button type="button" data-admin-tab="testing">TESTING</button><button type="button" data-admin-tab="multiplayer">MULTIPLAYER</button></div>
   <section class="mp-admin-section active" data-admin-section="bans">
-   <div class="mp-admin-small">Enter the exact username of someone who has joined recently. IP bans affect everyone sharing that public IP. Device bans use a browser-profile ID and can be bypassed by clearing browser data.</div>
+   
    <label class="mp-admin-field">PLAYER USERNAME<input id="mp-ban-user" maxlength="20" placeholder="Username to ban"></label>
    <label class="mp-admin-field">REASON<textarea id="mp-ban-reason" maxlength="300" placeholder="Explain why this player was banned"></textarea></label>
    <div class="mp-admin-grid"><label class="mp-admin-field">BAN TYPE<select id="mp-ban-type"><option value="ip">IP BAN</option><option value="device">DEVICE / BROWSER BAN</option></select></label><label class="mp-admin-field">DURATION<select id="mp-ban-duration"><option value="permanent">PERMANENT</option><option value="1h">1 HOUR</option><option value="1d">1 DAY</option><option value="7d">7 DAYS</option><option value="30d">30 DAYS</option></select></label></div>
@@ -535,27 +535,27 @@ body.lite #ov.pause,body.lite #mode-overlay,body.lite #shop{backdrop-filter:none
   </section>
   <section class="mp-admin-section" data-admin-section="testing">
    <b style="color:#ff5b5b;font-size:12px;letter-spacing:1px">WARNING &amp; SCREEN TESTS</b>
-   <p class="mp-admin-small">Preview the game's warning messages and access screens. These tests do not actually ban anyone, change game availability, or alter player data.</p>
+   
    <div class="mp-test-row"><button class="mp-admin-action" type="button" data-admin-test="warnings">TEST ALL WARNINGS</button><button class="mp-admin-action" type="button" data-admin-test="stop-warnings">STOP TEST</button></div>
    <div class="mp-test-row"><button class="mp-admin-action" type="button" data-admin-test="ban-ip">TEST IP BAN SCREEN</button><button class="mp-admin-action" type="button" data-admin-test="ban-device">TEST DEVICE BAN SCREEN</button></div>
    <div class="mp-test-row"><button class="mp-admin-action" type="button" data-admin-test="shutdown-sp">TEST SINGLEPLAYER SHUTDOWN</button><button class="mp-admin-action" type="button" data-admin-test="shutdown-mp">TEST MULTIPLAYER SHUTDOWN</button></div>
    <div class="mp-test-row"><button class="mp-admin-action" type="button" data-admin-test="shutdown-both">TEST BOTH SHUTDOWN</button><button class="mp-admin-action" type="button" data-admin-test="close-screen">CLOSE TEST SCREEN</button></div>
    <div style="height:1px;background:#492020;margin:14px 0"></div>
    <b style="color:#ff5b5b;font-size:12px;letter-spacing:1px">SOUND TESTS</b>
-   <p class="mp-admin-small">Click each sound to preview it. Your browser may require one click before audio can play.</p>
+   
    <div class="mp-test-row"><button class="mp-admin-action" type="button" data-admin-test="sound-ding">CHAT DING</button><button class="mp-admin-action" type="button" data-admin-test="sound-warning">WARNING</button><button class="mp-admin-action" type="button" data-admin-test="sound-damage">DAMAGE</button></div>
    <div class="mp-test-row"><button class="mp-admin-action" type="button" data-admin-test="sound-purchase">PURCHASE</button><button class="mp-admin-action" type="button" data-admin-test="sound-reload">RELOAD</button><button class="mp-admin-action" type="button" data-admin-test="sound-death">DEATH STING</button></div>
-   <div id="mp-test-preview" aria-hidden="true"></div><div class="mp-test-status" id="mp-test-status" role="status" aria-live="polite">Ready. Choose a test above.</div>
+   <div id="mp-test-preview" aria-hidden="true"></div><div class="mp-test-status" id="mp-test-status" role="status" aria-live="polite"></div>
   </section>
   <section class="mp-admin-section" data-admin-section="multiplayer">
    <b style="color:#ff5b5b;font-size:12px;letter-spacing:1px">PLAYER LOCATOR</b>
-   <p class="mp-admin-small">These work while you are in a multiplayer game as ADMINISTRATOR. Switch them on here, then join multiplayer. They stay on until you switch them off. Only you can see them.</p>
+   
    <label class="mp-admin-switch"><input type="checkbox" data-admin-perk="playerList"> PLAYER LIST (NAME, DISTANCE, DIRECTION, COORDINATES)</label>
    <label class="mp-admin-switch"><input type="checkbox" data-admin-perk="playerBeacons"> RED BEAMS THROUGH WALLS ON EVERY PLAYER</label>
-   <p class="mp-admin-small">The radar already shows other players for anyone who owns one, with far-away players pinned to its edge.</p>
+   
   </section>
   <div id="mp-admin-feedback" role="status" aria-live="polite"></div>
-  <div id="mp-admin-note" class="mp-admin-small">Server-side controls require the supplied Supabase Edge Function and SQL setup.</div>
+  
   </div>
  </div>
 </div>
@@ -1018,7 +1018,7 @@ let mpAdminAuthenticated=false,mpAdminSecret='',mpGrantedPermissions={};const mp
 const adminPlus={speedOn:false,speed:2,aimbot:false,esp:false,infiniteAmmo:false,noCooldowns:false,unlimitedCarry:false,noCarrySlow:false,invulnerable:false,instantReload:false,infiniteSupplies:false,noMudSlow:false};
 const keys={};
 const UPDATES=[
-{v:'1.8.1',t:'Admin+ & Quality of Life Update',n:['The drop button now says Drop Deer when you only hold deer, and Drop Animals when you hold anything else','Mobile: double tapping the screen no longer zooms in','PC: hold TAB in multiplayer to see who is playing, where they are and how far away they are','ADMIN+ can now spawn deer, deer variants, the gray one, bears and rabbits (with a Make em Dead switch)','ADMIN+ can give money to yourself or other players, heal, hand out supplies, teleport, and change the time and weather']},
+{v:'1.8.1',t:'Admin+ & Quality of Life Update',n:['The drop button now says Drop Deer when you only hold deer, and Drop Animals when you hold anything else','Mobile: double tapping the screen no longer zooms in','PC: hold TAB in multiplayer to see who is playing, where they are and how far away they are']},
 {v:'1.8.0',t:'The (ALMOST) Everything Update',n:['Fixed UI getting stuck on the screen sometimes','Fixed more UI','Fixed game not figuring out how many hearts you have','Fixed a bunch of more stuff that I will NOT be saying here','Made it so any animal can be seen by everybody and makes you look like youre not schizophrenic','Gray One has 15 HP, walks 1.4x faster than the player but can get stuck in bear traps','Removed MANY trees from the gray biome as it was kinda stupid','Player with the lowest value (ID) in Multiplayer is deemed the host, so you CANNOT be attacked by hostile animals if youre not the host','Yayyy thats it yippeeeee']},
 {v:'1.7.3',t:'Gun Skins and Model Update 🥶🥶🥶',n:['Added gun skins','Gun skins CAN be seen by other plays','Fixed gun models looking like complete doodoo garbage (on multiplayer)']},
 {v:'1.7.0',t:'Administrator & Chat Update',n:['Administrators are able to ban you','Singleplayer and Multiplayer can be shut down now','Added chat message dings and an unread message counter','PC mouse cursor now unlocks over in game interfaces and locks again during gameplay']},
@@ -1457,7 +1457,7 @@ else if(d.st==='chase'){
   if(dist>70&&d.angry<=0)d.st='wander'}}
 else if(d.st==='search'){d.t-=dt;sp=1.2;ty=Math.atan2(dx,dz);if(!P.hid&&d.imm<=0&&dist<sense){d.st='chase';d.angry=8}else if(d.t<=0){d.st='wander';d.t=3}}
 else{
- if(!P.hid&&d.imm<=0&&dist<sense){d.st='chase';d.angry=8;msg('A BEAR IS CHARGING YOU!',2.5);bearSound('roar',dist,d)}
+ if(!P.hid&&d.imm<=0&&dist<sense){d.st='chase';d.angry=8;msg('A BEAR IS CHASING YOU',2.5);bearSound('roar',dist,d)}
  else{
   if(d.gT<=0){d.gT=9+Math.random()*16;if(dist<65)bearSound('growl',dist,d)}
   if(d.st==='idle'){d.t-=dt;if(d.t<=0){d.st='wander';d.t=4+Math.random()*6;d.wy=Math.random()*6.28}}
@@ -1885,7 +1885,7 @@ setInterval(()=>{if(!tabHeld)return;if(!playing||G!=='play'){tabShow(false);retu
 document.querySelectorAll('[data-admin-tab]').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('[data-admin-tab]').forEach(b=>b.classList.toggle('active',b===button));document.querySelectorAll('[data-admin-section]').forEach(section=>section.classList.toggle('active',section.dataset.adminSection===button.dataset.adminTab))}));
 let mpAdminWarningTestTimer=null,mpAdminTestScreenWasVisible=false;
 const mpAdminWarningSamples=[
- 'NO DEER NEARBY','BUY THE AXE AT THE SHOP ($70)','NO BANDAGES, BUY SOME AT THE SHOP','YOU ARE ALREADY AT FULL HEALTH','NO REPELLENT, BUY SOME AT THE SHOP','MASH WASD TO BREAK FREE YOURSELF OR MOVE ANALOG STICK VIOLENTLY','STUCK IN THE MUD, YOU MOVE SLOWLY','THE GRAY ONE SEES YOU','A BEAR IS GOING AFTER YOU','HANDS FULL, MAX 2 DEER','YOU CAN ONLY SLEEP AT NIGHT','RIFLE ROUNDS DO NOTHING, USE THE SHOTGUN'
+ 'NO DEER NEARBY','BUY THE AXE AT THE SHOP ($70)','NO BANDAGES, BUY SOME AT THE SHOP','YOU ARE ALREADY AT FULL HEALTH','NO REPELLENT, BUY SOME AT THE SHOP','MASH WASD OR VIOLENTLY MOVE ANALOG STICK TO FREE YOURSELF','STUCK IN THE MUD, YOU MOVE SLOWLY','THE GRAY ONE SEES YOU','A BEAR IS CHASING YOU','HANDS FULL, MAX 2 DEER','NOT TIRED, YOU CAN ONLY SLEEP AT NIGHT','RIFLE ROUNDS DO NOTHING, USE THE SHOTGUN'
 ];
 function mpAdminPreview(text){const el=$('mp-test-preview');if(el)el.textContent=text||''}
 function mpAdminTestStatus(text){const el=$('mp-test-status');if(el)el.textContent=text}
