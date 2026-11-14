@@ -493,7 +493,7 @@ body.lite #ov.pause,body.lite #mode-overlay,body.lite #shop{backdrop-filter:none
   <button type="button" data-wx="clear">Clear</button><button type="button" data-wx="rain">Rain</button>
   <button type="button" data-wx="fog">Fog</button><button type="button" data-wx="storm">Storm</button>
  </div>
- <div id="adminplus-note">Local ADMIN+ modifiers. Aim lock targets wildlife only. Player ESP is visible only to you in multiplayer. In multiplayer, spawns, time and weather are handled by the host.</div>
+ <div id="adminplus-note">hi</div>
 </div>
 <div id="mp-admin-ui" aria-label="Administrator controls">
  <div id="mp-admin-panel" role="dialog" aria-label="Administrator panel">
@@ -502,7 +502,7 @@ body.lite #ov.pause,body.lite #mode-overlay,body.lite #shop{backdrop-filter:none
   <div id="mp-admin-body">
   <div id="mp-admin-tabs"><button type="button" class="active" data-admin-tab="bans">BANS</button><button type="button" data-admin-tab="game">GAME OPTIONS</button><button type="button" data-admin-tab="testing">TESTING</button><button type="button" data-admin-tab="multiplayer">MULTIPLAYER</button></div>
   <section class="mp-admin-section active" data-admin-section="bans">
-   <div class="mp-admin-small">Enter the exact username of someone who has joined recently. IP bans affect everyone sharing that public IP. Device bans use a browser-profile ID and can be bypassed by clearing browser data.</div>
+   <div class="mp-admin-small">Enter exact username of player. IP bans effect everybody who is inside that IP.</div>
    <label class="mp-admin-field">PLAYER USERNAME<input id="mp-ban-user" maxlength="20" placeholder="Username to ban"></label>
    <label class="mp-admin-field">REASON<textarea id="mp-ban-reason" maxlength="300" placeholder="Explain why this player was banned"></textarea></label>
    <div class="mp-admin-grid"><label class="mp-admin-field">BAN TYPE<select id="mp-ban-type"><option value="ip">IP BAN</option><option value="device">DEVICE / BROWSER BAN</option></select></label><label class="mp-admin-field">DURATION<select id="mp-ban-duration"><option value="permanent">PERMANENT</option><option value="1h">1 HOUR</option><option value="1d">1 DAY</option><option value="7d">7 DAYS</option><option value="30d">30 DAYS</option></select></label></div>
@@ -535,32 +535,32 @@ body.lite #ov.pause,body.lite #mode-overlay,body.lite #shop{backdrop-filter:none
   </section>
   <section class="mp-admin-section" data-admin-section="testing">
    <b style="color:#ff5b5b;font-size:12px;letter-spacing:1px">WARNING &amp; SCREEN TESTS</b>
-   <p class="mp-admin-small">Preview the game's warning messages and access screens. These tests do not actually ban anyone, change game availability, or alter player data.</p>
+   <p class="mp-admin-small">These tests do not actually do anything or ban someone.</p>
    <div class="mp-test-row"><button class="mp-admin-action" type="button" data-admin-test="warnings">TEST ALL WARNINGS</button><button class="mp-admin-action" type="button" data-admin-test="stop-warnings">STOP TEST</button></div>
    <div class="mp-test-row"><button class="mp-admin-action" type="button" data-admin-test="ban-ip">TEST IP BAN SCREEN</button><button class="mp-admin-action" type="button" data-admin-test="ban-device">TEST DEVICE BAN SCREEN</button></div>
    <div class="mp-test-row"><button class="mp-admin-action" type="button" data-admin-test="shutdown-sp">TEST SINGLEPLAYER SHUTDOWN</button><button class="mp-admin-action" type="button" data-admin-test="shutdown-mp">TEST MULTIPLAYER SHUTDOWN</button></div>
    <div class="mp-test-row"><button class="mp-admin-action" type="button" data-admin-test="shutdown-both">TEST BOTH SHUTDOWN</button><button class="mp-admin-action" type="button" data-admin-test="close-screen">CLOSE TEST SCREEN</button></div>
    <div style="height:1px;background:#492020;margin:14px 0"></div>
    <b style="color:#ff5b5b;font-size:12px;letter-spacing:1px">SOUND TESTS</b>
-   <p class="mp-admin-small">Click each sound to preview it. Your browser may require one click before audio can play.</p>
+   <p class="mp-admin-small">This is for previewing sounds!!</p>
    <div class="mp-test-row"><button class="mp-admin-action" type="button" data-admin-test="sound-ding">CHAT DING</button><button class="mp-admin-action" type="button" data-admin-test="sound-warning">WARNING</button><button class="mp-admin-action" type="button" data-admin-test="sound-damage">DAMAGE</button></div>
    <div class="mp-test-row"><button class="mp-admin-action" type="button" data-admin-test="sound-purchase">PURCHASE</button><button class="mp-admin-action" type="button" data-admin-test="sound-reload">RELOAD</button><button class="mp-admin-action" type="button" data-admin-test="sound-death">DEATH STING</button></div>
-   <div id="mp-test-preview" aria-hidden="true"></div><div class="mp-test-status" id="mp-test-status" role="status" aria-live="polite">Ready. Choose a test above.</div>
+   <div id="mp-test-preview" aria-hidden="true"></div><div class="mp-test-status" id="mp-test-status" role="status" aria-live="polite">Choose el test above to test it</div>
   </section>
   <section class="mp-admin-section" data-admin-section="multiplayer">
    <b style="color:#ff5b5b;font-size:12px;letter-spacing:1px">PLAYER LOCATOR</b>
-   <p class="mp-admin-small">These work while you are in a multiplayer game as ADMINISTRATOR. Switch them on here, then join multiplayer. They stay on until you switch them off. Only you can see them.</p>
+   <p class="mp-admin-small">These work while you are in a Multiplayer game, so I guess it's useful if you're lazy and dont have the time and patience to get the Radar.</p>
    <label class="mp-admin-switch"><input type="checkbox" data-admin-perk="playerList"> PLAYER LIST (NAME, DISTANCE, DIRECTION, COORDINATES)</label>
    <label class="mp-admin-switch"><input type="checkbox" data-admin-perk="playerBeacons"> RED BEAMS THROUGH WALLS ON EVERY PLAYER</label>
-   <p class="mp-admin-small">The radar already shows other players for anyone who owns one, with far-away players pinned to its edge.</p>
+   <p class="mp-admin-small">The Radar already shows players, so I don't know why you would want this on.</p>
   </section>
   <div id="mp-admin-feedback" role="status" aria-live="polite"></div>
-  <div id="mp-admin-note" class="mp-admin-small">Server-side controls require the supplied Supabase Edge Function and SQL setup.</div>
+  <div id="mp-admin-note" class="mp-admin-small">Server sided controls, if this does NOT work open Supabase and go to Edge Functions or fix something in the editor.</div>
   </div>
  </div>
 </div>
 <div id="rot"><div class="ph"></div><b>ROTATE YOUR PHONE</b><span>It is recommended that this game is played in landscape mode</span></div>
-<div id="ver">v1.8.0</div>
+<div id="ver">v1.8.1</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -1868,7 +1868,7 @@ function tabRender(){const box=$('tab-list');box.textContent='';const sy=Math.si
  const head=document.createElement('div');head.className='tl-head';head.append(el('',mpOnline?'PLAYERS ONLINE':'SINGLEPLAYER'),el('',String(rows.length+1)));box.appendChild(head);
  const me=document.createElement('div');me.className='tl-row me';me.append(el('tl-arrow','\u25CF'),el('tl-name','You'),el('tl-dist','0m'),el('tl-pos','('+Math.round(P.x)+', '+Math.round(P.z)+')'));box.appendChild(me);
  for(const r of rows){const row=document.createElement('div');row.className='tl-row'+(r.dead?' dead':'');const a=el('tl-arrow','\u25B2');a.style.transform='rotate('+Math.atan2(r.u,r.v)+'rad)';row.append(a,el('tl-name',r.name),el('tl-dist',Math.round(r.d)+'m'),el('tl-pos','('+Math.round(r.x)+', '+Math.round(r.z)+')'));box.appendChild(row)}
- box.appendChild(el('tl-note',mpOnline?'Arrows point toward each player relative to where you are facing.':'Nobody else is here. Join Multiplayer to see other hunters.')).style.display='block'}
+ box.appendChild(el('tl-note',mpOnline?'Nobody else is here. Join Multiplayer to see other people.')).style.display='block'}
 addEventListener('keydown',e=>{if(e.code!=='Tab')return;const t=e.target;if(t&&(t.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)))return;if(!playing||G!=='play')return;e.preventDefault();if(!tabHeld)tabShow(true)});
 addEventListener('keyup',e=>{if(e.code==='Tab'){if(tabHeld)e.preventDefault();tabShow(false)}});
 addEventListener('blur',()=>tabShow(false));
