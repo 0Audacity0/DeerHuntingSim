@@ -1,5 +1,9 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Deer Hunting Simulator</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 <style>
 :root{--fg:#d8d2b0;--dim:#8f8a70;--bg:#000;color-scheme:dark}
 html,body{margin:0;height:100%;background:var(--bg);overflow:hidden;font-family:"Courier New",monospace;color:var(--fg)}
@@ -363,7 +367,20 @@ html,body,#c,#hud,.f{touch-action:manipulation;-webkit-touch-callout:none}
 @media (max-height:520px){#ov{align-items:flex-start;padding:10px}.btn{font-size:16px;padding:8px 14px;min-height:36px}.btns{gap:8px}#ov h1{margin-bottom:2px}#t2{margin:2px 0 10px}#stats{margin-top:12px}}
 body.lite #scan{display:none}
 body.lite #ov.pause,body.lite #mode-overlay,body.lite #shop{backdrop-filter:none!important}
-#wnb{position:absolute;top:-10px;right:-10px;width:22px;height:22px;border-radius:50%;box-sizing:border-box;background:#ffd83d;border:2px solid #000;color:#000;font:bold 14px/18px "Courier New",monospace;letter-spacing:0;text-align:center;font-style:normal;display:none;box-shadow:0 0 0 1px #6f6b55;pointer-events:none}</style></head><body>
+#wnb{position:absolute;top:-10px;right:-10px;width:22px;height:22px;border-radius:50%;box-sizing:border-box;background:#ffd83d;border:2px solid #000;color:#000;font:bold 14px/18px "Courier New",monospace;letter-spacing:0;text-align:center;font-style:normal;display:none;box-shadow:0 0 0 1px #6f6b55;pointer-events:none}
+/* Multiplayer pause tools, quality presets, and in-world leaderboard */
+.mp-pause-card{border:1px solid #4a4836;background:rgba(0,0,0,.48);padding:10px;margin-bottom:9px}
+.mp-pause-card>b{display:block;color:#e8d9a0;font-size:12px;letter-spacing:2px;margin-bottom:8px}
+.mp-pause-row{display:flex;gap:7px;margin-bottom:7px}
+.mp-pause-row select,.mp-pause-row input{min-width:0;width:50%;box-sizing:border-box;padding:9px;color:#d8d2b0;background:#080a07;border:1px solid #6f6b55;font:13px "Courier New",monospace}
+.mp-pause-card .btn{width:100%;font-size:13px;padding:8px;letter-spacing:1px}
+#mp-trade-status,#mp-voice-status{font-size:11px;color:#9fd27a;min-height:16px;margin:5px 0}
+#mp-voice-toggle{margin-top:5px}
+#quality-preset{width:100%;padding:9px;background:#080a07;color:#e8d9a0;border:1px solid #6f6b55;font:14px "Courier New",monospace;letter-spacing:1px}
+#quality-desc{font-size:11px;color:#8f8a70;line-height:1.45;margin:7px 0 12px}
+#leaderboard-hint{position:fixed;left:50%;bottom:76px;transform:translateX(-50%);z-index:6;padding:5px 9px;background:rgba(0,0,0,.65);border:1px solid #6f6b55;color:#e8d9a0;font:11px "Courier New",monospace;display:none;pointer-events:none}
+@media(max-width:560px){.mp-pause-row{flex-direction:column}.mp-pause-row select,.mp-pause-row input{width:100%}#mp-pause-tools{max-height:34vh;overflow:auto}}
+</style></head><body>
 <canvas id="c"></canvas><canvas id="gh"></canvas>
 <div id="vhs"><div class="vl"></div><span id="vrec">● REC</span><span id="vts"></span></div><audio id="whatSong" src="WHAT.mp3" loop preload="auto"></audio>
 <div class="f" id="hd"></div><div class="f" id="dg"></div><div class="f" id="fl"></div><div class="f" id="sc"></div><div class="f" id="bk"></div><div class="f" id="scan"></div>
@@ -385,6 +402,10 @@ body.lite #ov.pause,body.lite #mode-overlay,body.lite #shop{backdrop-filter:none
 <div class="btns"><button class="btn" id="go">PLAY</button><button class="btn sec" id="change-user">CHANGE USER</button><button class="btn sec" id="mp">MULTIPLAYER</button><button class="btn sec" id="admin-open" style="display:none">ADMIN PANEL</button><button class="btn sec" id="tt">BACK TO TITLE</button></div>
 <div id="mpmsg" style="display:none;margin-top:14px;font-size:15px;letter-spacing:1px;color:#f0e6a8">My bad yo this isn't released yet so like uhh play singleplayer</div>
 <div id="stats"><div class="st"><b id="sv-deer">0</b><span>DEER HUNTED</span></div><div class="st"><b id="sv-shots">0</b><span>SHOTS FIRED</span></div><div class="st"><b id="sv-dead">0</b><span>TIMES MURDERED</span></div></div>
+<div id="mp-pause-tools" style="display:none;width:min(420px,92%);margin-top:14px;text-align:left">
+ <div class="mp-pause-card"><b>MONEY TRANSFER</b><div class="mp-pause-row"><select id="mp-trade-target" aria-label="Player to receive money"><option value="">Choose player</option></select><input id="mp-trade-amount" type="number" min="1" max="1000000" step="1" value="10" aria-label="Amount to send"></div><button class="btn" id="mp-trade-send" type="button">SEND MONEY</button><div id="mp-trade-status" role="status"></div></div>
+ <div class="mp-pause-card"><b>VOICE CHAT</b><div id="mp-voice-status">Not connected</div><button class="btn sec" id="mp-voice-toggle" type="button">JOIN VOICE CHAT</button></div>
+</div>
 <div id="foot">(STATS SAVE IN THIS BROWSER)</div>
 </div>
 <div class="scr" id="scr-help" style="display:none">
@@ -422,7 +443,7 @@ body.lite #ov.pause,body.lite #mode-overlay,body.lite #shop{backdrop-filter:none
 <div id="wnp"><button class="wnar" id="wnl" aria-label="Newer update">&#9664;&#xFE0E;</button>
 <div class="wnc"><div class="wnh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" shape-rendering="crispEdges"><path d="M3 4h14v16H5a2 2 0 0 1-2-2z"/><path d="M17 8h4v10a2 2 0 0 1-2 2h-2"/><path d="M6 8h8M6 11h8M6 14h4M12 14h2M6 17h8"/></svg><h2>WHAT'S NEW</h2></div><div class="wnv" id="wnv"></div><ul id="wnu"></ul><button class="btn" id="wnx" style="width:100%">CLOSE</button></div>
 <button class="wnar" id="wnr" aria-label="Previous updates">&#9654;&#xFE0E;</button></div>
-<div id="set"><div class="setbox"><div class="seth"><b>SETTINGS</b><button id="setx">CLOSE</button></div><div id="settabs"><button data-t="vis" class="on">VISUAL</button><button data-t="game">GAME</button><button data-t="fun">FUN</button></div><div id="setb"></div></div></div>
+<div id="set"><div class="setbox"><div class="seth"><b>SETTINGS</b><button id="setx">CLOSE</button></div><div id="settabs"><button data-t="vis" class="on">VISUAL</button><button data-t="game">GAME</button><button data-t="fun">FUN</button></div><div id="setb"></div><div id="mic-test-area" style="display:none;margin-top:10px;border-top:1px solid #4a4836;padding-top:10px"><button class="sbt" id="mic-test" type="button">TEST MICROPHONE</button><div id="mic-test-status" class="sn" style="margin:8px 0 0">Microphone test is local to this browser.</div><div style="height:8px;background:#000;border:1px solid #4a4836;margin-top:7px"><i id="mic-meter" style="display:block;width:0;height:100%;background:#9fd27a"></i></div></div></div></div>
 <div id="mp-panel"><div class="mp-card"><h2 id="mp-title">MULTIPLAYER</h2><div id="mp-config"><p>THIS IS STILL IN THE WORKS AND IS PRETTY UNSTABLE, MANY BUGS AND MORE <span style="color:red;text-decoration:underline;">WILL APPEAR.</span></p><input id="mp-name" placeholder="Player name" autocomplete="nickname"><div class="mp-actions"><button class="btn" id="mp-connect">JOIN MULTIPLAYER</button><button class="btn sec" id="mp-cancel">CANCEL</button></div></div><div id="mp-admin-gate" class="mp-admin-gate"><h3>ADMINISTRATOR ACCESS</h3><p>Enter the administrator password to continue.</p><input id="mp-admin-password" type="password" autocomplete="current-password" placeholder="Administrator password" aria-label="Administrator password"><div class="mp-actions"><button class="btn" id="mp-admin-verify" type="button">VERIFY &amp; JOIN</button><button class="btn sec" id="mp-admin-gate-cancel" type="button">CANCEL</button></div><div id="mp-admin-error" role="status" aria-live="polite"></div></div><div id="mp-loading" style="display:none"><p id="mp-load-caption">Connecting to Multiplayer...</p><div class="mp-progress"><i id="mp-progress-bar"></i></div><div class="mp-task" id="mp-task-list"></div><div class="mp-status" id="mp-status"></div><button class="btn sec" id="mp-load-cancel" style="width:100%;margin-top:12px">CANCEL</button></div></div></div>
 <div id="mp-access-overlay" role="alertdialog" aria-modal="true" aria-labelledby="mp-access-title"><div id="mp-access-card"><h1 id="mp-access-title">Whoops!</h1><div id="mp-access-message"></div><div id="mp-access-extra"></div><button id="mp-access-back" type="button">BACK TO TITLE</button></div></div>
 <div id="mp-chat-ui" aria-label="Multiplayer chat">
@@ -586,7 +607,7 @@ try{const q=JSON.parse(localStorage.getItem('deerHunter98.settings')||'{}');for(
 const LOW=/CrOS/.test(navigator.userAgent)||(navigator.hardwareConcurrency||8)<=4||(navigator.deviceMemory||8)<=4;
 try{if(LOW&&!localStorage.getItem('deerHunter98.settings'))SDEF.px=SET.px=4}catch(e){}
 if(LOW)document.body.classList.add('lite');
-let pxs=Math.max(1,Math.min(6,Math.round(SET.px))),baseFov=SET.fov;
+let pxs=Math.max(1,Math.min(6,Math.round(SET.px))),baseFov=SET.fov;let graphicsDistance=1,graphicsQuality='Medium';
 function rs(){loop.force=true;const W=cv.clientWidth||innerWidth,H=cv.clientHeight||innerHeight,w=Math.max(2,Math.floor(W/pxs)),h=Math.max(2,Math.floor(H/pxs));if(rs.w===w&&rs.h===h&&rs.a===W/H)return;rs.w=w;rs.h=h;rs.a=W/H;renderer.setSize(w,h,false);mat.uniforms.res.value.set(w,h);{const g2=$('gh');g2.width=w;g2.height=h}cam.aspect=gcam.aspect=W/H;cam.updateProjectionMatrix();gcam.updateProjectionMatrix()}
 addEventListener('resize',rs);addEventListener('orientationchange',()=>[100,400,900,1600].forEach(t=>setTimeout(rs,t)));if(window.visualViewport)visualViewport.addEventListener('resize',rs);rs();if(window.ResizeObserver)new ResizeObserver(rs).observe(cv);renderer.autoClear=false;
 const matT=new THREE.ShaderMaterial({uniforms:{res:mat.uniforms.res,fogc:mat.uniforms.fogc,fogn:mat.uniforms.fogn,fogf:mat.uniforms.fogf,tint:mat.uniforms.tint,fl:mat.uniforms.fl,map:{value:null}},
@@ -617,7 +638,7 @@ const chunks={},CH=70;
 const chunk=(x,z)=>{const k=Math.floor((x+W/2)/CH)+','+Math.floor((z+W/2)/CH);return chunks[k]||(chunks[k]=mk())};
 let HB=0;
 let inMud=null;
-const SH={x:64,z:7},nearShop=()=>Math.abs(P.x-SH.x)<4.3&&P.z>SH.z+2.7&&P.z<SH.z+6.4;
+let shopWorldMesh=null,shopPotatoMesh=null;const SH={x:64,z:7},nearShop=()=>Math.abs(P.x-SH.x)<4.3&&P.z>SH.z+2.7&&P.z<SH.z+6.4;
 const hBase=(x,z)=>{const f=Math.min(1,Math.max(0,(Math.hypot(x,z)-16)/30));let h=f*(Math.sin(x*.013)*Math.cos(z*.011)*7+Math.sin(x*.031+z*.027)*2.4+Math.sin(z*.05-x*.02)*1.2);
 const w=Math.min(1,Math.max(0,(GZ.r+14-Math.hypot(x-GZ.x,z-GZ.z))/24));
 if(w>0)h+=w*(Math.abs(Math.sin(x*.07+Math.cos(z*.05)*2))*4.5+Math.abs(Math.sin(z*.085-x*.04))*3+Math.sin(x*.11+z*.13)*1.5-4);
@@ -650,7 +671,7 @@ tri(gb,c,A,D,C,l*(.95+rnd()*.1));tri(gb,c,A,C,B,l*(.95+rnd()*.1))}
 scene.add(new THREE.Mesh(fin(gb),mat));
 const pines=[0x1f3a1c,0x2a4a26,0x233f20,0x2d4a2a];
 const snag=(b,x,z,s,col)=>{add(b,BOX,col,x,2.4*s,z,.42*s,4.8*s,.42*s);for(let k=0;k<5;k++){const a=rnd()*6.28,t=.7+rnd()*.5;add(b,BOX,col,x+Math.cos(a)*.6*s,(2.8+k*.45)*s,z+Math.sin(a)*.6*s,.14*s,1.7*s,.14*s,Math.sin(a)*t,-Math.cos(a)*t)}};
-for(let i=0;i<8500;i++){
+for(let i=0;i<5000;i++){
 const x=(rnd()-.5)*(W-4),z=(rnd()-.5)*(W-4);if(Math.hypot(x,z)<14||nearRoad(x,z)||nearGrayRoad(x,z))continue;
 const b=chunk(x,z),s=1.15+rnd()*.9;HB=hgt(x,z);const v0=b.p.length/3;
 const gray=Math.hypot(x-GZ.x,z-GZ.z)<GZ.r+6;let cr=.65*s;
@@ -670,7 +691,7 @@ else{snag(b,x,z,s,0x4d4439);ty=5.4*s}
 treeSpots.push({x,z,y:ty,b,v0,v1:b.p.length/3,hp:4})}
 treeSpots[treeSpots.length-1].c=addC(x,z,cr)}
 // Extra dense, bushy trees specifically throughout the gray biome.
-for(let i=0;i<1100;i++){const a=rnd()*6.283,d=Math.sqrt(rnd())*(GZ.r-3),x=GZ.x+Math.cos(a)*d,z=GZ.z+Math.sin(a)*d;if(nearRoad(x,z)||nearGrayRoad(x,z))continue;const b=chunk(x,z),s=1.5+rnd()*.8;HB=hgt(x,z);const v0=b.p.length/3;add(b,BOX,0x554331,x,2*s,z,.55*s,4*s,.55*s);for(let k=0;k<6;k++){const aa=k*1.047,rr=.8*s;add(b,ICO,[0x454f43,0x59604d,0x68705a,0x3d4b40][Math.floor(rnd()*4)],x+Math.cos(aa)*rr,3.5*s+(k%2)*.45*s,z+Math.sin(aa)*rr,1.25*s,1.3*s,1.25*s,0,0,rnd()*6.28)}treeSpots.push({x,z,y:5.7*s,b,v0,v1:b.p.length/3,hp:4});treeSpots[treeSpots.length-1].c=addC(x,z,.8*s)}
+for(let i=0;i<600;i++){const a=rnd()*6.283,d=Math.sqrt(rnd())*(GZ.r-3),x=GZ.x+Math.cos(a)*d,z=GZ.z+Math.sin(a)*d;if(nearRoad(x,z)||nearGrayRoad(x,z))continue;const b=chunk(x,z),s=1.5+rnd()*.8;HB=hgt(x,z);const v0=b.p.length/3;add(b,BOX,0x554331,x,2*s,z,.55*s,4*s,.55*s);for(let k=0;k<6;k++){const aa=k*1.047,rr=.8*s;add(b,ICO,[0x454f43,0x59604d,0x68705a,0x3d4b40][Math.floor(rnd()*4)],x+Math.cos(aa)*rr,3.5*s+(k%2)*.45*s,z+Math.sin(aa)*rr,1.25*s,1.3*s,1.25*s,0,0,rnd()*6.28)}treeSpots.push({x,z,y:5.7*s,b,v0,v1:b.p.length/3,hp:4});treeSpots[treeSpots.length-1].c=addC(x,z,.8*s)}
 for(let i=0;i<1100;i++){const x=(rnd()-.5)*(W-20),z=(rnd()-.5)*(W-20);if(Math.hypot(x,z)<10||nearRoad(x,z)||nearGrayRoad(x,z))continue;
 const b=chunk(x,z),s=(1.35+rnd()*.9)*.78;HB=hgt(x,z);const v0=b.p.length/3;const bk=rnd();
 if(bk<.4){add(b,ICO,0x2d4a2a,x,.85,z,1.5*s,1.05*s,1.5*s,0,0,rnd()*3);add(b,ICO,0x3c5c33,x+.55*s,1.35*s,z+.3*s,1*s,.85*s,1*s)}
@@ -834,7 +855,13 @@ R(0x15100c,-1.29,1.93,1.38,.05,.05,.03);R(0x15100c,-1.11,1.93,1.38,.05,.05,.03);
 R(0x5a3c24,-4.1,.5,1.3,.9,1,.9);R(0x2a2a2c,-4.1,.3,1.3,.95,.06,.95);R(0x2a2a2c,-4.1,.72,1.3,.95,.06,.95);
 R(0x8a6a45,-4.2,.4,-.2,.8,.8,.8);R(0x7a5a38,-4.1,1.05,-.2,.6,.5,.6,0,0,.4);
 R(0xffd070,-2.9,2.75,2.55,.22,.3,.22);R(0x222222,-2.9,3,2.55,.04,.3,.04);R(0xffd070,2.9,2.75,2.55,.22,.3,.22);R(0x222222,2.9,3,2.55,.04,.3,.04);
-scene.add(new THREE.Mesh(fin(sb),mat));
+shopWorldMesh=new THREE.Mesh(fin(sb),mat);scene.add(shopWorldMesh);
+const potatoShop=mk();
+add(potatoShop,BOX,0x5a3c24,sx,.55,sz+2.3,5.6,1.1,.7);add(potatoShop,BOX,0x8c6a40,sx,1.13,sz+2.3,5.9,.1,.9);
+add(potatoShop,BOX,0x3a6a3a,sx-1.2,1.3,sz+1.2,.62,.8,.35);add(potatoShop,BOX,0xd8a77a,sx-1.2,1.9,sz+1.2,.34,.36,.34);
+add(potatoShop,BOX,0x15100c,sx-1.29,1.93,sz+1.38,.05,.05,.03);add(potatoShop,BOX,0x15100c,sx-1.11,1.93,sz+1.38,.05,.05,.03);
+add(potatoShop,BOX,0x4a3320,sx-1.2,2.12,sz+1.2,.52,.08,.52);
+shopPotatoMesh=new THREE.Mesh(fin(potatoShop),mat);shopPotatoMesh.visible=false;scene.add(shopPotatoMesh);
 const sc=document.createElement('canvas');sc.width=256;sc.height=64;const sg=sc.getContext('2d');
 sg.fillStyle='#4a2e1c';sg.fillRect(0,0,256,64);sg.fillStyle='#5a3a22';for(let y=4;y<64;y+=12)sg.fillRect(0,y,256,2);
 sg.strokeStyle='#d8c070';sg.lineWidth=4;sg.strokeRect(5,5,246,54);
@@ -901,11 +928,16 @@ function mkDeer(giant){
 const s=giant?1.2:1,g=new THREE.Group(),bm=new THREE.Mesh(giant?GB:DB[0],mat);g.add(bm);
 const legs=[];
 [[-.28,.7],[.28,.7],[-.28,-.7],[.28,-.7]].forEach(([x,z])=>{const l=new THREE.Mesh(LEGG,mat);l.position.set(x,.9,z);g.add(l);legs.push(l)});
+const shadow=new THREE.Mesh(new THREE.CircleGeometry(1,graphicsQuality==='Low'?8:20),new THREE.MeshBasicMaterial({color:0x080b07,transparent:true,opacity:.23,depthWrite:false}));
+shadow.rotation.x=-Math.PI/2;shadow.position.y=.035;shadow.scale.set(1.25,.72,1);g.add(shadow);
+const details=new THREE.Group(),eyeMat=new THREE.MeshBasicMaterial({color:0x17130d}),eyeGeo=new THREE.SphereGeometry(.045,8,6);
+for(const side of [-1,1]){const eye=new THREE.Mesh(eyeGeo,eyeMat);eye.position.set(side*.17,2.38,.91);details.add(eye)}
+const muzzle=new THREE.Mesh(new THREE.SphereGeometry(.13,8,6),new THREE.MeshBasicMaterial({color:giant?0x77746a:0x8a6544}));muzzle.position.set(0,2.18,1.02);muzzle.scale.set(1,.55,.8);details.add(muzzle);g.add(details);
 g.scale.setScalar(s);scene.add(g);
-return{g,bm,legs,s,giant,alive:true,st:'idle',t:Math.random()*4,wy:0,yaw:0,x:0,z:0,ph:Math.random()*6,angry:0,val:10,vn:'buck'}}
+return{g,bm,legs,shadow,details,s,giant,alive:true,st:'idle',t:Math.random()*4,wy:0,yaw:0,x:0,z:0,ph:Math.random()*6,angry:0,val:10,vn:'buck'}}
 const POOL=64,deers=[];for(let i=0;i<POOL;i++){const d=mkDeer(false);d.active=false;d.deadT=0;d.g.visible=false;deers.push(d)}
 const giant=mkDeer(true);giant.active=true;
-function spawnDeer(d,x,z){d.x=x;d.z=z;d.alive=true;d.active=true;d.deadT=0;d.st='idle';d.t=Math.random()*4;d.yaw=Math.random()*6.28;d.g.rotation.set(0,0,0);d.done=false;d.carried=false;d.perched=false;{const tw=DV.reduce((q,v)=>q+v.w,0);let r=Math.random()*tw,vi=0;for(;vi<DV.length-1;vi++){r-=DV[vi].w;if(r<=0)break}const v=DV[vi];d.bm.geometry=DB[vi];d.s=v.s;d.val=v.val;d.vn=v.n;d.cq=false;d.cd=0;d.so=0;d.g.scale.setScalar(d.s)}d.legs.forEach(l=>l.rotation.x=0);
+function spawnDeer(d,x,z){if(d.details)d.details.visible=graphicsQuality==='High'||graphicsQuality==='Medium'||graphicsQuality==='Horror';if(d.shadow){d.shadow.visible=graphicsQuality!=='Potato';d.shadow.material.opacity=graphicsQuality==='High'?.34:graphicsQuality==='Low'?.12:.22}d.x=x;d.z=z;d.alive=true;d.active=true;d.deadT=0;d.st='idle';d.t=Math.random()*4;d.yaw=Math.random()*6.28;d.g.rotation.set(0,0,0);d.done=false;d.carried=false;d.perched=false;{const tw=DV.reduce((q,v)=>q+v.w,0);let r=Math.random()*tw,vi=0;for(;vi<DV.length-1;vi++){r-=DV[vi].w;if(r<=0)break}const v=DV[vi];d.bm.geometry=DB[vi];d.s=v.s;d.val=v.val;d.vn=v.n;d.cq=false;d.cd=0;d.so=0;d.g.scale.setScalar(d.s)}d.legs.forEach(l=>l.rotation.x=0);
 if(treeSpots.length&&Math.random()<1/3){for(let t=0;t<25;t++){const s=treeSpots[Math.floor(Math.random()*treeSpots.length)];if(!s.cut&&Math.hypot(s.x-P.x,s.z-P.z)>70){d.x=s.x+(Math.random()-.5)*1.2;d.z=s.z+(Math.random()-.5)*1.2;d.perched=true;d.perchY=s.y;break}}}
 d.g.position.set(d.x,hgt(d.x,d.z)+(d.perched?d.perchY:0),d.z);d.g.rotation.y=d.yaw;d.g.visible=true}
 function aliveCount(){let n=0;for(const d of deers)if(d.active&&d.alive)n++;return n}
@@ -1012,7 +1044,7 @@ const cDay=new THREE.Color(0x7b8473),cNight=new THREE.Color(0x070a14),_c=new THR
 const wx={rain:0,fog:0,tr:0,tf:0,storm:false,t:70,th:10},wxC=new THREE.Color();
 function skyUpdate(){const sun=Math.cos((clock-12)/12*PI),dl=Math.max(0,Math.min(1,(sun+.4)/.5));nf=1-dl;
 _c.lerpColors(cDay,cNight,nf);{const k=Math.min(.7,wx.rain*.5+wx.fog*.7);if(k>0)_c.lerp(wxC.setRGB(.36-.33*nf,.39-.355*nf,.42-.375*nf),k)}mat.uniforms.fogc.value.copy(_c);renderer.setClearColor(_c);
-const fm=SET.fog;mat.uniforms.fogf.value=fm<=.02?4000:(80-28*nf)*(1-.38*wx.rain-.5*wx.fog)/fm;mat.uniforms.fogn.value=fm<=.02?3000:(6-2*nf)*(1-.5*wx.fog)/fm;mat.uniforms.tint.value.set(1-.5*nf,1-.45*nf,1-.22*nf)}
+const fm=SET.fog;mat.uniforms.fogf.value=fm<=.02?4000:(80-28*nf)*(1-.38*wx.rain-.5*wx.fog)/fm;mat.uniforms.fogn.value=fm<=.02?3000:(6-2*nf)*(1-.5*wx.fog)/fm;mat.uniforms.tint.value.set(1-.5*nf,1-.45*nf,1-.22*nf);if(graphicsQuality==='Potato')mat.uniforms.tint.value.set(0,0,0)}
 let cheatAmmo=false,gameMode='regular',lives=3,hitCooldown=0,deathCause='gray',hf=0,carry=[],sf=[16,50,50],sleepT=0,scoped=false,playing=false,G='menu',T=0,camY=1.7,bob=0,msgT=0,hb=0,ac;
 let mpAdminAuthenticated=false,mpAdminSecret='',mpGrantedPermissions={};const mpAdminPerks={infiniteAmmo:false,noCooldown:false,instantReload:false,invulnerability:false,superSpeed:false,infiniteSupplies:false,extraCarry:false,playerList:false,playerBeacons:false};
 const adminPlus={speedOn:false,speed:2,aimbot:false,esp:false,infiniteAmmo:false,noCooldowns:false,unlimitedCarry:false,noCarrySlow:false,invulnerable:false,instantReload:false,infiniteSupplies:false,noMudSlow:false};
@@ -1053,7 +1085,7 @@ tzone.addEventListener('pointerup',tEnd);tzone.addEventListener('pointercancel',
 function tbtn(id,fn){const el=$(id);el.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();lastTouchT=performance.now();el.classList.add('on');if(playing){if(P.stuck>0)P.stuck-=.35;fn()}});
 const off=()=>{el.classList.remove('on');lastTouchT=performance.now()};el.addEventListener('pointerup',off);el.addEventListener('pointercancel',off);el.addEventListener('pointerleave',off)}
 function setTBtn(el,label,always){const show=!!(label||always);const d=show?'flex':'none';if(el.style.display!==d)el.style.display=d;if(show&&el.textContent!==label)el.textContent=label}
-function pauseGame(){if(!playing)return;scoped=false;joyReset();if(mpOnline){mpUiPauseToken='pausemenu';document.body.classList.add('mp-ui-unlocked');releaseLock();showScreen('pause');return}playing=false;G='menu';releaseLock();document.body.classList.add('mp-ui-unlocked');showScreen('pause')}
+function pauseGame(){if(!playing)return;scoped=false;joyReset();if(mpOnline)mpTradeRefresh();if(mpOnline){mpUiPauseToken='pausemenu';document.body.classList.add('mp-ui-unlocked');releaseLock();showScreen('pause');return}playing=false;G='menu';releaseLock();document.body.classList.add('mp-ui-unlocked');showScreen('pause')}
 function carryDrop(){if(P.hid)return;const dd=nearDead();if(dd&&(adminPlus.unlimitedCarry||mpAdminHas('extraCarry')||cw()+wOf(dd)<=2)){pickUp(dd);return}if(carry.length){dropDeer();return}if(dd){msg(dd.giant?'THE GRAY ONE NEEDS BOTH HANDS':(dd.kind==='bear'?'THE BEAR NEEDS BOTH HANDS':'MAX 2 DEER'),2);return}msg('NO DEER NEARBY',1.5)}
 tbtn('theal',()=>useBandage());tbtn('trep',()=>useRepellent());tbtn('tshoot',()=>shoot());tbtn('tcarry',carryDrop);tbtn('tact',()=>toggleHide());tbtn('treload',()=>reload());
 tbtn('tlight',toggleFlash);tbtn('tswap',()=>equip((cur+1)%(stats.axe?3:2)));tbtn('tscope',()=>{if(!P.hid&&cur<2)scoped=!scoped});tbtn('tpause',pauseGame);
@@ -1150,6 +1182,9 @@ showScreen('dead')}
 function showScreen(m){const c={title:['DEER HUNTING SIMULATOR','Hey this game is like REALLY buggy, too much stuff softlocks you and it overall sucks. This is a JOKE game, not one to be taken SERIOUSLY.','PLAY'],pause:['PAUSED','Hey why we pause the game?','RESUME'],dead:[deathCause==='bear'?'A BEAR GOT YOU':(deathCause==='deer'?'YOU WERE OVERRUN':'THE GRAY ONE FOUND YOU'),deathCause==='bear'?'The bear took all your hearts. Choose a mode and try again.':(deathCause==='deer'?'Defense run over. Choose a mode and try again.':'Murdered by the gray one: '+stats.deaths+(stats.deaths==1?' time.':' times.')),'RESPAWN AT THE CABIN']}[m];
 $('t1').textContent=c[0];$('t2').textContent=c[1];$('go').textContent=c[2];$('kick').style.display=m==='title'?'block':'none';$('mode-overlay').style.display='none';
 $('sv-deer').textContent=stats.deer;$('sv-shots').textContent=stats.shots;$('sv-dead').textContent=stats.deaths;
+$('mp-pause-tools').style.display=(m==='pause'&&mpOnline)?'block':'none';
+$('change-user').style.display=m==='title'?'':'none';$('mp').style.display=m==='title'?'':'none';
+$('admin-open').style.display=(m==='title'&&/^ADMINISTRATOR$/i.test(String(mpName||'')))?'':'none';
 $('mpmsg').style.display='none';$('wn').style.display=m==='title'?'flex':'none';$('wnp').style.display='none';$('mp').style.display=m==='title'?'':'none';$('tt').style.display=m==='title'?'none':'';$('ov').className=m;$('scr-help').style.display='none';$('scr-main').style.display='flex';$('ov').style.display='flex';try{mpSyncAdminTitle()}catch(e){}}
 function updateHearts(){const h=$('hearts');let m=3;try{m=D.hp}catch(e){}const l=Math.max(0,Math.min(m,lives));h.style.display=playing?'block':'none';h.textContent=('♥ '.repeat(l)+'♡ '.repeat(m-l)).trim();h.style.color=l===1?'#ff3939':'#e85b55'}
 function setGameMode(mode){gameMode=mode;$('mode-regular').classList.toggle('selected',mode==='regular');$('mode-defense').classList.toggle('selected',mode==='defense')}
@@ -1249,7 +1284,7 @@ addEventListener('keydown',e=>{if(e.code!=='KeyJ'||e.repeat||!playing||mpTypingT
 cv.addEventListener('click',()=>{if(playing&&!isTouch&&!mpUiPauseToken&&$('shop').style.display!=='flex'&&$('set').style.display!=='flex'&&$('mp-chat-panel').style.display!=='flex'&&!$('adminplus-panel').classList.contains('open')&&document.pointerLockElement!==cv&&cv.requestPointerLock){try{manualMouseUnlock=false;cv.requestPointerLock()}catch(e){}}});
 document.addEventListener('pointerlockerror',()=>{if(playing&&!isTouch)msg('CLICK THE GAME TO LOCK THE MOUSE',2)});
 addEventListener('mousemove',e=>{if(!playing||document.pointerLockElement!==cv)return;const k=cam.fov/72;P.yaw-=e.movementX*.0022*k*SET.sens;P.pitch=Math.max(-1.4,Math.min(1.4,P.pitch-e.movementY*.0022*k*SET.sens))});
-addEventListener('mousedown',e=>{if(!playing||document.pointerLockElement!==cv||performance.now()-lastTouchT<700)return;if(e.button==0)shoot();if(e.button==2&&!P.hid&&cur<2)scoped=true});addEventListener('mouseup',e=>{if(e.button==2)scoped=false});addEventListener('contextmenu',e=>e.preventDefault());addEventListener('wheel',e=>{if(!scoped)return;const r=cur?[38,62]:[5,30];sf[cur]=Math.max(r[0],Math.min(r[1],sf[cur]*(e.deltaY>0?1.12:.89)))},{passive:true});
+addEventListener('mousedown',e=>{if(!playing||document.pointerLockElement!==cv||performance.now()-lastTouchT<700)return;if(e.button==0){if(leaderboardTryClick())return;shoot()}if(e.button==2&&!P.hid&&cur<2)scoped=true});addEventListener('mouseup',e=>{if(e.button==2)scoped=false});addEventListener('contextmenu',e=>e.preventDefault());addEventListener('wheel',e=>{if(!scoped)return;const r=cur?[38,62]:[5,30];sf[cur]=Math.max(r[0],Math.min(r[1],sf[cur]*(e.deltaY>0?1.12:.89)))},{passive:true});
 addEventListener('keydown',e=>{if(mpTypingTarget(e))return;keys[e.code]=true;if(!playing||e.repeat)return;
 if(e.code==='KeyR')reload();if(e.code==='KeyH')useBandage();if(e.code==='KeyV')useRepellent();
 if(e.code==='Digit1'||e.code==='Digit2'||e.code==='Digit3')equip(+e.code.slice(5)-1);
@@ -1336,7 +1371,7 @@ const dx=P.x-d.x,dz=P.z-d.z,dist=Math.hypot(dx,dz);
 if(!d.alive){if(!d.carried){d.deadT+=dt;if(d.deadT>150&&dist>25){d.active=false;d.g.visible=false}}return}
 if(auraEnabled&&dist<90){d.g.visible=true;const face=Math.atan2(dx,dz),df=((face-d.yaw+PI*3)%(PI*2))-PI;d.yaw+=Math.max(-8*dt,Math.min(8*dt,df));d.g.position.set(d.x,hgt(d.x,d.z)+(d.perched?d.perchY:0),d.z);d.g.rotation.set(Math.sin(T*27+d.ph)*.045,d.yaw,Math.sin(T*34+d.ph)*.055);d.legs.forEach((l,i)=>{l.rotation.x=Math.sin(T*31+d.ph+i)*.08});return}
 if(gameMode==='defense'){d.g.visible=true;if(!d.perched){d.st='hunt';d.perched=false}}
-else{if(dist>130){d.g.visible=false;return}d.g.visible=dist<88;const sense=(P.hid?0:(P.run?46:(P.moving?30:13)))*D.deerSense*wxS();if(!d.perched&&dist<sense&&d.st!=='flee'){d.st='flee';d.t=3+Math.random()*3;d.perched=false}}
+else{if(dist>130*graphicsDistance){d.g.visible=false;return}d.g.visible=dist<88*graphicsDistance;const sense=(P.hid?0:(P.run?46:(P.moving?30:13)))*D.deerSense*wxS();if(!d.perched&&dist<sense&&d.st!=='flee'){d.st='flee';d.t=3+Math.random()*3;d.perched=false}}
 if(d.perched){d.g.position.set(d.x,hgt(d.x,d.z)+d.perchY,d.z);d.g.rotation.y=d.yaw;return}
 let sp=0,ty=d.yaw;
 if(gameMode==='defense'){ty=Math.atan2(dx,dz);sp=5.4;if(dist<1.85)hurtDefense()}
@@ -1433,7 +1468,7 @@ if(b.hits>=48*D.bearHp){b.alive=false;b.g.rotation.set(0,b.yaw,1.45);b.legs.forE
 else msg('BEAR HIT \u2014 '+Math.max(1,100-Math.round(b.hits/(48*D.bearHp)*100))+'% LEFT',1.5)}
 function updRabbit(d,dt){if(!d.active)return;const dx=P.x-d.x,dz=P.z-d.z,dist=Math.hypot(dx,dz);
 if(!d.alive){if(!d.carried){d.deadT+=dt;if(d.deadT>150&&dist>25){d.active=false;d.g.visible=false}}return}
-if(dist>130){d.g.visible=false;return}d.g.visible=dist<80;
+if(dist>130*graphicsDistance){d.g.visible=false;return}d.g.visible=dist<80;
 const sense=(P.hid?0:(P.run?34:(P.moving?22:9)))*D.deerSense*wxS();if(d.st!=='flee'&&dist<sense){d.st='flee';d.t=3+Math.random()*3}
 let sp=0,ty=d.yaw;
 if(d.st==='flee'){ty=deerSteer(d,Math.atan2(-dx,-dz),dt);sp=9;d.t-=dt;if(d.t<=0){d.st='idle';d.t=2}}
@@ -1443,7 +1478,7 @@ move(d,ty,sp,dt,.4);
 d.g.position.y=hgt(d.x,d.z)+(sp>0?Math.abs(Math.sin(T*(sp>5?16:9)+d.ph))*(sp>5?.35:.12):0)}
 function updBear(d,dt){if(!d.active)return;const dx=P.x-d.x,dz=P.z-d.z,dist=Math.hypot(dx,dz);
 if(!d.alive){if(!d.carried){d.deadT+=dt;if(d.deadT>150&&dist>25){d.active=false;d.g.visible=false}}return}
-if(dist>130){d.g.visible=false;return}d.g.visible=dist<90;
+if(dist>130*graphicsDistance){d.g.visible=false;return}d.g.visible=dist<90;
 d.angry-=dt;d.cdn=Math.max(0,d.cdn-dt);d.imm=Math.max(0,(d.imm||0)-dt);d.hT=(d.hT||0)-dt;if(d.gT===undefined)d.gT=4+Math.random()*12;d.gT-=dt;
 const cl=nearCloud(d.x,d.z,16);if(cl&&d.st!=='flee'){d.st='flee';d.t=7;d.imm=30;d.wind=0;d.fx=cl.x;d.fz=cl.z}
 const sense=(P.hid?0:(P.run?34:(P.moving?22:10)))*D.bearSense*wxS();
@@ -1647,7 +1682,11 @@ if(SET.fps){fpsN++;if(tt-fpsS>=.5){$('fps').textContent=Math.round(fpsN/(tt-fpsS
 if(vhs&&tt-vtsS>=.5){vtsS=tt;$('vts').textContent='PLAY \u25b6  '+fmtClock(clock)}}
 function sliderRow(label,id,min,max,step,val,txt){return '<div class="sr"><label for="'+id+'">'+label+'</label><input type="range" id="'+id+'" min="'+min+'" max="'+max+'" step="'+step+'" value="'+val+'"><b id="'+id+'v">'+txt+'</b></div>'}
 const tgl=(act,label,on)=>'<div class="sr"><button class="sbt'+(on?' on':'')+'" data-act="'+act+'">'+label+': '+(on?'ON':'OFF')+'</button></div>';
+let qualityPreset=localStorage.getItem('deerHunter98.qualityPreset')||'Medium';
 function renderSet(){let h='';
+if(setTab==='vis'){
+ h+='<div class="sr" style="display:block"><label for="quality-preset" style="display:block;margin-bottom:7px">GRAPHICS PRESET</label><select id="quality-preset"><option>High</option><option selected>Medium</option><option>Low</option><option>Potato</option><option>Horror</option><option>Custom</option></select><div id="quality-desc"></div></div>';
+}
 if(setTab==='fun'){
 h+='<div class="sr"><button class="sbt'+(drugOn?' on':'')+'" data-act="drug">DRUGS: '+(drugOn?'ON':'OFF')+'</button><input type="range" id="drugr" min="1" max="100" step="1" value="'+Math.round(drugLvl*100)+'"><b id="drugrv">'+Math.round(drugLvl*100)+'%</b></div><div class="sn">Intensity slider. This always turns itself off when you reload or close the page.</div>';
 h+=tgl('vhs','CAMCORDER LOOK',vhs);
@@ -1657,10 +1696,16 @@ h+=sliderRow('Game speed','spd',.25,1.5,.05,gameSpeed,pct(gameSpeed));
 h+=tgl('ptr','POINTERS (SHOWALL)',showAll);h+='<div class="sr"><button class="sbt" data-act="wx">WEATHER: '+wxCur()+' (CLICK TO CHANGE)</button></div>';
 }else{for(const r of SROWS[setTab])h+=sliderRow(r[1],'s_'+r[0],r[2],r[3],r[4],SET[r[0]],r[5](SET[r[0]]));
 if(setTab==='vis')h+=tgl('fps','FPS COUNTER',SET.fps);
+if(setTab==='game')h+='<div class="sn">Microphone controls are available below.</div>';
 h+='<div class="sr"><button class="sbt" data-act="reset">RESET DEFAULTS</button></div>'}
-$('setb').innerHTML=h;document.querySelectorAll('#settabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===setTab))}
+$('setb').innerHTML=h;
+$('mic-test-area').style.display=setTab==='game'?'block':'none';
+if(setTab==='vis'){const q=$('quality-preset');q.value=qualityPreset;const desc={High:'Very far render distance, sharper pixel resolution, better lighting and deer detail',Medium:'Balanced render distance, moderate lighting and shadows, its the Default setting.',Low:'Shorter render distance, reduced lighting and pixelated shadows',Potato:'Very short render distance, minimal lighting, simplified animals and shop details',Horror:'Fog 200%, brightness 50%, contrast 60%, saturation 0%, pixel size 4, drugs 25% and camcorder look',Custom:'Adjust each visual slider manually'};$('quality-desc').textContent=desc[qualityPreset]||desc.Medium}
+document.querySelectorAll('#settabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===setTab))}
 $('settabs').onclick=e=>{const b=e.target.closest('button[data-t]');if(!b)return;setTab=b.dataset.t;renderSet()};
+$('setb').onchange=e=>{if(e.target.id==='quality-preset'){applyQualityPreset(e.target.value);return}};
 $('setb').oninput=e=>{const t=e.target;if(t.type!=='range')return;const v=+t.value,id=t.id;
+if(id.startsWith('s_')&&qualityPreset!=='Custom'){qualityPreset='Custom';localStorage.setItem('deerHunter98.qualityPreset','Custom');const q=$('quality-preset');if(q)q.value='Custom';}
 if(id==='drugr'){drugLvl=v/100;$('drugrv').textContent=v+'%'}
 else if(id==='tod'){clock=v;skyUpdate();$('todv').textContent=fmtClock(v)}
 else if(id==='spd'){gameSpeed=v;$('spdv').textContent=pct(v)}
@@ -1671,6 +1716,34 @@ else if(a==='freeze')frozen=!frozen;else if(a==='ptr')setShowAll(!showAll);
 else if(a==='wx')wxForce();else if(a==='fps'){SET.fps=SET.fps?0:1;applySet();saveSet()}
 else if(a==='reset'){Object.assign(SET,SDEF);applySet();saveSet()}
 renderSet()};
+
+function applyQualityPreset(name){
+ qualityPreset=name;localStorage.setItem('deerHunter98.qualityPreset',name);
+ const presets={
+  High:{fog:.55,bright:1.08,contrast:1.08,sat:1.08,px:1,fov:72},
+  Medium:{fog:1,bright:1,contrast:1,sat:1,px:3,fov:72},
+  Low:{fog:1.45,bright:.88,contrast:.88,sat:.82,px:4,fov:72},
+  Potato:{fog:1.9,bright:.78,contrast:.82,sat:.62,px:5,fov:72},
+  Horror:{fog:2,bright:.5,contrast:.6,sat:0,px:4,fov:72}
+ };
+ if(name==='Horror'){drugOn=true;drugLvl=.25;vhs=true;$('vhs').style.display='block'}
+ else if(name!=='Custom'){drugOn=false;drugLvl=0;vhs=false;$('vhs').style.display='none'}
+ if(name!=='Custom'){
+  Object.assign(SET,presets[name]||presets.Medium);
+  graphicsQuality=name;
+  graphicsDistance=({High:1.8,Medium:1,Low:.72,Potato:.38,Horror:.8})[name]||1;
+  const presetFar=({High:240,Medium:160,Low:95,Potato:42,Horror:125})[name]||160;
+  const shadowOpacity=({High:.34,Medium:.22,Low:.12,Potato:0,Horror:.18})[name]||0;
+  const shadowSegments=({High:24,Medium:16,Low:8,Potato:6,Horror:12})[name]||8;
+  if(shopWorldMesh)shopWorldMesh.visible=name!=='Potato';if(shopPotatoMesh)shopPotatoMesh.visible=name==='Potato';
+  for(const d of [...deers,giant]){
+   if(d.details)d.details.visible=name==='High'||name==='Medium'||name==='Horror';
+   if(d.shadow){d.shadow.visible=shadowOpacity>0;d.shadow.material.opacity=shadowOpacity;d.shadow.geometry.dispose();d.shadow.geometry=new THREE.CircleGeometry(1,shadowSegments);}
+  }
+ }
+ applySet();if(name!=='Custom'){cam.far=presetFar;cam.updateProjectionMatrix()}saveSet();renderSet();
+}
+
 function openSet(){mpPauseForUI('settings');setTab='vis';renderSet();$('set').style.display='flex'}
 function closeSet(){$('set').style.display='none';mpResumeFromUI('settings')}
 $('cog').onclick=openSet;$('setx').onclick=closeSet;$('set').addEventListener('pointerdown',e=>{if(e.target===$('set'))closeSet()});
@@ -1681,7 +1754,7 @@ addEventListener('keydown',e=>{if(e.code==='Escape'&&$('set').style.display==='f
 const MP_SUPABASE_URL='https://rfgurxkjchcjnavpsdxv.supabase.co';
 const MP_SUPABASE_KEY='sb_publishable_8xK9UY2VEOTEG_lxenBwqA_mtbwY3HF';
 let mpClient=null,mpChannel=null,mpOnline=false,mpStarting=false,mpLastPersist=0,mpBroadcastBusy=false,mpBroadcastQueued=false;
-const mpRemote=new Map(),mpEventSeen=new Set();
+const mpRemote=new Map(),mpEventSeen=new Set(),mpLeaderboardAll=new Map();
 const mpPlayerId=(()=>{let v=localStorage.getItem('hsm.playerId');if(!v){v=(crypto.randomUUID?crypto.randomUUID():('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:(r&3|8)).toString(16)})));localStorage.setItem('hsm.playerId',v)}return v})();
 let mpName=localStorage.getItem('hsm.playerName')||('Hunter'+Math.floor(100+Math.random()*900));
 let mpExitedToTitle=false;
@@ -2007,6 +2080,85 @@ function mpAppendChat(name,message,system=false){
 let mpUnreadCount=0;
 function mpUpdateUnread(){const badge=$('mp-chat-unread');badge.textContent=mpUnreadCount>99?'99+':String(mpUnreadCount);badge.style.display=mpUnreadCount?'flex':'none'}
 function mpPlayChatDing(){try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;if(!ac)ac=new AC();if(ac.state==='suspended')ac.resume();const now=ac.currentTime;[880,1175].forEach((frequency,index)=>{const oscillator=ac.createOscillator(),gain=ac.createGain();oscillator.type='sine';oscillator.frequency.value=frequency;gain.gain.setValueAtTime(.0001,now+index*.075);gain.gain.exponentialRampToValueAtTime(.11,now+index*.075+.012);gain.gain.exponentialRampToValueAtTime(.0001,now+index*.075+.11);oscillator.connect(gain).connect(ac.destination);oscillator.start(now+index*.075);oscillator.stop(now+index*.075+.12)})}catch(e){}}
+
+// Multiplayer pause-menu money transfers and browser-to-browser voice chat.
+let mpVoiceStream=null,mpVoicePeers=new Map(),mpVoiceJoined=false,mpMicTestStream=null,mpMicAnim=0;
+function mpTradeRefresh(){
+ const sel=$('mp-trade-target');if(!sel)return;const old=sel.value;sel.innerHTML='<option value="">Choose player</option>';
+ for(const [id,o] of mpRemote){const op=document.createElement('option');op.value=id;op.textContent=o.name||'Hunter';sel.appendChild(op)}
+ if([...sel.options].some(o=>o.value===old))sel.value=old;
+}
+async function mpSendMoney(){
+ const id=$('mp-trade-target').value,amount=Math.floor(Number($('mp-trade-amount').value));
+ const target=mpRemote.get(id);
+ if(!mpOnline||!mpChannel){$('mp-trade-status').textContent='You must be in multiplayer.';return}
+ if(!target){$('mp-trade-status').textContent='Choose a player who is online.';return}
+ if(!Number.isSafeInteger(amount)||amount<1||amount>1000000){$('mp-trade-status').textContent='Enter an amount from $1 to $1,000,000.';return}
+ if(amount>stats.money){$('mp-trade-status').textContent='You do not have enough money.';return}
+ stats.money-=amount;saveStats();renderShop();
+ const result=await mpChannel.send({type:'broadcast',event:'money_trade',payload:{from:mpPlayerId,fromName:mpName,to:id,amount,nonce:crypto.randomUUID?crypto.randomUUID():String(Date.now())}});
+ if(result==='error'||result==='timed out'){stats.money+=amount;saveStats();$('mp-trade-status').textContent='Transfer failed. Your money was returned.';return}
+ $('mp-trade-status').textContent='Sent $'+amount+' to '+target.name+'.';mpPersistPosition(true);mpBroadcastPosition();
+}
+$('mp-trade-send').addEventListener('click',mpSendMoney);
+function mpVoiceStatus(t){$('mp-voice-status').textContent=t}
+async function mpVoiceSignal(to,data){if(mpChannel)try{await mpChannel.send({type:'broadcast',event:'voice_signal',payload:{from:mpPlayerId,to,data}})}catch(e){}}
+function mpVoiceMakePeer(id){
+ if(mpVoicePeers.has(id)||!mpVoiceStream)return mpVoicePeers.get(id);
+ const pc=new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'}]});
+ mpVoiceStream.getTracks().forEach(track=>pc.addTrack(track,mpVoiceStream));
+ pc.onicecandidate=e=>{if(e.candidate)mpVoiceSignal(id,{candidate:e.candidate})};
+ pc.ontrack=e=>{let audio=document.getElementById('voice-audio-'+id);if(!audio){audio=document.createElement('audio');audio.id='voice-audio-'+id;audio.autoplay=true;audio.playsInline=true;document.body.appendChild(audio)}audio.srcObject=e.streams[0];audio.play().catch(()=>{})};
+ pc.onconnectionstatechange=()=>{if(['failed','closed','disconnected'].includes(pc.connectionState)){const a=document.getElementById('voice-audio-'+id);if(a){a.srcObject=null;a.remove()} }};
+ mpVoicePeers.set(id,pc);return pc;
+}
+async function mpVoiceOffer(id){
+ const pc=mpVoiceMakePeer(id);if(!pc)return;
+ try{const offer=await pc.createOffer();await pc.setLocalDescription(offer);await mpVoiceSignal(id,{description:pc.localDescription})}catch(e){console.warn('Voice offer:',e)}
+}
+async function mpVoiceReceive(p){
+ if(!p||p.to!==mpPlayerId||!p.from||!p.data)return;
+ const pc=mpVoiceMakePeer(p.from);if(!pc)return;
+ try{
+  if(p.data.description){
+   await pc.setRemoteDescription(p.data.description);
+   if(p.data.description.type==='offer'){const answer=await pc.createAnswer();await pc.setLocalDescription(answer);await mpVoiceSignal(p.from,{description:pc.localDescription})}
+  }else if(p.data.candidate){await pc.addIceCandidate(p.data.candidate)}
+ }catch(e){console.warn('Voice signaling:',e)}
+}
+async function mpVoiceJoin(){
+ if(!mpOnline||!navigator.mediaDevices?.getUserMedia||!window.RTCPeerConnection){mpVoiceStatus('Voice chat requires HTTPS and browser microphone/WebRTC support.');return}
+ try{
+  mpVoiceStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true},video:false});
+  mpVoiceJoined=true;$('mp-voice-toggle').textContent='LEAVE VOICE CHAT';mpVoiceStatus('Connected · microphone is live');
+  await mpChannel.send({type:'broadcast',event:'voice_join',payload:{id:mpPlayerId,name:mpName}});
+  for(const id of mpRemote.keys())if(mpPlayerId<id)mpVoiceOffer(id);
+ }catch(e){mpVoiceStatus('Microphone unavailable: '+(e.message||'permission denied'))}
+}
+function mpVoiceLeave(){
+ mpVoiceJoined=false;if(mpVoiceStream){mpVoiceStream.getTracks().forEach(t=>t.stop());mpVoiceStream=null}
+ for(const [id,pc] of mpVoicePeers){try{pc.close()}catch(e){}const a=document.getElementById('voice-audio-'+id);if(a){a.srcObject=null;a.remove()}}
+ mpVoicePeers.clear();if(mpChannel)mpChannel.send({type:'broadcast',event:'voice_leave',payload:{id:mpPlayerId}});
+ $('mp-voice-toggle').textContent='JOIN VOICE CHAT';mpVoiceStatus('Not connected');
+}
+$('mp-voice-toggle').addEventListener('click',()=>mpVoiceJoined?mpVoiceLeave():mpVoiceJoin());
+async function mpMicTest(){
+ const b=$('mic-test'),status=$('mic-test-status'),meter=$('mic-meter');
+ if(!navigator.mediaDevices?.getUserMedia){status.textContent='Microphone access requires HTTPS and a supported browser.';return}
+ b.disabled=true;status.textContent='Requesting microphone permission...';
+ try{
+  if(mpMicTestStream)mpMicTestStream.getTracks().forEach(t=>t.stop());
+  mpMicTestStream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
+  const AC=window.AudioContext||window.webkitAudioContext;if(!AC)throw new Error('Audio meter is not supported');
+  const ctx=new AC(),source=ctx.createMediaStreamSource(mpMicTestStream),analyser=ctx.createAnalyser();analyser.fftSize=256;source.connect(analyser);
+  const data=new Uint8Array(analyser.frequencyBinCount);status.textContent='Speak into your microphone. Testing for 5 seconds...';
+  const start=performance.now();cancelAnimationFrame(mpMicAnim);
+  const tick=()=>{analyser.getByteTimeDomainData(data);let sum=0;for(const v of data){const n=(v-128)/128;sum+=n*n}const level=Math.min(100,Math.round(Math.sqrt(sum/data.length)*260));meter.style.width=level+'%';if(performance.now()-start<5000)mpMicAnim=requestAnimationFrame(tick);else{mpMicTestStream.getTracks().forEach(t=>t.stop());mpMicTestStream=null;ctx.close();meter.style.width='0';status.textContent=level>2?'Microphone test finished. Input detected.':'Test finished. No clear input detected.';b.disabled=false}};
+  tick();
+ }catch(e){status.textContent='Microphone test failed: '+(e.message||'permission denied');b.disabled=false}
+}
+$('mic-test').addEventListener('click',mpMicTest);
+
 function mpReceiveChat(payload){
  if(!mpOnline||!payload||payload.player_id===mpPlayerId)return;
  const text=String(payload.text||'').trim();if(!text)return;
@@ -2108,7 +2260,7 @@ function mpSetRemote(row){
    o.root.remove(o.avatar);o.avatar=mpAvatar(!row.alive,Number(row.held_item)||0,mpRowSkin(row));o.root.add(o.avatar);
   }
  }
- mpUpdateNameTag(o,row.name);o.lastSeen=Date.now();o.row=row;o.root.visible=true;
+ mpUpdateNameTag(o,row.name);o.lastSeen=Date.now();o.row=row;o.root.visible=true;mpTradeRefresh();
 }
 function mpTickRemote(dt){
  const now=Date.now();
@@ -2129,12 +2281,13 @@ function mpTickRemote(dt){
  }
 }
 function mpRemoveRemote(id){const o=mpRemote.get(id);if(o){if(o.espBox){scene.remove(o.espBox);o.espBox.geometry.dispose();o.espBox.material.dispose()}if(o.espLine){scene.remove(o.espLine);o.espLine.geometry.dispose();o.espLine.material.dispose()}scene.remove(o.root);o.root.traverse(v=>{if(v.userData&&v.userData.shared)return;if(v.geometry)v.geometry.dispose();if(v.material){if(Array.isArray(v.material))v.material.forEach(m=>m.dispose());else v.material.dispose()}});mpRemote.delete(id)}}
-function mpBuildRow(){return {id:mpPlayerId,name:mpName,x:+P.x.toFixed(2),z:+P.z.toFixed(2),yaw:+P.yaw.toFixed(3),pitch:+P.pitch.toFixed(3),held_item:cur,alive:G!=='dead',money:Math.max(0,Math.floor(stats.money||0)),inventory:{rifle:!!stats.rifle,shotgun:!!stats.shotgun,axe:!!stats.axe,flash:!!stats.flash,skin:curSkinId()},updated_at:new Date().toISOString()}}
+function mpBuildRow(){return {id:mpPlayerId,name:mpName,x:+P.x.toFixed(2),z:+P.z.toFixed(2),yaw:+P.yaw.toFixed(3),pitch:+P.pitch.toFixed(3),held_item:cur,alive:G!=='dead',money:Math.max(0,Math.floor(stats.money||0)),inventory:{rifle:!!stats.rifle,shotgun:!!stats.shotgun,axe:!!stats.axe,flash:!!stats.flash,skin:curSkinId(),leaderboard:{deer:stats.deer||0,deaths:stats.deaths||0,gray:stats.gKills||0}},updated_at:new Date().toISOString()}}
 async function mpPersistPosition(force=false){if(!mpClient||!mpOnline)return;const now=Date.now();if(!force&&now-mpLastPersist<1000)return;mpLastPersist=now;try{const {error}=await mpClient.from('hs_players').upsert(mpBuildRow(),{onConflict:'id'});if(error)console.warn('Multiplayer player save:',error.message)}catch(e){console.warn('Multiplayer player save:',e.message)}}
-async function mpBroadcastPosition(){if(!mpOnline||!mpChannel)return;if(mpBroadcastBusy){mpBroadcastQueued=true;return}mpBroadcastBusy=true;try{const {error}=await mpChannel.send({type:'broadcast',event:'player_position',payload:mpBuildRow()});if(error)console.warn('Player broadcast:',error.message)}catch(e){console.warn('Player broadcast:',e.message)}finally{mpBroadcastBusy=false;if(mpBroadcastQueued){mpBroadcastQueued=false;mpBroadcastPosition()}}}
+async function mpBroadcastPosition(){if(!mpOnline||!mpChannel)return;if(mpBroadcastBusy){mpBroadcastQueued=true;return}mpBroadcastBusy=true;try{const {error}=await mpChannel.send({type:'broadcast',event:'player_position',payload:{...mpBuildRow(),leaderboard:{deer:stats.deer||0,deaths:stats.deaths||0,gray:stats.gKills||0}}});if(error)console.warn('Player broadcast:',error.message)}catch(e){console.warn('Player broadcast:',e.message)}finally{mpBroadcastBusy=false;if(mpBroadcastQueued){mpBroadcastQueued=false;mpBroadcastPosition()}}}
 async function mpEmit(type,payload={}){if(!mpClient||!mpOnline)return;try{const {error}=await mpClient.from('hs_world_events').insert({player_id:mpPlayerId,player_name:mpName,event_type:type,payload});if(error)console.warn('Multiplayer event failed:',error.message)}catch(e){console.warn('Multiplayer event failed:',e.message)}}
 async function mpStoreWorld(objectId,state){if(!mpClient||!mpOnline)return;try{const {error}=await mpClient.from('hs_world_state').upsert({object_id:objectId,state,updated_by:mpPlayerId,updated_at:new Date().toISOString()},{onConflict:'object_id'});if(error)console.warn('World state sync:',error.message)}catch(e){console.warn('World state sync:',e.message)}}
-function mpApplyWorld(row){if(!row)return;const id=row.object_id||'',v=row.state||{};if(id.startsWith('tree:')){const i=Number(id.slice(5)),t=treeSpots[i];if(t&&!t.cut){t.cut=true;removeC(t.c)}return}if(id.startsWith('animal:')){const [kind,raw]=id.slice(7).split(':');const i=Number(raw),arr=kind==='rabbit'?rabbits:kind==='bear'?bears:kind==='gray'?[giant]:deers,a=arr&&arr[i];if(a){a.alive=v.alive!==false;a.active=v.alive===false?true:v.active!==false;if(v.alive===false&&a.g){a.deadT=0;a.carried=false;a.falling=false;a.g.visible=true;a.g.rotation.set(0,a.yaw||0,1.45);a.g.position.set(a.x,hgt(a.x,a.z)+(a.ly||.6),a.z)}}}}
+function mpLeaderboardSave(){if(!mpOnline)return;const row={id:mpPlayerId,name:mpName,deer:stats.deer||0,deaths:stats.deaths||0,gray:stats.gKills||0};mpLeaderboardAll.set(mpPlayerId,row);mpStoreWorld('leaderboard:'+mpPlayerId,row);drawLeaderboard()}
+function mpApplyWorld(row){if(!row)return;const id=row.object_id||'',v=row.state||{};if(id.startsWith('leaderboard:')){if(v&&v.id)mpLeaderboardAll.set(v.id,{id:v.id,name:String(v.name||'Hunter'),deer:+v.deer||0,deaths:+v.deaths||0,gray:+v.gray||0});return}if(id.startsWith('tree:')){const i=Number(id.slice(5)),t=treeSpots[i];if(t&&!t.cut){t.cut=true;removeC(t.c)}return}if(id.startsWith('animal:')){const [kind,raw]=id.slice(7).split(':');const i=Number(raw),arr=kind==='rabbit'?rabbits:kind==='bear'?bears:kind==='gray'?[giant]:deers,a=arr&&arr[i];if(a){a.alive=v.alive!==false;a.active=v.alive===false?true:v.active!==false;if(v.alive===false&&a.g){a.deadT=0;a.carried=false;a.falling=false;a.g.visible=true;a.g.rotation.set(0,a.yaw||0,1.45);a.g.position.set(a.x,hgt(a.x,a.z)+(a.ly||.6),a.z)}}}}
 function mpApplyEvent(ev){if(!ev||ev.player_id===mpPlayerId||mpEventSeen.has(ev.id))return;mpEventSeen.add(ev.id);if(mpEventSeen.size>500)mpEventSeen.clear();const p=ev.payload||{};if(ev.event_type==='tree_chopped'&&Number.isInteger(p.index)){const t=treeSpots[p.index];if(t&&!t.cut){t.cut=true;removeC(t.c)}}if(ev.event_type==='animal_killed'){const arr=p.kind==='rabbit'?rabbits:p.kind==='bear'?bears:p.kind==='gray'?[giant]:deers;const a=arr&&arr[p.index];if(a){a.alive=false;a.active=true;a.deadT=0;a.carried=false;a.falling=false;if(a.g){a.g.visible=true;a.g.rotation.set(0,a.yaw||0,1.45);a.g.position.set(a.x,hgt(a.x,a.z)+(a.ly||.6),a.z)}}}if(ev.event_type==='purchase'&&p.item)msg(ev.player_name+' bought '+p.item,2);if(ev.event_type==='shop_sale')msg(ev.player_name+' sold animals at the shop',2)}
 async function mpConnectAndStart(){
  if(mpStarting)return;const nm=$('mp-name').value.trim()||mpName;if(/^ADMINISTRATOR$/i.test(nm)&&!mpAdminAuthenticated){mpShowAdminGate();return}if(!/^ADMINISTRATOR$/i.test(nm)){mpAdminAuthenticated=false;mpAdminSecret=''}mpName=nm;const allowed=await mpCheckAccess('multiplayer');if(!allowed)return;mpStarting=true;localStorage.setItem('hsm.playerName',nm);mpName=nm;
@@ -2150,7 +2303,11 @@ async function mpConnectAndStart(){
   mpChannel=mpClient.channel('hunting-sim-world',{config:{broadcast:{self:false}}})
    .on('broadcast',{event:'player_position'},({payload})=>mpSetRemote(payload))
    .on('broadcast',{event:'player_left'},({payload})=>{if(payload?.id)mpRemoveRemote(payload.id)})
-   .on('broadcast',{event:'chat_message'},({payload})=>mpReceiveChat(payload))
+    .on('broadcast',{event:'chat_message'},({payload})=>mpReceiveChat(payload))
+    .on('broadcast',{event:'money_trade'},({payload})=>{if(payload&&payload.to===mpPlayerId&&payload.from!==mpPlayerId){const amount=Math.floor(+payload.amount||0);if(amount>0&&amount<=1000000){stats.money+=amount;saveStats();renderShop();msg('RECEIVED $'+amount+' FROM '+String(payload.fromName||'A HUNTER').toUpperCase(),4);mpPersistPosition(true);mpBroadcastPosition()}}})
+    .on('broadcast',{event:'voice_join'},({payload})=>{if(mpVoiceJoined&&payload?.id&&payload.id!==mpPlayerId&&mpPlayerId<payload.id)mpVoiceOffer(payload.id)})
+    .on('broadcast',{event:'voice_leave'},({payload})=>{if(payload?.id){const pc=mpVoicePeers.get(payload.id);if(pc)pc.close();mpVoicePeers.delete(payload.id);const a=document.getElementById('voice-audio-'+payload.id);if(a)a.remove()}})
+    .on('broadcast',{event:'voice_signal'},({payload})=>mpVoiceReceive(payload))
    .on('broadcast',{event:'mobs'},({payload})=>mpApplyMobs(payload))
    .on('broadcast',{event:'mob_act'},({payload})=>mpApplyAct(payload))
    .on('broadcast',{event:'admin_spawn'},({payload})=>mpApplyAdminSpawn(payload))
@@ -2162,13 +2319,13 @@ async function mpConnectAndStart(){
   await new Promise((resolve,reject)=>{let settled=false;const timer=setTimeout(()=>{if(!settled){settled=true;reject(new Error('Realtime subscription timed out. Check Supabase Realtime is enabled.'))}},12000);mpChannel.subscribe(status=>{if(status==='SUBSCRIBED'&&!settled){settled=true;clearTimeout(timer);resolve()}else if(['CHANNEL_ERROR','TIMED_OUT','CLOSED'].includes(status)&&!settled){settled=true;clearTimeout(timer);reject(new Error('Realtime subscription status: '+status))}})});
   const {data:players,error}=await mpClient.from('hs_players').select('*').neq('id',mpPlayerId);if(error)throw error;(players||[]).forEach(row=>{if(Date.now()-(Date.parse(row.updated_at)||0)<10000)mpSetRemote(row)});
   mpOnline=true;mpStarting=false;mpLastPersist=0;mpSetChatActive(true);mpRenderAdminUI();adminPlusSync();mpAppendChat('SYSTEM','Connected to multiplayer chat.',true);
-  if(G==='dead')respawn();qStarted=true;gameMode='regular';G='play';playing=true;scoped=false;document.body.classList.remove('mp-ui-unlocked');updateHearts();$('mp-panel').style.display='none';$('ov').style.display='none';$('mp').style.display='';if(!isTouch&&cv.requestPointerLock)cv.requestPointerLock();await mpPersistPosition(true);mpBroadcastPosition();adminPlusSync();msg('MULTIPLAYER CONNECTED',3);
+  if(G==='dead')respawn();qStarted=true;gameMode='regular';G='play';playing=true;scoped=false;document.body.classList.remove('mp-ui-unlocked');updateHearts();$('mp-panel').style.display='none';$('ov').style.display='none';$('mp').style.display='';if(!isTouch&&cv.requestPointerLock)cv.requestPointerLock();await mpPersistPosition(true);mpBroadcastPosition();mpLeaderboardSave();adminPlusSync();msg('MULTIPLAYER CONNECTED',3);
  }catch(e){console.error(e);$('mp-status').textContent='Connection failed: '+(e.message||'Unknown error')+'. Check that the SQL setup was run and Realtime is enabled.';mpStarting=false;mpOnline=false;mpAdminAuthenticated=false;mpSetChatActive(false);mpRenderAdminUI();if(mpChannel&&mpClient){try{await mpClient.removeChannel(mpChannel)}catch(err){}mpChannel=null}}
 }
 async function mpStopSession(){
  if(!mpOnline&&!mpChannel)return;
  const client=mpClient,channel=mpChannel,wasOnline=mpOnline;
- mpOnline=false;mpChannel=null;mpStarting=false;mpUiPauseToken=null;$('adminplus-panel').classList.remove('open');$('adminplus-panel').setAttribute('aria-hidden','true');mpGrantedPermissions={};Object.keys(mpAdminPerks).forEach(k=>{if(k!=='playerList'&&k!=='playerBeacons')mpAdminPerks[k]=false});mpSetChatActive(false);mpRenderAdminUI();
+ mpVoiceLeave();mpOnline=false;mpChannel=null;mpStarting=false;mpUiPauseToken=null;$('adminplus-panel').classList.remove('open');$('adminplus-panel').setAttribute('aria-hidden','true');mpGrantedPermissions={};Object.keys(mpAdminPerks).forEach(k=>{if(k!=='playerList'&&k!=='playerBeacons')mpAdminPerks[k]=false});mpSetChatActive(false);mpRenderAdminUI();
  try{if(channel)await channel.send({type:'broadcast',event:'player_left',payload:{id:mpPlayerId}})}catch(e){}
  try{if(client&&wasOnline)await client.from('hs_players').delete().eq('id',mpPlayerId)}catch(e){console.warn('Multiplayer leave:',e.message)}
  try{if(client&&channel)await client.removeChannel(channel)}catch(e){}
@@ -2210,11 +2367,11 @@ setInterval(mpWatch,4000);document.addEventListener('visibilitychange',()=>{if(!
 async function mpLeave(){if(!mpClient||!mpOnline)return;try{if(mpChannel)await mpChannel.send({type:'broadcast',event:'player_left',payload:{id:mpPlayerId}});await mpClient.from('hs_players').delete().eq('id',mpPlayerId)}catch(e){}}
 addEventListener('pagehide',()=>{mpLeave()});
 // Shared world/action events are deliberately small and append-only.
-const mpOriginalDie=die;die=function(){mpEmit('player_died',{x:P.x,z:P.z});mpOriginalDie();if(mpOnline)mpPersistPosition(true)};
+const mpOriginalDie=die;die=function(){mpEmit('player_died',{x:P.x,z:P.z});mpOriginalDie();if(mpOnline){mpPersistPosition(true);mpBroadcastPosition();mpLeaderboardSave()}};
 const mpOriginalRespawn=respawn;respawn=function(){mpOriginalRespawn();if(mpOnline)mpEmit('player_respawned',{x:P.x,z:P.z})};
 const mpOriginalBuyItem=buyItem;buyItem=function(id){const before=stats.money;mpOriginalBuyItem(id);if(stats.money<before)mpEmit('purchase',{item:id,cost:before-stats.money})};
 const mpOriginalFellTree=fellTree;fellTree=function(t){const index=treeSpots.indexOf(t),fallen=deers.map((d,i)=>d.active&&d.alive&&d.perched&&Math.hypot(d.x-t.x,d.z-t.z)<1.8?i:-1).filter(i=>i>=0);mpOriginalFellTree(t);if(index>=0){mpEmit('tree_chopped',{index,deerIndexes:fallen});mpStoreWorld('tree:'+index,{cut:true});for(const i of fallen)mpStoreWorld('animal:deer:'+i,{alive:false,active:true})}};
-const mpOriginalShoot=shoot;shoot=function(){const before=[...deers,...rabbits,...bears,giant].map(a=>!!a.alive),old=stats.shots;mpOriginalShoot();if(stats.shots>old)mpEmit('shot',{x:P.x,z:P.z,weapon:cur});const all=[...deers,...rabbits,...bears,giant];all.forEach((a,i)=>{if(before[i]&&!a.alive){const kind=a===giant?'gray':a.kind||'deer',arr=kind==='rabbit'?rabbits:kind==='bear'?bears:kind==='gray'?[giant]:deers,index=arr.indexOf(a);mpEmit('animal_killed',{kind,index});mpStoreWorld('animal:'+kind+':'+index,{alive:false,active:true})}})};
+const mpOriginalShoot=shoot;shoot=function(){const before=[...deers,...rabbits,...bears,giant].map(a=>!!a.alive),old=stats.shots;mpOriginalShoot();if(stats.shots>old)mpEmit('shot',{x:P.x,z:P.z,weapon:cur});const all=[...deers,...rabbits,...bears,giant];let gotKill=false;all.forEach((a,i)=>{if(before[i]&&!a.alive){const kind=a===giant?'gray':a.kind||'deer',arr=kind==='rabbit'?rabbits:kind==='bear'?bears:kind==='gray'?[giant]:deers,index=arr.indexOf(a);mpEmit('animal_killed',{kind,index});mpStoreWorld('animal:'+kind+':'+index,{alive:false,active:true});if(kind==='gray'||kind==='deer'){gotKill=true}}});if(gotKill&&mpOnline){mpBroadcastPosition();mpLeaderboardSave()}};
 // Keep remote hunters moving smoothly between 100 ms packets.
 const mpOriginalUpd=upd;let mpLastSold=0;upd=function(dt){mpOriginalUpd(dt);if(mpOnline){if(stats.sold>mpLastSold){mpEmit('shop_sale',{count:stats.sold-mpLastSold,money:stats.money});mpLastSold=stats.sold}}};
 // ---- multiplayer mobs: the lowest player id simulates every animal, everyone else mirrors it ----
@@ -2263,6 +2420,52 @@ function mpApplyAct(p){if(!mpOnline||!p||p.from===mpPlayerId||!mpIsHost())return
  const up2=upd;upd=function(dt){up2(dt);if(mpPup()){const ms=mpMobs();ms.forEach((m,i)=>{if(m.done&&!m.sentDone){m.sentDone=true;mpAct(i,'sold')}else if(!m.done)m.sentDone=false})}};
 }
 setInterval(mpSendMobs,200);
-applySet();
+setInterval(()=>{if(leaderboardMesh&&Date.now()-leaderboardLast>1000){leaderboardLast=Date.now();drawLeaderboard()}},1000);
+// A physical sign beside the shop; its three tabs are painted directly onto the sign.
+let leaderboardTab=0,leaderboardMesh=null,leaderboardTexture=null,leaderboardCanvas=null,leaderboardCtx=null,leaderboardLast=0;
+const leaderboardRay=new THREE.Raycaster();
+function leaderboardRows(){
+ const byId=new Map(mpLeaderboardAll);
+ byId.set(mpPlayerId,{id:mpPlayerId,name:mpName||'You',deer:stats.deer||0,deaths:stats.deaths||0,gray:stats.gKills||0});
+ for(const [id,o] of mpRemote){const q=(o.row&&o.row.leaderboard)||(o.row&&o.row.inventory&&o.row.inventory.leaderboard);if(q)byId.set(id,{id,name:o.name||'Hunter',deer:+q.deer||0,deaths:+q.deaths||0,gray:+q.gray||0})}
+ return [...byId.values()];
+}
+function drawLeaderboard(){
+ if(!leaderboardCtx)return;
+ const c=leaderboardCanvas,x=leaderboardCtx,rows=leaderboardRows(),key=['deer','deaths','gray'][leaderboardTab],labels=['MOST DEER KILLS','MOST TIMES KILLED','MOST GRAY ONE KILLS'];
+ rows.sort((a,b)=>b[key]-a[key]||a.name.localeCompare(b.name));
+ x.clearRect(0,0,c.width,c.height);x.fillStyle='#201b12';x.fillRect(0,0,c.width,c.height);
+ x.strokeStyle='#b49b62';x.lineWidth=12;x.strokeRect(7,7,c.width-14,c.height-14);
+ x.fillStyle='#e8d9a0';x.font='bold 34px Courier New';x.textAlign='center';x.fillText('HUNTER RECORDS',c.width/2,54);
+ for(let i=0;i<3;i++){const xx=18+i*208;x.fillStyle=i===leaderboardTab?'#e8d9a0':'#383326';x.fillRect(xx,75,198,44);x.fillStyle=i===leaderboardTab?'#14160f':'#d8d2b0';x.font='bold 15px Courier New';x.fillText(['DEER','DEATHS','GRAY'][i],xx+99,103)}
+ x.fillStyle='#b8b097';x.font='bold 16px Courier New';x.textAlign='left';x.fillText(labels[leaderboardTab],28,155);
+ x.font='17px Courier New';
+ rows.slice(0,7).forEach((r,i)=>{const y=192+i*32;x.fillStyle=i===0?'#9fd27a':'#e3ddc4';x.fillText((i+1)+'. '+String(r.name).slice(0,19),30,y);x.textAlign='right';x.fillText(String(r[key]),c.width-32,y);x.textAlign='left'});
+ if(rows.length===1){x.fillStyle='#8f8a70';x.font='13px Courier New';x.fillText('MULTIPLAYER RECORDS APPEAR WHEN',30,440);x.fillText('OTHER HUNTERS ARE ONLINE.',30,462)}
+ x.fillStyle='#8f8a70';x.font='12px Courier New';x.textAlign='center';x.fillText('CLICK A TAB TO CHANGE THE RECORD',c.width/2,c.height-22);
+ if(leaderboardTexture)leaderboardTexture.needsUpdate=true;
+}
+function createLeaderboardSign(){
+ if(leaderboardMesh)return;
+ leaderboardCanvas=document.createElement('canvas');leaderboardCanvas.width=640;leaderboardCanvas.height=500;leaderboardCtx=leaderboardCanvas.getContext('2d');
+ leaderboardTexture=new THREE.CanvasTexture(leaderboardCanvas);leaderboardTexture.minFilter=THREE.LinearFilter;
+ const board=new THREE.Mesh(new THREE.BoxGeometry(5.6,4.4,.22),new THREE.MeshBasicMaterial({color:0x44321e}));
+ const face=new THREE.Mesh(new THREE.PlaneGeometry(5.35,4.15),new THREE.MeshBasicMaterial({map:leaderboardTexture}));
+ face.position.z=.125;board.add(face);board.position.set(SH.x+7.5,hgt(SH.x+7.5,SH.z+1)+4.1,SH.z+1);
+ board.lookAt(0,board.position.y,0);scene.add(board);leaderboardMesh=board;drawLeaderboard();
+}
+function leaderboardTryClick(){
+ if(!playing||!leaderboardMesh)return false;
+ leaderboardRay.setFromCamera(new THREE.Vector2(0,0),cam);
+ const hits=leaderboardRay.intersectObject(leaderboardMesh,true);if(!hits.length)return false;
+ const uv=hits[0].uv;if(!uv)return false;
+ const x=uv.x*640,y=(1-uv.y)*500;
+ if(y>=75&&y<=119){const tab=Math.floor((x-18)/208);if(tab>=0&&tab<3){leaderboardTab=tab;drawLeaderboard();msg('LEADERBOARD: '+['MOST DEER KILLS','MOST TIMES KILLED','MOST GRAY ONE KILLS'][tab],2);return true}}
+ return true;
+}
+
+if(!localStorage.getItem('deerHunter98.qualityPreset')){qualityPreset='Medium';localStorage.setItem('deerHunter98.qualityPreset','Medium');}
+if(qualityPreset!=='Custom')applyQualityPreset(qualityPreset);else applySet();
+createLeaderboardSign();
 applyGear();skyUpdate();setDiff(diffKey);popTick(true);critFill();resetGiant();showScreen('title');adminPlusSync();cam.position.set(P.x,1.7,P.z);loop(last);
 </script></body></html>
