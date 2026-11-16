@@ -1751,7 +1751,12 @@ const MP_SUPABASE_URL='https://rfgurxkjchcjnavpsdxv.supabase.co';
 const MP_SUPABASE_KEY='sb_publishable_8xK9UY2VEOTEG_lxenBwqA_mtbwY3HF';
 let mpClient=null,mpChannel=null,mpOnline=false,mpStarting=false,mpLastPersist=0,mpBroadcastBusy=false,mpBroadcastQueued=false;
 const mpRemote=new Map(),mpEventSeen=new Set(),mpLeaderboardAll=new Map();
-const mpPlayerId=(()=>{let v=localStorage.getItem('hsm.playerId');if(!v){v=(crypto.randomUUID?crypto.randomUUID():('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:(r&3|8)).toString(16)})));localStorage.setItem('hsm.playerId',v)}return v})();
+const mpGenId=()=>crypto.randomUUID?crypto.randomUUID():('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:(r&3|8)).toString(16)}));
+const mpDeviceId=(()=>{let v=localStorage.getItem('hsm.playerId');if(!v){v=mpGenId();localStorage.setItem('hsm.playerId',v)}return v})();
+const MP_ADMIN_ACCOUNT_ID='administrator-account';
+let mpAccountId=localStorage.getItem('hsm.accountId')||mpDeviceId;
+let mpPlayerId=mpAccountId;
+const mpLbRemoved=new Set();let mpAdminBoardShow=null;
 let mpName=localStorage.getItem('hsm.playerName')||('Hunter'+Math.floor(100+Math.random()*900));
 let mpExitedToTitle=false;
 const MP_CONTROL_FUNCTION=MP_SUPABASE_URL+'/functions/v1/admin-control';
@@ -1807,7 +1812,7 @@ var mpPermBase=[],mpPermInit=false;
 function mpPermWarn(on){let b=document.getElementById('perm-banner');if(!on){if(b)b.remove();return}if(b)return;b=document.createElement('div');b.id='perm-banner';b.style.cssText='position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:3000;max-width:92vw;box-sizing:border-box;padding:10px 14px;background:#14160f;border:2px solid #e6b92e;color:#f0e6a8;font:14px "Courier New",monospace;letter-spacing:1px;text-align:center;box-shadow:0 6px 30px #000';b.innerHTML='You have been given permissions, so refresh your tab to get them <button type="button" style="margin-left:8px;font:inherit;color:#14160f;background:#e6b92e;border:0;padding:2px 8px;cursor:pointer">X</button>';b.querySelector('button').onclick=()=>b.remove();document.body.appendChild(b)}
 async function mpCheckAccess(mode){
  try{
-  const result=await mpCallControl({action:'status',username:mpName,device_id:mpPlayerId,mode,admin_password:mpAdminSecret||undefined});
+  const result=await mpCallControl({action:'status',username:mpName,device_id:mpDeviceId,mode,admin_password:mpAdminSecret||undefined});
   mpGrantedPermissions=result.permissions||{};mpPermBase=Object.keys(mpGrantedPermissions).filter(k=>mpGrantedPermissions[k]);mpPermInit=true;mpPermWarn(false);
   if(result.is_admin)mpAdminAuthenticated=true;
   if(result.settings&&result.is_admin){ $('mp-disable-sp').checked=result.settings.singleplayer_enabled===false; $('mp-disable-mp').checked=result.settings.multiplayer_enabled===false; $('mp-sp-reason').value=result.settings.singleplayer_reason||''; $('mp-mp-reason').value=result.settings.multiplayer_reason||''; }
@@ -1835,7 +1840,7 @@ function mpAttemptJoin(){
  if(!/^ADMINISTRATOR$/i.test(requested))mpAdminAuthenticated=false;
  mpConnectAndStart();
 }
-async function mpAdminLoadSettings(){try{const result=await mpCallControl({action:'status',username:mpName,device_id:mpPlayerId,mode:'singleplayer',admin_password:mpAdminSecret});if(result&&result.settings&&result.is_admin){$('mp-disable-sp').checked=result.settings.singleplayer_enabled===false;$('mp-disable-mp').checked=result.settings.multiplayer_enabled===false;$('mp-sp-reason').value=result.settings.singleplayer_reason||'';$('mp-mp-reason').value=result.settings.multiplayer_reason||''}}catch(e){}}
+async function mpAdminLoadSettings(){try{const result=await mpCallControl({action:'status',username:mpName,device_id:mpDeviceId,mode:'singleplayer',admin_password:mpAdminSecret});if(result&&result.settings&&result.is_admin){$('mp-disable-sp').checked=result.settings.singleplayer_enabled===false;$('mp-disable-mp').checked=result.settings.multiplayer_enabled===false;$('mp-sp-reason').value=result.settings.singleplayer_reason||'';$('mp-mp-reason').value=result.settings.multiplayer_reason||''}}catch(e){}}
 function mpAdminShowBody(unlocked){$('mp-admin-lock').style.display=unlocked?'none':'block';$('mp-admin-body').style.display=unlocked?'block':'none'}
 function mpOpenAdminPanel(){
  if(!/^ADMINISTRATOR$/i.test(String(mpName||'').trim()))return;
@@ -2277,16 +2282,19 @@ function mpTickRemote(dt){
  }
 }
 function mpRemoveRemote(id){const o=mpRemote.get(id);if(o){if(o.espBox){scene.remove(o.espBox);o.espBox.geometry.dispose();o.espBox.material.dispose()}if(o.espLine){scene.remove(o.espLine);o.espLine.geometry.dispose();o.espLine.material.dispose()}scene.remove(o.root);o.root.traverse(v=>{if(v.userData&&v.userData.shared)return;if(v.geometry)v.geometry.dispose();if(v.material){if(Array.isArray(v.material))v.material.forEach(m=>m.dispose());else v.material.dispose()}});mpRemote.delete(id)}}
-function mpBuildRow(){return {id:mpPlayerId,name:mpName,x:+P.x.toFixed(2),z:+P.z.toFixed(2),yaw:+P.yaw.toFixed(3),pitch:+P.pitch.toFixed(3),held_item:cur,alive:G!=='dead',money:Math.max(0,Math.floor(stats.money||0)),inventory:{rifle:!!stats.rifle,shotgun:!!stats.shotgun,axe:!!stats.axe,flash:!!stats.flash,skin:curSkinId(),leaderboard:{deer:stats.deer||0,deaths:stats.deaths||0,gray:stats.gKills||0}},updated_at:new Date().toISOString()}}
+function mpBuildRow(){return {id:mpPlayerId,name:mpName,x:+P.x.toFixed(2),z:+P.z.toFixed(2),yaw:+P.yaw.toFixed(3),pitch:+P.pitch.toFixed(3),held_item:cur,alive:G!=='dead',money:Math.max(0,Math.floor(stats.money||0)),inventory:{rifle:!!stats.rifle,shotgun:!!stats.shotgun,axe:!!stats.axe,flash:!!stats.flash,skin:curSkinId(),leaderboard:{deer:stats.deer||0,deaths:stats.deaths||0,gray:stats.gKills||0,hid:mpLbHid()}},updated_at:new Date().toISOString()}}
 async function mpPersistPosition(force=false){if(!mpClient||!mpOnline)return;const now=Date.now();if(!force&&now-mpLastPersist<1000)return;mpLastPersist=now;try{const {error}=await mpClient.from('hs_players').upsert(mpBuildRow(),{onConflict:'id'});if(error)console.warn('Multiplayer player save:',error.message)}catch(e){console.warn('Multiplayer player save:',e.message)}}
-async function mpBroadcastPosition(){if(!mpOnline||!mpChannel)return;if(mpBroadcastBusy){mpBroadcastQueued=true;return}mpBroadcastBusy=true;try{const {error}=await mpChannel.send({type:'broadcast',event:'player_position',payload:{...mpBuildRow(),leaderboard:{deer:stats.deer||0,deaths:stats.deaths||0,gray:stats.gKills||0}}});if(error)console.warn('Player broadcast:',error.message)}catch(e){console.warn('Player broadcast:',e.message)}finally{mpBroadcastBusy=false;if(mpBroadcastQueued){mpBroadcastQueued=false;mpBroadcastPosition()}}}
+async function mpBroadcastPosition(){if(!mpOnline||!mpChannel)return;if(mpBroadcastBusy){mpBroadcastQueued=true;return}mpBroadcastBusy=true;try{const {error}=await mpChannel.send({type:'broadcast',event:'player_position',payload:{...mpBuildRow(),leaderboard:{deer:stats.deer||0,deaths:stats.deaths||0,gray:stats.gKills||0,hid:mpLbHid()}}});if(error)console.warn('Player broadcast:',error.message)}catch(e){console.warn('Player broadcast:',e.message)}finally{mpBroadcastBusy=false;if(mpBroadcastQueued){mpBroadcastQueued=false;mpBroadcastPosition()}}}
 async function mpEmit(type,payload={}){if(!mpClient||!mpOnline)return;try{const {error}=await mpClient.from('hs_world_events').insert({player_id:mpPlayerId,player_name:mpName,event_type:type,payload});if(error)console.warn('Multiplayer event failed:',error.message)}catch(e){console.warn('Multiplayer event failed:',e.message)}}
 async function mpStoreWorld(objectId,state){if(!mpClient||!mpOnline)return;try{const {error}=await mpClient.from('hs_world_state').upsert({object_id:objectId,state,updated_by:mpPlayerId,updated_at:new Date().toISOString()},{onConflict:'object_id'});if(error)console.warn('World state sync:',error.message)}catch(e){console.warn('World state sync:',e.message)}}
-function mpLeaderboardSave(){if(!mpOnline)return;const row={id:mpPlayerId,name:mpName,deer:stats.deer||0,deaths:stats.deaths||0,gray:stats.gKills||0};mpLeaderboardAll.set(mpPlayerId,row);mpStoreWorld('leaderboard:'+mpPlayerId,row);drawLeaderboard()}
-function mpApplyWorld(row){if(!row)return;const id=row.object_id||'',v=row.state||{};if(id.startsWith('leaderboard:')){if(v&&v.id)mpLeaderboardAll.set(v.id,{id:v.id,name:String(v.name||'Hunter'),deer:+v.deer||0,deaths:+v.deaths||0,gray:+v.gray||0});return}if(id.startsWith('tree:')){const i=Number(id.slice(5)),t=treeSpots[i];if(t&&!t.cut){t.cut=true;removeC(t.c)}return}if(id.startsWith('animal:')){const [kind,raw]=id.slice(7).split(':');const i=Number(raw),arr=kind==='rabbit'?rabbits:kind==='bear'?bears:kind==='gray'?[giant]:deers,a=arr&&arr[i];if(a){a.alive=v.alive!==false;a.active=v.alive===false?true:v.active!==false;if(v.alive===false&&a.g){a.deadT=0;a.carried=false;a.falling=false;a.g.visible=true;a.g.rotation.set(0,a.yaw||0,1.45);a.g.position.set(a.x,hgt(a.x,a.z)+(a.ly||.6),a.z)}}}}
+function mpLbHid(){if(mpPlayerId!==MP_ADMIN_ACCOUNT_ID||!mpIsAdminSession())return false;if(mpAdminBoardShow===null){const prev=mpLeaderboardAll.get(MP_ADMIN_ACCOUNT_ID);mpAdminBoardShow=!!(prev&&prev.hid===false)}return !mpAdminBoardShow}
+function mpLeaderboardSave(){if(!mpOnline)return;if(mpLbRemoved.has(mpPlayerId)){drawLeaderboard();return}const row={id:mpPlayerId,name:mpName,deer:stats.deer||0,deaths:stats.deaths||0,gray:stats.gKills||0,hid:mpLbHid()};mpLeaderboardAll.set(mpPlayerId,row);mpStoreWorld('leaderboard:'+mpPlayerId,row);drawLeaderboard()}
+function mpToggleAdminBoard(){if(!mpIsAdminSession())return;mpLbHid();mpAdminBoardShow=!mpAdminBoardShow;mpLeaderboardSave();mpBroadcastPosition();drawLeaderboard();msg(mpAdminBoardShow?'YOU ARE NOW VISIBLE ON THE LEADERBOARD':'YOU ARE NOW HIDDEN FROM THE LEADERBOARD',2.5)}
+function mpLbRemove(id){if(!mpIsAdminSession()||!id||id===mpPlayerId||id===MP_ADMIN_ACCOUNT_ID)return;mpLbRemoved.add(id);mpLeaderboardAll.delete(id);mpStoreWorld('lbremoved:'+id,{removed:true,at:Date.now()});mpStoreWorld('leaderboard:'+id,{id,name:'',deer:0,deaths:0,gray:0,hid:true});drawLeaderboard();msg('REMOVED FROM THE LEADERBOARD',2.5)}
+function mpApplyWorld(row){if(!row)return;const id=row.object_id||'',v=row.state||{};if(id.startsWith('lbremoved:')){const rid=id.slice(10);if(v&&v.removed===false)mpLbRemoved.delete(rid);else{mpLbRemoved.add(rid);mpLeaderboardAll.delete(rid)}return}if(id.startsWith('leaderboard:')){if(v&&v.id&&!mpLbRemoved.has(v.id))mpLeaderboardAll.set(v.id,{id:v.id,name:String(v.name||'Hunter'),deer:+v.deer||0,deaths:+v.deaths||0,gray:+v.gray||0,hid:!!v.hid});return}if(id.startsWith('tree:')){const i=Number(id.slice(5)),t=treeSpots[i];if(t&&!t.cut){t.cut=true;removeC(t.c)}return}if(id.startsWith('animal:')){const [kind,raw]=id.slice(7).split(':');const i=Number(raw),arr=kind==='rabbit'?rabbits:kind==='bear'?bears:kind==='gray'?[giant]:deers,a=arr&&arr[i];if(a){a.alive=v.alive!==false;a.active=v.alive===false?true:v.active!==false;if(v.alive===false&&a.g){a.deadT=0;a.carried=false;a.falling=false;a.g.visible=true;a.g.rotation.set(0,a.yaw||0,1.45);a.g.position.set(a.x,hgt(a.x,a.z)+(a.ly||.6),a.z)}}}}
 function mpApplyEvent(ev){if(!ev||ev.player_id===mpPlayerId||mpEventSeen.has(ev.id))return;mpEventSeen.add(ev.id);if(mpEventSeen.size>500)mpEventSeen.clear();const p=ev.payload||{};if(ev.event_type==='tree_chopped'&&Number.isInteger(p.index)){const t=treeSpots[p.index];if(t&&!t.cut){t.cut=true;removeC(t.c)}}if(ev.event_type==='animal_killed'){const arr=p.kind==='rabbit'?rabbits:p.kind==='bear'?bears:p.kind==='gray'?[giant]:deers;const a=arr&&arr[p.index];if(a){a.alive=false;a.active=true;a.deadT=0;a.carried=false;a.falling=false;if(a.g){a.g.visible=true;a.g.rotation.set(0,a.yaw||0,1.45);a.g.position.set(a.x,hgt(a.x,a.z)+(a.ly||.6),a.z)}}}if(ev.event_type==='purchase'&&p.item)msg(ev.player_name+' bought '+p.item,2);if(ev.event_type==='shop_sale')msg(ev.player_name+' sold animals at the shop',2)}
 async function mpConnectAndStart(){
- if(mpStarting)return;const nm=$('mp-name').value.trim()||mpName;if(/^ADMINISTRATOR$/i.test(nm)&&!mpAdminAuthenticated){mpShowAdminGate();return}if(!/^ADMINISTRATOR$/i.test(nm)){mpAdminAuthenticated=false;mpAdminSecret=''}mpName=nm;const allowed=await mpCheckAccess('multiplayer');if(!allowed)return;mpStarting=true;localStorage.setItem('hsm.playerName',nm);mpName=nm;
+ if(mpStarting)return;const nm=$('mp-name').value.trim()||mpName;if(/^ADMINISTRATOR$/i.test(nm)&&!mpAdminAuthenticated){mpShowAdminGate();return}if(!/^ADMINISTRATOR$/i.test(nm)){mpAdminAuthenticated=false;mpAdminSecret=''}mpName=nm;const allowed=await mpCheckAccess('multiplayer');if(!allowed)return;mpStarting=true;localStorage.setItem('hsm.playerName',nm);mpName=nm;mpPlayerId=(/^ADMINISTRATOR$/i.test(nm)&&mpAdminAuthenticated)?MP_ADMIN_ACCOUNT_ID:mpAccountId;mpAdminBoardShow=null;
  $('mp-config').style.display='none';$('mp-loading').style.display='block';$('mp-title').textContent='LOADING MULTIPLAYER';$('mp-task-list').innerHTML=mpTasks.map((t,i)=>'<div id="mpt'+i+'">○ '+t+'</div>').join('');$('mp-progress-bar').style.width='0%';$('mp-status').textContent='';
  try{
   if(!window.supabase?.createClient)throw new Error('Supabase library did not load. Check your internet connection.');
@@ -2334,6 +2342,7 @@ $('change-user').onclick=()=>{
  if(entered===null)return;
  const clean=entered.trim().replace(/[<>\x00-\x1f]/g,'').slice(0,20);
  if(!clean){window.alert('Please enter a username.');return}
+ if(clean.toLowerCase()!==String(mpName||'').toLowerCase()&&!/^ADMINISTRATOR$/i.test(clean)){mpAccountId=mpGenId();localStorage.setItem('hsm.accountId',mpAccountId)}
  mpName=clean;localStorage.setItem('hsm.playerName',mpName);
  $('t2').textContent='USERNAME SET: '+mpName.toUpperCase();
  if(!/^ADMINISTRATOR$/i.test(mpName)){mpAdminAuthenticated=false;mpAdminSecret=''}
@@ -2348,7 +2357,7 @@ var mpBanShown=false,mpWatchBusy=false,mpPermSeen='';
 async function mpWatch(){
  if(mpWatchBusy||document.hidden)return;mpWatchBusy=true;
  try{
-  const r=await mpCallControl({action:'status',username:mpName,device_id:mpPlayerId,mode:mpOnline?'multiplayer':'singleplayer',admin_password:mpAdminSecret||undefined});
+  const r=await mpCallControl({action:'status',username:mpName,device_id:mpDeviceId,mode:mpOnline?'multiplayer':'singleplayer',admin_password:mpAdminSecret||undefined});
   if(r.ban){if(!mpBanShown){mpBanShown=true;mpShowAccessScreen('ban',r.ban);if(mpOnline)await mpStopSession()}return}
   mpBanShown=false;
   if(r.allowed===false&&G==='play'){mpShowAccessScreen('shutdown',{reason:r.reason,singleplayerEnabled:r.singleplayer_enabled!==false,multiplayerEnabled:r.multiplayer_enabled!==false});if(mpOnline)await mpStopSession();return}
@@ -2422,10 +2431,13 @@ let leaderboardTab=0,leaderboardMesh=null,leaderboardTexture=null,leaderboardCan
 const leaderboardRay=new THREE.Raycaster();
 function leaderboardRows(){
  const byId=new Map(mpLeaderboardAll);
- byId.set(mpPlayerId,{id:mpPlayerId,name:mpName||'You',deer:stats.deer||0,deaths:stats.deaths||0,gray:stats.gKills||0});
- for(const [id,o] of mpRemote){const q=(o.row&&o.row.leaderboard)||(o.row&&o.row.inventory&&o.row.inventory.leaderboard);if(q)byId.set(id,{id,name:o.name||'Hunter',deer:+q.deer||0,deaths:+q.deaths||0,gray:+q.gray||0})}
- return [...byId.values()];
+ byId.set(mpPlayerId,{id:mpPlayerId,name:mpName||'You',deer:stats.deer||0,deaths:stats.deaths||0,gray:stats.gKills||0,hid:mpLbHid()});
+ for(const [id,o] of mpRemote){const q=(o.row&&o.row.leaderboard)||(o.row&&o.row.inventory&&o.row.inventory.leaderboard);if(q)byId.set(id,{id,name:o.name||'Hunter',deer:+q.deer||0,deaths:+q.deaths||0,gray:+q.gray||0,hid:!!q.hid})}
+ let list=[...byId.values()].filter(r=>!mpLbRemoved.has(r.id));
+ if(!mpIsAdminSession())list=list.filter(r=>!r.hid);
+ return list;
 }
+let leaderboardHits=[];
 function drawLeaderboard(){
  if(!leaderboardCtx)return;
  const c=leaderboardCanvas,x=leaderboardCtx,rows=leaderboardRows(),key=['deer','deaths','gray'][leaderboardTab],labels=['MOST DEER KILLS','MOST TIMES KILLED','MOST GRAY ONE KILLS'];
@@ -2436,7 +2448,11 @@ function drawLeaderboard(){
  for(let i=0;i<3;i++){const xx=18+i*208;x.fillStyle=i===leaderboardTab?'#e8d9a0':'#383326';x.fillRect(xx,75,198,44);x.fillStyle=i===leaderboardTab?'#14160f':'#d8d2b0';x.font='bold 15px Courier New';x.fillText(['DEER','DEATHS','GRAY'][i],xx+99,103)}
  x.fillStyle='#b8b097';x.font='bold 16px Courier New';x.textAlign='left';x.fillText(labels[leaderboardTab],28,155);
  x.font='17px Courier New';
- rows.slice(0,7).forEach((r,i)=>{const y=192+i*32;x.fillStyle=i===0?'#9fd27a':'#e3ddc4';x.fillText((i+1)+'. '+String(r.name).slice(0,19),30,y);x.textAlign='right';x.fillText(String(r[key]),c.width-32,y);x.textAlign='left'});
+ const adm=mpIsAdminSession();leaderboardHits=[];
+ rows.slice(0,7).forEach((r,i)=>{const y=192+i*32,label=(i+1)+'. '+String(r.name).slice(0,19)+(r.hid?' (HIDDEN)':'');x.fillStyle=r.hid?'#9a9478':(i===0?'#9fd27a':'#e3ddc4');x.textAlign='left';x.fillText(label,30,y);const lw=x.measureText(label).width;x.textAlign='right';x.fillText(String(r[key]),c.width-32,y);x.textAlign='left';
+  if(adm&&r.id!==mpPlayerId&&r.id!==MP_ADMIN_ACCOUNT_ID){const bx=Math.round(Math.min(30+lw+12,c.width-130)),by=y-17,bw=28,bh=24;x.fillStyle='#5a1f1f';x.fillRect(bx,by,bw,bh);x.strokeStyle='#d96a5a';x.lineWidth=1.5;x.strokeRect(bx+.5,by+.5,bw-1,bh-1);x.strokeStyle='#ffd0c8';x.lineWidth=2;x.beginPath();x.moveTo(bx+7,by+7);x.lineTo(bx+21,by+7);x.moveTo(bx+11,by+7);x.lineTo(bx+11,by+4);x.lineTo(bx+17,by+4);x.lineTo(bx+17,by+7);x.moveTo(bx+9,by+10);x.lineTo(bx+10,by+20);x.lineTo(bx+18,by+20);x.lineTo(bx+19,by+10);x.moveTo(bx+12.5,by+12);x.lineTo(bx+12.5,by+18);x.moveTo(bx+15.5,by+12);x.lineTo(bx+15.5,by+18);x.stroke();leaderboardHits.push({k:'del',id:r.id,x:bx,y:by,w:bw,h:bh})}
+ });
+ if(adm){const shown=mpAdminBoardShow===true,bx=372,by=132,bw=240,bh=30;x.fillStyle=shown?'#2f4a2a':'#4a2a2a';x.fillRect(bx,by,bw,bh);x.strokeStyle=shown?'#9fd27a':'#d96a5a';x.lineWidth=2;x.strokeRect(bx+1,by+1,bw-2,bh-2);x.fillStyle='#f0ead2';x.font='bold 12px Courier New';x.textAlign='center';x.fillText(shown?'ADMIN VISIBLE, CLICK TO HIDE':'ADMIN HIDDEN, CLICK TO SHOW',bx+bw/2,by+20);x.textAlign='left';x.font='17px Courier New';leaderboardHits.push({k:'tog',x:bx,y:by,w:bw,h:bh})}
  if(rows.length===1){x.fillStyle='#8f8a70';x.font='13px Courier New';x.fillText('MULTIPLAYER RECORDS APPEAR WHEN',30,440);x.fillText('OTHER PEOPLE ARE ONLINE.',30,462)}
  x.fillStyle='#8f8a70';x.font='12px Courier New';x.textAlign='center';x.fillText('CLICK A TAB TO CHANGE THE RECORD',c.width/2,c.height-22);
  if(leaderboardTexture)leaderboardTexture.needsUpdate=true;
@@ -2466,6 +2482,7 @@ function leaderboardTryClick(){
  const uv=hits[0].uv;if(!uv)return false;
  const x=uv.x*640,y=(1-uv.y)*500;
  if(y>=75&&y<=119){const tab=Math.floor((x-18)/208);if(tab>=0&&tab<3){leaderboardTab=tab;drawLeaderboard();msg('LEADERBOARD: '+['MOST DEER KILLS','MOST TIMES KILLED','MOST GRAY ONE KILLS'][tab],2);return true}}
+ if(mpIsAdminSession()){for(const h of leaderboardHits){if(x>=h.x&&x<=h.x+h.w&&y>=h.y&&y<=h.y+h.h){if(h.k==='tog')mpToggleAdminBoard();else if(h.k==='del')mpLbRemove(h.id);return true}}}
  return true;
 }
 
