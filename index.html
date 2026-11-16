@@ -1753,7 +1753,7 @@ let mpClient=null,mpChannel=null,mpOnline=false,mpStarting=false,mpLastPersist=0
 const mpRemote=new Map(),mpEventSeen=new Set(),mpLeaderboardAll=new Map();
 const mpGenId=()=>crypto.randomUUID?crypto.randomUUID():('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:(r&3|8)).toString(16)}));
 const mpDeviceId=(()=>{let v=localStorage.getItem('hsm.playerId');if(!v){v=mpGenId();localStorage.setItem('hsm.playerId',v)}return v})();
-const MP_ADMIN_ACCOUNT_ID='administrator-account';
+const MP_ADMIN_ACCOUNT_ID='00000000-0000-4000-8000-00000000ad01';
 let mpAccountId=localStorage.getItem('hsm.accountId')||mpDeviceId;
 let mpPlayerId=mpAccountId;
 const mpLbRemoved=new Set();let mpAdminBoardShow=null;
